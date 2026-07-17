@@ -50,31 +50,25 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
         </p>
       </div>
 
-      {/* Center Cinematic Viewport (Bezel) */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-        <div className="relative w-[65vw] h-[65vh] rounded-[2rem] overflow-hidden bg-black border-[4px] border-[#111] shadow-[0_0_80px_rgba(0,0,0,1),inset_0_0_40px_rgba(0,0,0,1)] pointer-events-auto">
-          {/* Bezel inner metallic rim */}
-          <div className="absolute inset-0 rounded-[1.8rem] border border-white/10 z-20 pointer-events-none" />
-          
-          {/* Viewport Content */}
-          {project.id === 1 ? (
-            <div className="w-full h-full relative z-10">
-              <SequencePlayer />
-            </div>
-          ) : (
-            <div className="relative w-full h-full group z-10">
-              <div className="absolute inset-0 bg-black/40 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-700" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={project.image} 
-                alt={project.title}
-                className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700 ease-out"
-              />
-              <div className="absolute inset-0 border border-[#00f0ff]/10 z-20" />
-            </div>
-          )}
-        </div>
+      {/* Background Media (Full Screen) */}
+      <div className="absolute inset-0 z-0 pointer-events-auto">
+        {project.id === 1 ? (
+          <SequencePlayer />
+        ) : (
+          <div className="relative w-full h-full group z-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={project.image} 
+              alt={project.title}
+              className="w-full h-full object-cover scale-105 transition-transform duration-1000 ease-out"
+            />
+          </div>
+        )}
       </div>
+
+      {/* Dark Overlay for Text Readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 z-10 pointer-events-none" />
 
       {/* Left Sidebar Details */}
       <div className="fixed bottom-24 left-12 z-50 w-80 space-y-8">

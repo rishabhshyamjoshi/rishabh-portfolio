@@ -68,13 +68,13 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     if (activeProject) {
       muffleIntensity = 0.85;
     } else {
-      // Reduced muffling effect while scrolling
-      muffleIntensity = Math.min(scrollDelta * 2.5, 0.5);
+      // Intense muffling effect while scrolling
+      muffleIntensity = Math.min(scrollDelta * 10, 1.0);
       
-      // Reduced target pan (clamped so it doesn't go 100% to one ear)
-      const targetPan = Math.max(-0.35, Math.min(0.35, rawScrollDelta * 2)); 
-      // Lerp for the "dheere dheere" smooth effect
-      smoothPan.current = THREE.MathUtils.lerp(smoothPan.current, targetPan, 0.02);
+      // Intense target pan (full ear to ear)
+      const targetPan = Math.max(-1.0, Math.min(1.0, rawScrollDelta * 5)); 
+      // Lerp for smooth effect
+      smoothPan.current = THREE.MathUtils.lerp(smoothPan.current, targetPan, 0.05);
     }
 
     try { 

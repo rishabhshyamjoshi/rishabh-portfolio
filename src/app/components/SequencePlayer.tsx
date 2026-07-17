@@ -105,7 +105,8 @@ export default function SequencePlayer() {
   }, [loaded]);
 
   const handleWheel = (e: React.WheelEvent) => {
-    const delta = e.deltaY * 0.001; // sensitivity
+    // 1 scroll tick (deltaY ~ 100) * 0.0002 = 0.02 progress = ~4 frames out of 192.
+    const delta = e.deltaY * 0.0002; 
     progressRef.current += delta;
     progressRef.current = Math.max(0, Math.min(1, progressRef.current));
     
