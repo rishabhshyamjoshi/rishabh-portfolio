@@ -63,10 +63,8 @@ export default function ProjectDetailModal({ item, onClose }: { item: any | null
         </div>
 
         <a 
-          href={isProject ? item.link : item.linkedin}  
-          target="_blank" 
-          rel="noreferrer"
-          className="nav-pill"
+          href={isProject ? `/project/${item.id}` : item.linkedin}  
+          className="nav-pill interactive"
           style={{
             display: "inline-block",
             padding: "1rem 2.5rem",
@@ -81,7 +79,7 @@ export default function ProjectDetailModal({ item, onClose }: { item: any | null
           }}
           data-hover
         >
-          {isProject ? "INITIALIZE RECORD" : "ESTABLISH UPLINK"}
+          {isProject ? "VIEW FULL CASE STUDY" : "ESTABLISH UPLINK"}
         </a>
       </div>
       

@@ -249,7 +249,7 @@ export default function Scene() {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, background: "#020202" }}>
       <Canvas
-        camera={{ position: [0, 0, 7], fov: 60 }}
+        camera={{ position: [0, 0, 100], fov: 60 }}
         gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
         dpr={[1, 1]}
       >

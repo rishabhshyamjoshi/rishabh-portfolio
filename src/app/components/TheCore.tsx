@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, useGLTF } from "@react-three/drei";
@@ -174,6 +174,8 @@ function MarsPlanet({ scrollProgress, position }: { scrollProgress: number, posi
   const marsRef = useRef<THREE.Group>(null);
   const velocity = useRef(new THREE.Vector2(0, 0));
   const lastPointer = useRef(new THREE.Vector2(0, 0));
+  
+  const [clickCount, setClickCount] = useState(0);
 
   const { scene } = useGLTF("/mars_out.gltf");
   
@@ -215,8 +217,26 @@ function MarsPlanet({ scrollProgress, position }: { scrollProgress: number, posi
   return (
     <group position={position}>
       <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-        <group ref={groupRef}>
+        <group 
+          ref={groupRef}
+          onClick={(e) => {
+            e.stopPropagation();
+            setClickCount(prev => prev + 1);
+          }}
+          onPointerOver={() => { document.body.style.cursor = "crosshair"; }}
+          onPointerOut={() => { document.body.style.cursor = "none"; }}
+        >
           <primitive ref={marsRef} object={clonedScene} scale={10 / 200} />
+          
+          {/* EASTER EGG ROVER */}
+          {clickCount >= 5 && (
+            <mesh position={[0, 10.5, 0]}>
+              <boxGeometry args={[0.5, 0.3, 0.8]} />
+              <meshStandardMaterial color="#888888" metalness={0.8} roughness={0.2} />
+              <pointLight color="#00f0ff" intensity={2} distance={2} />
+            </mesh>
+          )}
+
           <pointLight position={[5, 3, 5]} intensity={8} color="#ffaa66" distance={25} />
           <pointLight position={[-4, -2, 4]} intensity={3} color="#ff4400" distance={20} />
         </group>

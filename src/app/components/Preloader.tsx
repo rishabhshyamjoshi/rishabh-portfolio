@@ -23,18 +23,27 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       if (pct < 1) {
         raf = requestAnimationFrame(tick);
       } else {
-        // Auto-enter without clicking
-        setPhase("reveal");
-        setTimeout(() => {
-          setPhase("done");
-          setTimeout(onComplete, 500);
-        }, 600);
+        setPhase("ready");
       }
     };
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [onComplete]);
+
+  const handleEnter = () => {
+    // Initialize audio on user interaction
+    try {
+      const audio = AudioController.getInstance();
+      audio.init();
+    } catch(e) {}
+    
+    setPhase("reveal");
+    setTimeout(() => {
+      setPhase("done");
+      setTimeout(onComplete, 500);
+    }, 600);
+  };
 
   if (phase === "done") return null;
 
@@ -95,6 +104,34 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             {progress}%
           </div>
         </>
+      )}
+
+      {phase === "ready" && (
+        <button
+          onClick={handleEnter}
+          style={{
+            background: "transparent",
+            border: "1px solid rgba(255,255,255,0.2)",
+            color: "#fff",
+            padding: "1rem 3rem",
+            fontFamily: "'Space Mono', monospace",
+            fontSize: "0.75rem",
+            letterSpacing: "0.3em",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            animation: "pulse 2s infinite"
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+            e.currentTarget.style.border = "1px solid rgba(255,255,255,0.5)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.background = "transparent";
+            e.currentTarget.style.border = "1px solid rgba(255,255,255,0.2)";
+          }}
+        >
+          ENTER
+        </button>
       )}
 
       <style dangerouslySetInnerHTML={{__html: `
