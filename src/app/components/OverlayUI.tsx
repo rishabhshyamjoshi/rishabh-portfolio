@@ -173,19 +173,19 @@ export default function OverlayUI() {
         }}
       >
         <div style={{
-          background: "rgba(15, 15, 20, 0.9)",
-          border: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(10, 10, 12, 0.9)",
+          border: "1px solid rgba(212, 175, 55, 0.15)",
           padding: "3rem",
           borderRadius: "12px",
           width: "90%",
           maxWidth: "380px",
           transform: showContact ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
           transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "0 30px 60px rgba(0,0,0,0.5)",
+          boxShadow: "0 30px 60px rgba(0,0,0,0.7), inset 0 0 20px rgba(212, 175, 55, 0.05)",
           textAlign: "center"
         }}>
-          <h2 style={{ fontSize: "1.2rem", color: "#fff", marginBottom: "0.3rem", letterSpacing: "0.15em", fontWeight: 400 }}>GET IN TOUCH</h2>
-          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.7rem", marginBottom: "2rem", letterSpacing: "0.1em" }}>Let&apos;s build something extraordinary.</p>
+          <h2 style={{ fontSize: "1.2rem", color: "#d4af37", marginBottom: "0.3rem", letterSpacing: "0.15em", fontWeight: 400 }}>GET IN TOUCH</h2>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.7rem", marginBottom: "2rem", letterSpacing: "0.1em" }}>Let&apos;s build something extraordinary.</p>
           
           <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
             <a href="mailto:contact@rj-industries.com" style={{ padding: "0.8rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", textDecoration: "none", letterSpacing: "0.1em", fontSize: "0.7rem", transition: "all 0.3s", borderRadius: "6px" }} data-hover>EMAIL</a>

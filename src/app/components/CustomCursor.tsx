@@ -121,12 +121,12 @@ export default function CustomCursor() {
         pts[i].y += (pts[i - 1].y - pts[i].y) * lerp;
       }
       
-      const baseColor = "rgba(255, 255, 255,";
-      const glowColor = "#ffffff";
+      const baseColor = "rgba(212, 175, 55,"; 
+      const glowColor = "rgba(212, 175, 55, 0.4)";
       
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 15;
       ctx.shadowColor = glowColor;
 
       for (let s = 0; s < numStrands; s++) {
@@ -217,9 +217,9 @@ export default function CustomCursor() {
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? "auto" : "none",
           transition: "all 0.5s cubic-bezier(0.19, 1, 0.22, 1)",
-          background: "radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, transparent 70%)",
-          border: menuOpen ? "1px solid rgba(0, 240, 255, 0.2)" : "1px solid transparent",
-          boxShadow: menuOpen ? "inset 0 0 40px rgba(0, 240, 255, 0.1)" : "none",
+          background: "radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%)",
+          border: menuOpen ? "1px solid rgba(212, 175, 55, 0.15)" : "1px solid transparent",
+          boxShadow: menuOpen ? "inset 0 0 40px rgba(212, 175, 55, 0.05)" : "none",
         }}>
           {MENU_ITEMS.map((item, i) => {
             const rad = (item.angle * Math.PI) / 180;
@@ -242,13 +242,13 @@ export default function CustomCursor() {
                   position: "absolute",
                   left: `calc(50% + ${x}px)`,
                   top: `calc(50% + ${y}px)`,
-                  transform: `translate(-50%, -50%) scale(${isSelected ? 1.15 : 1})`,
-                  background: isSelected ? "rgba(0, 240, 255, 0.2)" : "rgba(0, 0, 0, 0.6)",
-                  backdropFilter: "blur(10px)",
+                  transform: `translate(-50%, -50%) scale(${isSelected ? 1.05 : 1})`,
+                  background: isSelected ? "rgba(212, 175, 55, 0.15)" : "rgba(10, 10, 12, 0.7)",
+                  backdropFilter: "blur(12px)",
                   border: "1px solid",
-                  borderColor: isSelected ? "#00f0ff" : "rgba(255, 255, 255, 0.15)",
-                  color: isSelected ? "#fff" : "rgba(255,255,255,0.8)",
-                  boxShadow: isSelected ? "0 0 15px rgba(0, 240, 255, 0.5)" : "none",
+                  borderColor: isSelected ? "#d4af37" : "rgba(212, 175, 55, 0.15)",
+                  color: isSelected ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
+                  boxShadow: isSelected ? "0 0 20px rgba(212, 175, 55, 0.2)" : "none",
                   fontSize: "0.55rem",
                   letterSpacing: "0.2em",
                   padding: "10px 16px",
