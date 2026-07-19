@@ -1,29 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useProgress } from "@react-three/drei";
 import { AudioController } from "../utils/AudioController";
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
-  const [progress, setProgress] = useState(0);
+  const { progress: realProgress } = useProgress();
+  const [displayProgress, setDisplayProgress] = useState(0);
   const [phase, setPhase] = useState<"loading" | "reveal" | "done">("loading");
 
   useEffect(() => {
-    let raf: number;
-    let start: number | null = null;
-    const duration = 2800; 
-
-    const tick = (ts: number) => {
-      if (!start) start = ts;
-      const elapsed = ts - start;
-      const pct = Math.min(elapsed / duration, 1);
+    if (realProgress > displayProgress) {
+      setDisplayProgress(Math.floor(realProgress));
+    }
+    
+    if (realProgress >= 100 && phase === "loading") {
+      setDisplayProgress(100);
       
-      const eased = pct < 0.5 ? 4 * pct * pct * pct : 1 - Math.pow(-2 * pct + 2, 3) / 2;
-      setProgress(Math.round(eased * 100));
-
-      if (pct < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        // Auto-enter
+      // Short delay at 100% before revealing for satisfying UX
+      setTimeout(() => {
         try {
           const audio = AudioController.getInstance();
           audio.init();
@@ -34,12 +29,24 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           setPhase("done");
           setTimeout(onComplete, 500);
         }, 600);
-      }
-    };
+      }, 600);
+    }
+  }, [realProgress, displayProgress, phase, onComplete]);
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [onComplete]);
+  // UX Fallback: Force complete after 15 seconds just in case network hangs
+  useEffect(() => {
+    const fallback = setTimeout(() => {
+      if (phase === "loading") {
+        setDisplayProgress(100);
+        setPhase("reveal");
+        setTimeout(() => {
+          setPhase("done");
+          setTimeout(onComplete, 500);
+        }, 600);
+      }
+    }, 15000);
+    return () => clearTimeout(fallback);
+  }, [phase, onComplete]);
 
   if (phase === "done") return null;
 
@@ -67,7 +74,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           letterSpacing: "0.35em",
           textTransform: "uppercase",
           color: "#fff",
-          opacity: progress > 10 ? 1 : 0,
+          opacity: displayProgress > 10 ? 1 : 0,
           transition: "opacity 0.8s ease",
         }}
       >
@@ -90,14 +97,14 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
                 left: 0,
                 top: 0,
                 height: "100%",
-                width: `${progress}%`,
+                width: `${displayProgress}%`,
                 background: "#fff",
-                transition: "width 0.05s linear",
+                transition: "width 0.2s ease-out",
               }}
             />
           </div>
           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.55rem", letterSpacing: "0.3em", color: "rgba(255,255,255,0.35)" }}>
-            {progress}%
+            {displayProgress}%
           </div>
         </>
       )}
