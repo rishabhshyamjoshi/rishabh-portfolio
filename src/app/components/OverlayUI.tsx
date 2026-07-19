@@ -99,7 +99,7 @@ export default function OverlayUI() {
             color: "rgba(255,255,255,0.35)",
             marginBottom: "1.5rem",
             fontWeight: 400,
-            animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both",
+            animation: "fadeInUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both",
           }}>
             INNOVATION BEYOND LIMITS
           </div>
@@ -108,14 +108,16 @@ export default function OverlayUI() {
             alt="RJ Industries Logo" 
             width={700}
             height={200}
+            priority
             style={{
               width: "90%",
               maxWidth: "700px",
               height: "auto",
               objectFit: "contain",
-              filter: "drop-shadow(0 0 20px rgba(212,175,55,0.15))",
+              filter: "drop-shadow(0 0 20px rgba(136,170,255,0.3))",
               marginTop: "1rem",
-              animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both",
+              transform: "translateX(8%)",
+              animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both",
             }}
           />
         </div>
