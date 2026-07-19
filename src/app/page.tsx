@@ -39,8 +39,8 @@ export default function Home() {
       
       {!loaded && <Preloader onComplete={handlePreloaderComplete} />}
 
-      {/* R3F WebGL Scene */}
-      {loaded && <Scene />}
+      {/* R3F WebGL Scene (Always rendered so useProgress can track model loading) */}
+      <Scene />
       
       {/* HTML DOM Overlay */}
       {loaded && <OverlayUI />}
