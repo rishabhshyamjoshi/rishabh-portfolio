@@ -116,7 +116,7 @@ export default function OverlayUI() {
               objectFit: "contain",
               filter: "drop-shadow(0 0 20px rgba(136,170,255,0.3))",
               marginTop: "1rem",
-              transform: "translateX(8%)",
+              transform: "translateX(16%)",
               animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both",
             }}
           />
