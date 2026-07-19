@@ -43,15 +43,23 @@ export default function CustomCursor() {
       return;
     }
 
+    let accumulatedDelta = 0;
+    
     const handleWheel = (e: WheelEvent) => {
       e.stopPropagation();
       e.preventDefault();
       
-      setSelectedIndex(prev => {
-        if (e.deltaY > 0) return prev === null ? 0 : (prev + 1) % MENU_ITEMS.length;
-        if (e.deltaY < 0) return prev === null ? MENU_ITEMS.length - 1 : (prev - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
-        return prev;
-      });
+      accumulatedDelta += e.deltaY;
+      
+      // Threshold of 60px for a smooth, single step change
+      if (Math.abs(accumulatedDelta) > 60) {
+        setSelectedIndex(prev => {
+          if (accumulatedDelta > 0) return prev === null ? 0 : (prev + 1) % MENU_ITEMS.length;
+          if (accumulatedDelta < 0) return prev === null ? MENU_ITEMS.length - 1 : (prev - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
+          return prev;
+        });
+        accumulatedDelta = 0;
+      }
     };
     
     const handleClick = (e: MouseEvent) => {

@@ -103,6 +103,19 @@ export default function OverlayUI() {
           }}>
             INNOVATION BEYOND LIMITS
           </div>
+        </div>
+        
+        {/* Logo placed on the right side */}
+        <div style={{
+          position: "absolute",
+          right: "4%",
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: "25vw",
+          maxWidth: "400px",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}>
           <Image 
             src="/logo.png" 
             alt="RJ Industries Logo" 
@@ -110,12 +123,10 @@ export default function OverlayUI() {
             height={200}
             priority
             style={{
-              width: "90%",
-              maxWidth: "700px",
+              width: "100%",
               height: "auto",
               objectFit: "contain",
               filter: "drop-shadow(0 0 20px rgba(136,170,255,0.3))",
-              marginTop: "1rem",
               animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both",
             }}
           />
