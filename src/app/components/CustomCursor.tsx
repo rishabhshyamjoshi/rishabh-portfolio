@@ -224,8 +224,8 @@ export default function CustomCursor() {
                 }}
                 style={{
                   position: "absolute",
-                  left: \`calc(50% + \${x}px)\`,
-                  top: \`calc(50% + \${y}px)\`,
+                  left: `calc(50% + ${x}px)`,
+                  top: `calc(50% + ${y}px)`,
                   transform: "translate(-50%, -50%)",
                   background: "rgba(0, 0, 0, 0.6)",
                   backdropFilter: "blur(10px)",
@@ -238,7 +238,7 @@ export default function CustomCursor() {
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   opacity: menuOpen ? 1 : 0,
-                  transitionDelay: \`\${menuOpen ? i * 0.04 : 0}s\`,
+                  transitionDelay: `${menuOpen ? i * 0.04 : 0}s`,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "rgba(0, 240, 255, 0.2)";
