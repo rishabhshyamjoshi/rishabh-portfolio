@@ -24,6 +24,8 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
   const smoothPan = useRef(0);
 
   useEffect(() => {
+    let lastTouchY = 0;
+
     const handleWheel = (e: WheelEvent) => {
       if (activeProject) return; 
       targetScroll.current += e.deltaY * 0.001;
@@ -31,15 +33,33 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       if (targetScroll.current < 0) targetScroll.current = 0;
     };
     
+    const handleTouchStart = (e: TouchEvent) => {
+      lastTouchY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (activeProject) return;
+      const currentY = e.touches[0].clientY;
+      const deltaY = lastTouchY - currentY;
+      targetScroll.current += deltaY * 0.005; // Slightly faster multiplier for touch dragging
+      if (targetScroll.current > 4) targetScroll.current = 4;
+      if (targetScroll.current < 0) targetScroll.current = 0;
+      lastTouchY = currentY;
+    };
+
     const handleNav = (e: any) => {
       targetScroll.current = e.detail;
     };
     
     window.addEventListener("wheel", handleWheel);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
     window.addEventListener("navTo", handleNav as any);
     
     return () => {
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("navTo", handleNav as any);
     };
   }, [activeProject]);
@@ -51,7 +71,7 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     setScrollProgress(currentScroll.current);
 
     const aspect = window.innerWidth / window.innerHeight;
-    const baseFov = aspect < 1 ? 95 : 75; 
+    const baseFov = aspect < 1 ? 100 : 75; 
     // Dynamic FOV warp effect on movement (reduced by ~10%)
     const targetFov = baseFov + (scrollDelta * 54); 
     

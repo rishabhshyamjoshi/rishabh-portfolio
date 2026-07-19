@@ -119,7 +119,7 @@ export default function OverlayUI() {
             letterSpacing: "0.3em",
             color: "rgba(255,255,255,0.3)",
           }}>
-            SCROLL TO EXPLORE
+            SWIPE OR SCROLL
           </div>
           <div style={{
             width: "1px",
@@ -130,147 +130,158 @@ export default function OverlayUI() {
         </div>
       </div>
 
-      {/* ═══ TOP NAV BAR (EXPANDING CAPSULE DESIGN) ═══ */}
-      <div
-        className="nav-wrapper"
-        style={{
-          position: "absolute",
-          top: "clamp(1.5rem, 3vh, 2.5rem)",
-          left: "50%",
-          transform: "translateX(-50%)",
-          pointerEvents: "auto",
-        }}
-      >
-        <div
-          className="nav-capsule"
-          style={{
-            position: "relative",
-            height: "50px",
-            background: "rgba(255, 255, 255, 0.05)",
-            backdropFilter: "blur(20px)",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            borderRadius: "50px",
-            display: "flex",
-            alignItems: "center",
-            boxShadow: "0 0 20px rgba(255, 255, 255, 0.05)",
-            transition: "all 0.5s cubic-bezier(0.19, 1, 0.22, 1)",
-            overflow: "hidden",
-          }}
-        >
-          {/* Icon (Visible when collapsed) */}
-          <div className="nav-icon" style={{
-            minWidth: "50px",
-            height: "50px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "all 0.5s ease",
-            cursor: "pointer",
-            fontSize: "0.55rem",
-            letterSpacing: "0.15em",
-            fontWeight: "bold",
-            color: "rgba(255,255,255,0.9)"
-          }}>
-            MENU
-          </div>
-          
-          {/* Nav Content (Hidden until hover) */}
-          <div className="nav-content" style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1.5rem",
-            paddingRight: "2rem",
-            opacity: 0,
-            whiteSpace: "nowrap",
-            transform: "translateX(20px)",
-            transition: "all 0.4s ease",
-          }}>
+      {/* ═══ MISSION CONTROL CONSOLE ═══ */}
+      <div className="mission-console-wrapper">
+        <div className="mission-handle" />
+        
+        <div className="mission-content">
+          <div className="nav-grid">
             <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 0 }))} className="nav-link" data-hover>HOME</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 1 }))} className="nav-link" data-hover>PRODUCT</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 2 }))} className="nav-link" data-hover>TEAM</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 3 }))} className="nav-link" data-hover>ACADEMICS</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 4 }))} className="nav-link" data-hover>MANUFACTURING</button>
-
-            {/* Audio Toggle */}
-            <div style={{ position: "relative", display: "flex", alignItems: "center", flexDirection: "column", marginLeft: "1rem" }}>
-              <button 
-                onClick={handleAudioToggle}
-                title={audioMuted ? "Turn Audio ON" : "Turn Audio OFF"}
-                style={{ 
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "60px", 
-                  height: "20px", 
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                }} 
-                data-hover
-              >
-                <svg width="60" height="20" viewBox="0 0 80 20" style={{ overflow: "hidden" }}>
-                  <g style={{ animation: audioMuted ? "none" : "wave-scroll 2s linear infinite" }}>
-                    <path 
-                      d={audioMuted 
-                        ? "M 0 10 L 160 10" 
-                        : "M 0 10 Q 15 0, 30 10 T 60 10 T 90 10 T 120 10 T 150 10"} 
-                      fill="none" 
-                      stroke={audioMuted ? "rgba(255,255,255,0.3)" : "rgba(255, 255, 255, 0.9)"} 
-                      strokeWidth="1.5" 
-                      strokeLinecap="round"
-                      style={{ transition: "all 0.3s ease" }}
-                    />
-                    {!audioMuted && (
-                      <path 
-                        d="M 0 10 Q 15 20, 30 10 T 60 10 T 90 10 T 120 10 T 150 10" 
-                        fill="none" 
-                        stroke="rgba(255, 255, 255, 0.4)" 
-                        strokeWidth="1" 
-                        strokeLinecap="round"
-                      />
-                    )}
-                  </g>
-                </svg>
-              </button>
-              <div style={{
-                position: "absolute",
-                bottom: "50%",
-                marginBottom: "3px",
-                fontSize: "7px",
-                color: audioMuted ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.9)",
-                whiteSpace: "nowrap",
-                pointerEvents: "none",
-                letterSpacing: "0.2em",
-                transition: "all 0.3s ease",
-                textShadow: audioMuted ? "none" : "0 0 5px rgba(255,255,255,0.5)"
-              }}>
-                {audioMuted ? "CLICK TO PLAY" : "AUDIO SYNCED"}
-              </div>
-            </div>
-
             <button onClick={() => setShowContact(!showContact)} className="nav-link" data-hover>CONTACT</button>
           </div>
+
+          <div className="mission-audio-panel">
+            <button 
+              onClick={handleAudioToggle}
+              title={audioMuted ? "Turn Audio ON" : "Turn Audio OFF"}
+              style={{ 
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "60px", 
+                height: "20px", 
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+              }} 
+              data-hover
+            >
+              <svg width="60" height="20" viewBox="0 0 80 20" style={{ overflow: "hidden" }}>
+                <g style={{ animation: audioMuted ? "none" : "wave-scroll 2s linear infinite" }}>
+                  <path 
+                    d={audioMuted 
+                      ? "M 0 10 L 160 10" 
+                      : "M 0 10 Q 15 0, 30 10 T 60 10 T 90 10 T 120 10 T 150 10"} 
+                    fill="none" 
+                    stroke={audioMuted ? "rgba(255,255,255,0.3)" : "rgba(255, 255, 255, 0.9)"} 
+                    strokeWidth="1.5" 
+                    strokeLinecap="round"
+                    style={{ transition: "all 0.3s ease" }}
+                  />
+                  {!audioMuted && (
+                    <path 
+                      d="M 0 10 Q 15 20, 30 10 T 60 10 T 90 10 T 120 10 T 150 10" 
+                      fill="none" 
+                      stroke="rgba(255, 255, 255, 0.4)" 
+                      strokeWidth="1" 
+                      strokeLinecap="round"
+                    />
+                  )}
+                </g>
+              </svg>
+            </button>
+            <div style={{
+              fontSize: "7px",
+              color: audioMuted ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.9)",
+              whiteSpace: "nowrap",
+              pointerEvents: "none",
+              letterSpacing: "0.2em",
+              transition: "all 0.3s ease",
+              textAlign: "center",
+              marginTop: "5px",
+              textShadow: audioMuted ? "none" : "0 0 5px rgba(255,255,255,0.5)"
+            }}>
+              {audioMuted ? "CLICK TO PLAY" : "AUDIO SYNCED"}
+            </div>
+          </div>
         </div>
+      </div>
           
           <style dangerouslySetInnerHTML={{__html: `
-          .nav-capsule {
-            max-width: 50px;
-          }
-          .nav-wrapper:hover .nav-capsule {
+          .mission-console-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(75px);
+            width: 90vw;
             max-width: 900px;
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 1px solid rgba(255, 255, 255, 0.4) !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.2) !important;
+            height: 100px;
+            background: rgba(5, 8, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: none;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 100;
           }
-          .nav-wrapper:hover .nav-icon {
-            transform: scale(0.8);
+          .mission-console-wrapper:hover {
+            transform: translateX(-50%) translateY(0);
+            background: rgba(10, 15, 30, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8), inset 0 2px 20px rgba(0, 240, 255, 0.1);
+          }
+          .mission-handle {
+            width: 60px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin: 10px auto;
+            transition: all 0.3s ease;
+          }
+          .mission-console-wrapper:hover .mission-handle {
+            background: #00f0ff;
+            box-shadow: 0 0 10px #00f0ff;
+            width: 80px;
+          }
+          .mission-content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 3rem;
+            height: 100%;
             opacity: 0.3;
+            transition: opacity 0.5s ease;
           }
-          .nav-wrapper:hover .nav-content {
-            opacity: 1 !important;
-            transform: translateX(0) !important;
-            transition-delay: 0.1s !important;
+          .mission-console-wrapper:hover .mission-content {
+            opacity: 1;
+          }
+          .nav-grid {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+          }
+          .mission-audio-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+          @media (max-width: 768px) {
+            .mission-content {
+              padding: 0 1rem;
+              flex-direction: column;
+              justify-content: flex-start;
+              gap: 10px;
+            }
+            .mission-console-wrapper {
+              height: 150px;
+              transform: translateX(-50%) translateY(125px);
+            }
+            .nav-grid {
+              gap: 0.8rem;
+              justify-content: center;
+            }
           }
           .nav-link {
             cursor: pointer;
