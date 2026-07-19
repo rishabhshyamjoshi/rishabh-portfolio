@@ -99,6 +99,7 @@ export default function OverlayUI() {
             color: "rgba(255,255,255,0.35)",
             marginBottom: "1.5rem",
             fontWeight: 400,
+            animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both",
           }}>
             INNOVATION BEYOND LIMITS
           </div>
@@ -112,9 +113,10 @@ export default function OverlayUI() {
               maxWidth: "700px",
               height: "auto",
               objectFit: "contain",
-              filter: "drop-shadow(0 0 20px rgba(136,170,255,0.3))",
+              filter: "drop-shadow(0 0 20px rgba(212,175,55,0.15))",
               marginTop: "1rem",
               transform: "translateX(8%)",
+              animation: "fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both",
             }}
           />
         </div>
