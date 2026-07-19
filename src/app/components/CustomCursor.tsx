@@ -229,6 +229,27 @@ export default function CustomCursor() {
           border: menuOpen ? "1px solid rgba(212, 175, 55, 0.15)" : "1px solid transparent",
           boxShadow: menuOpen ? "inset 0 0 40px rgba(212, 175, 55, 0.05)" : "none",
         }}>
+          {/* Smooth Gliding Highlight Pill */}
+          {selectedIndex !== null && (
+            <div
+              style={{
+                position: "absolute",
+                left: `calc(50% + ${Math.cos((MENU_ITEMS[selectedIndex].angle * Math.PI) / 180) * 110}px)`,
+                top: `calc(50% + ${Math.sin((MENU_ITEMS[selectedIndex].angle * Math.PI) / 180) * 110}px)`,
+                transform: "translate(-50%, -50%) scale(1.05)",
+                width: "90px",
+                height: "36px",
+                background: "rgba(212, 175, 55, 0.15)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid #d4af37",
+                boxShadow: "0 0 20px rgba(212, 175, 55, 0.2)",
+                borderRadius: "30px",
+                transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                zIndex: 1,
+              }}
+            />
+          )}
+
           {MENU_ITEMS.map((item, i) => {
             const rad = (item.angle * Math.PI) / 180;
             const radius = 110; 
@@ -250,21 +271,26 @@ export default function CustomCursor() {
                   position: "absolute",
                   left: `calc(50% + ${x}px)`,
                   top: `calc(50% + ${y}px)`,
-                  transform: `translate(-50%, -50%) scale(${isSelected ? 1.05 : 1})`,
-                  background: isSelected ? "rgba(212, 175, 55, 0.15)" : "rgba(10, 10, 12, 0.7)",
-                  backdropFilter: "blur(12px)",
-                  border: "1px solid",
-                  borderColor: isSelected ? "#d4af37" : "rgba(212, 175, 55, 0.15)",
+                  transform: `translate(-50%, -50%)`,
+                  width: "90px",
+                  height: "36px",
+                  background: isSelected ? "transparent" : "rgba(10, 10, 12, 0.7)",
+                  backdropFilter: isSelected ? "none" : "blur(12px)",
+                  border: isSelected ? "1px solid transparent" : "1px solid rgba(212, 175, 55, 0.15)",
                   color: isSelected ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
-                  boxShadow: isSelected ? "0 0 20px rgba(212, 175, 55, 0.2)" : "none",
+                  boxShadow: "none",
                   fontSize: "0.55rem",
-                  letterSpacing: "0.2em",
-                  padding: "10px 16px",
+                  letterSpacing: "0.15em",
+                  padding: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   borderRadius: "30px",
                   cursor: "pointer",
                   transition: "all 0.3s cubic-bezier(0.19, 1, 0.22, 1)",
                   opacity: menuOpen ? 1 : 0,
                   transitionDelay: `${menuOpen ? i * 0.04 : 0}s`,
+                  zIndex: 2,
                 }}
               >
                 {item.label}
