@@ -2,14 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const MENU_ITEMS = [
+  { label: "HOME", angle: -90, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 0 })) },
+  { label: "PRODUCTS", angle: -30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 1 })) },
+  { label: "TEAM", angle: 30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 2 })) },
+  { label: "AUDIO", angle: 90, action: () => window.dispatchEvent(new CustomEvent("toggleAudio")) },
+  { label: "CONTACT", angle: 150, action: () => window.dispatchEvent(new CustomEvent("toggleContact")) },
+  { label: "ACADEMY", angle: 210, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 3 })) },
+];
+
 export default function CustomCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hudRef = useRef<HTMLDivElement>(null);
   const [hovering, setHovering] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const lockedPos = useRef({ x: 0, y: 0 });
   
-  // Optimized for faster loading: Reduced points and strands
   const numPoints = 40;
   const numStrands = 4;
   const mouse = useRef({ x: typeof window !== "undefined" ? window.innerWidth / 2 : 0, y: typeof window !== "undefined" ? window.innerHeight / 2 : 0 });
@@ -19,11 +28,47 @@ export default function CustomCursor() {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
       lockedPos.current = { x: e.clientX, y: e.clientY };
-      setMenuOpen(prev => !prev);
+      setMenuOpen(prev => {
+        if (!prev) setSelectedIndex(null);
+        return !prev;
+      });
     };
     window.addEventListener("contextmenu", handleContextMenu);
     return () => window.removeEventListener("contextmenu", handleContextMenu);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      setSelectedIndex(null);
+      return;
+    }
+
+    const handleWheel = (e: WheelEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      
+      setSelectedIndex(prev => {
+        if (e.deltaY > 0) return prev === null ? 0 : (prev + 1) % MENU_ITEMS.length;
+        if (e.deltaY < 0) return prev === null ? MENU_ITEMS.length - 1 : (prev - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
+        return prev;
+      });
+    };
+    
+    const handleClick = (e: MouseEvent) => {
+      if (selectedIndex !== null) {
+        MENU_ITEMS[selectedIndex].action();
+      }
+      setMenuOpen(false);
+    };
+
+    window.addEventListener("wheel", handleWheel, { capture: true, passive: false });
+    window.addEventListener("click", handleClick);
+    
+    return () => {
+      window.removeEventListener("wheel", handleWheel, { capture: true } as any);
+      window.removeEventListener("click", handleClick);
+    };
+  }, [menuOpen, selectedIndex]);
   
   if (points.current.length !== numPoints) {
     points.current = Array.from({ length: numPoints }, () => ({ x: mouse.current.x, y: mouse.current.y }));
@@ -71,12 +116,11 @@ export default function CustomCursor() {
       
       const lerp = hovering ? 0.4 : 0.3;
       for (let i = 1; i < numPoints; i++) {
-        if (!pts[i] || !pts[i-1]) continue; // Guard against hot-reload undefined points
+        if (!pts[i] || !pts[i-1]) continue;
         pts[i].x += (pts[i - 1].x - pts[i].x) * lerp;
         pts[i].y += (pts[i - 1].y - pts[i].y) * lerp;
       }
       
-      // STATIC WHITE COLOR (Normal)
       const baseColor = "rgba(255, 255, 255,";
       const glowColor = "#ffffff";
       
@@ -126,19 +170,13 @@ export default function CustomCursor() {
         ctx.stroke();
       }
 
-      // Update HUD Reticle position
       if (hudRef.current) {
-        if (!menuOpen) {
-          hudRef.current.style.transform = `translate(${mouse.current.x}px, ${mouse.current.y}px)`;
-        } else {
-          hudRef.current.style.transform = `translate(${lockedPos.current.x}px, ${lockedPos.current.y}px)`;
-        }
+        hudRef.current.style.transform = `translate(${lockedPos.current.x}px, ${lockedPos.current.y}px)`;
       }
       
       rafId = requestAnimationFrame(animate);
     };
     
-    // Initialize exactly in the center of the screen
     animate();
 
     return () => {
@@ -146,7 +184,7 @@ export default function CustomCursor() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(rafId);
     };
-  }, [hovering]);
+  }, [hovering, menuOpen]);
 
   return (
     <>
@@ -171,23 +209,6 @@ export default function CustomCursor() {
           justifyContent: "center",
         }}
       >
-        {/* The Central Reticle Dot */}
-        <div style={{
-          position: "absolute",
-          width: "12px", height: "12px",
-          background: menuOpen ? "#00f0ff" : "rgba(255,255,255,0.8)",
-          borderRadius: "50%",
-          boxShadow: menuOpen ? "0 0 20px #00f0ff" : "0 0 10px rgba(255,255,255,0.5)",
-          transform: "translate(-50%, -50%)",
-          transition: "all 0.3s ease",
-          cursor: "pointer",
-          pointerEvents: "auto",
-        }} onClick={() => {
-          lockedPos.current = { x: mouse.current.x, y: mouse.current.y };
-          setMenuOpen(!menuOpen);
-        }} />
-
-        {/* The Radial Menu Container */}
         <div style={{
           position: "absolute",
           width: "300px", height: "300px",
@@ -200,81 +221,48 @@ export default function CustomCursor() {
           border: menuOpen ? "1px solid rgba(0, 240, 255, 0.2)" : "1px solid transparent",
           boxShadow: menuOpen ? "inset 0 0 40px rgba(0, 240, 255, 0.1)" : "none",
         }}>
-          {/* Radial Items */}
-          {[
-            { label: "HOME", angle: -90, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 0 })) },
-            { label: "PRODUCTS", angle: -30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 1 })) },
-            { label: "TEAM", angle: 30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 2 })) },
-            { label: "AUDIO", angle: 90, action: () => window.dispatchEvent(new CustomEvent("toggleAudio")) },
-            { label: "CONTACT", angle: 150, action: () => window.dispatchEvent(new CustomEvent("toggleContact")) },
-            { label: "ACADEMY", angle: 210, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 3 })) },
-          ].map((item, i) => {
+          {MENU_ITEMS.map((item, i) => {
             const rad = (item.angle * Math.PI) / 180;
-            const radius = 110; // Distance from center
+            const radius = 110; 
             const x = Math.cos(rad) * radius;
             const y = Math.sin(rad) * radius;
+            const isSelected = selectedIndex === i;
 
             return (
               <button
                 key={i}
                 className="radial-btn"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   item.action();
                   setMenuOpen(false);
                 }}
+                onMouseEnter={() => setSelectedIndex(i)}
                 style={{
                   position: "absolute",
                   left: `calc(50% + ${x}px)`,
                   top: `calc(50% + ${y}px)`,
-                  transform: "translate(-50%, -50%)",
-                  background: "rgba(0, 0, 0, 0.6)",
+                  transform: `translate(-50%, -50%) scale(${isSelected ? 1.15 : 1})`,
+                  background: isSelected ? "rgba(0, 240, 255, 0.2)" : "rgba(0, 0, 0, 0.6)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "rgba(255,255,255,0.8)",
+                  border: "1px solid",
+                  borderColor: isSelected ? "#00f0ff" : "rgba(255, 255, 255, 0.15)",
+                  color: isSelected ? "#fff" : "rgba(255,255,255,0.8)",
+                  boxShadow: isSelected ? "0 0 15px rgba(0, 240, 255, 0.5)" : "none",
                   fontSize: "0.55rem",
                   letterSpacing: "0.2em",
                   padding: "10px 16px",
                   borderRadius: "30px",
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
+                  transition: "all 0.3s cubic-bezier(0.19, 1, 0.22, 1)",
                   opacity: menuOpen ? 1 : 0,
                   transitionDelay: `${menuOpen ? i * 0.04 : 0}s`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(0, 240, 255, 0.2)";
-                  e.currentTarget.style.color = "#fff";
-                  e.currentTarget.style.borderColor = "#00f0ff";
-                  e.currentTarget.style.boxShadow = "0 0 15px rgba(0, 240, 255, 0.5)";
-                  e.currentTarget.style.transform = "translate(-50%, -50%) scale(1.1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(0, 0, 0, 0.6)";
-                  e.currentTarget.style.color = "rgba(255,255,255,0.8)";
-                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "translate(-50%, -50%) scale(1)";
                 }}
               >
                 {item.label}
               </button>
             );
           })}
-        </div>
-
-        {/* Small hint text that fades out when opened */}
-        <div style={{
-          position: "absolute",
-          top: "20px",
-          color: "rgba(255,255,255,0.3)",
-          fontSize: "0.45rem",
-          letterSpacing: "0.3em",
-          whiteSpace: "nowrap",
-          transform: "translateX(-50%)",
-          opacity: menuOpen ? 0 : 1,
-          transition: "opacity 0.3s ease",
-          pointerEvents: "none"
-        }}>
-          RIGHT-CLICK MENU
         </div>
       </div>
     </>
