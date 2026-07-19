@@ -290,7 +290,7 @@ function MarsPlanet({ scrollProgress, position }: { scrollProgress: number, posi
   
   const [clickCount, setClickCount] = useState(0);
 
-  const { scene } = useGLTF("/mars_out.gltf");
+  const { scene } = useGLTF("/mars_out.glb");
   
   const clonedScene = useMemo(() => {
     const clone = scene.clone(true);
