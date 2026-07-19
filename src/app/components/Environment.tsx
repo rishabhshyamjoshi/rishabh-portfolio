@@ -81,8 +81,8 @@ export default function Environment() {
             float d = length(gl_PointCoord - vec2(0.5));
             if (d > 0.5) discard;
             float alpha = smoothstep(0.5, 0.0, d) * vAlpha;
-            // Subtle warm white dust
-            gl_FragColor = vec4(0.95, 0.92, 0.88, alpha);
+            // Champagne Gold particles
+            gl_FragColor = vec4(0.83, 0.68, 0.21, alpha);
           }
         `}
       />
