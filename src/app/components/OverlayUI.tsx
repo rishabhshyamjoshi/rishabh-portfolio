@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { AudioController } from "../utils/AudioController";
 
 export default function OverlayUI() {
@@ -72,7 +73,7 @@ export default function OverlayUI() {
           justifyContent: "center",
           opacity: heroOpacity,
           transition: "opacity 0.1s ease",
-          pointerEvents: heroOpacity > 0.1 ? "auto" : "none",
+          pointerEvents: "none",
         }}
       >
         {/* Main title */}
@@ -86,9 +87,11 @@ export default function OverlayUI() {
           }}>
             INNOVATION BEYOND LIMITS
           </div>
-          <img 
+          <Image 
             src="/logo.png" 
             alt="RJ Industries Logo" 
+            width={700}
+            height={200}
             style={{
               width: "90%",
               maxWidth: "700px",
@@ -127,86 +130,177 @@ export default function OverlayUI() {
         </div>
       </div>
 
-      {/* ═══ TOP NAV BAR ═══ */}
+      {/* ═══ TOP NAV BAR (EXPANDING CAPSULE DESIGN) ═══ */}
       <div
+        className="nav-wrapper"
         style={{
           position: "absolute",
           top: "clamp(1.5rem, 3vh, 2.5rem)",
-          right: "clamp(1.5rem, 3vw, 3rem)",
+          left: "50%",
+          transform: "translateX(-50%)",
           pointerEvents: "auto",
         }}
       >
         <div
+          className="nav-capsule"
           style={{
-            fontSize: "0.55rem",
-            padding: "0.7rem 1.2rem",
-            background: "rgba(255, 255, 255, 0.04)",
-            backdropFilter: "blur(12px)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            position: "relative",
+            height: "50px",
+            background: "rgba(255, 255, 255, 0.05)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            borderRadius: "50px",
             display: "flex",
             alignItems: "center",
-            gap: "1.2rem",
-            letterSpacing: "0.15em",
-            borderRadius: "100px",
-            transition: "all 0.3s ease",
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.05)",
+            transition: "all 0.5s cubic-bezier(0.19, 1, 0.22, 1)",
+            overflow: "hidden",
           }}
         >
-          <a href="#work" style={{ cursor: "pointer", color: "rgba(255,255,255,0.6)", textDecoration: "none", transition: "color 0.3s" }} data-hover>WORK</a>
+          {/* Icon (Visible when collapsed) */}
+          <div className="nav-icon" style={{
+            minWidth: "50px",
+            height: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all 0.5s ease",
+            cursor: "pointer",
+            fontSize: "0.55rem",
+            letterSpacing: "0.15em",
+            fontWeight: "bold",
+            color: "rgba(255,255,255,0.9)"
+          }}>
+            MENU
+          </div>
           
-          {/* Audio Toggle */}
-          <button 
-            onClick={handleAudioToggle}
-            title={audioMuted ? "Turn Audio ON" : "Turn Audio OFF"}
-            style={{ 
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "36px", 
-              height: "16px", 
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-            }} 
-            data-hover
-          >
-            <svg width="36" height="12" viewBox="0 0 40 12" style={{ overflow: "hidden" }}>
-              <g style={{ animation: audioMuted ? "none" : "wave-scroll 1.2s linear infinite" }}>
-                <path 
-                  d={audioMuted 
-                    ? "M 0 6 L 60 6" 
-                    : "M 0 6 Q 5 0, 10 6 T 20 6 T 30 6 T 40 6 T 50 6 T 60 6"} 
-                  fill="none" 
-                  stroke={audioMuted ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.5)"} 
-                  strokeWidth="1.5" 
-                  style={{ transition: "all 0.3s ease" }}
-                />
-              </g>
-            </svg>
-            <style dangerouslySetInnerHTML={{__html: `
-              @keyframes wave-scroll {
-                from { transform: translateX(0); }
-                to { transform: translateX(-20px); }
-              }
-              @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-              }
-              @keyframes scrollPulse {
-                0%, 100% { opacity: 0.4; transform: scaleY(1); }
-                50% { opacity: 0.8; transform: scaleY(1.2); }
-              }
-            `}} />
-          </button>
-          
-          <button 
-            onClick={() => setShowContact(!showContact)} 
-            style={{ cursor: "pointer", color: "rgba(255,255,255,0.6)", background: "none", border: "none", fontSize: "inherit", letterSpacing: "inherit", fontFamily: "inherit", padding: 0, transition: "color 0.3s" }} 
-            data-hover
-          >
-            CONTACT
-          </button>
+          {/* Nav Content (Hidden until hover) */}
+          <div className="nav-content" style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1.5rem",
+            paddingRight: "2rem",
+            opacity: 0,
+            whiteSpace: "nowrap",
+            transform: "translateX(20px)",
+            transition: "all 0.4s ease",
+          }}>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 0 }))} className="nav-link" data-hover>HOME</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 1 }))} className="nav-link" data-hover>PRODUCT</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 2 }))} className="nav-link" data-hover>TEAM</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 3 }))} className="nav-link" data-hover>ACADEMICS</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("navTo", { detail: 4 }))} className="nav-link" data-hover>MANUFACTURING</button>
+
+            {/* Audio Toggle */}
+            <div style={{ position: "relative", display: "flex", alignItems: "center", flexDirection: "column", marginLeft: "1rem" }}>
+              <button 
+                onClick={handleAudioToggle}
+                title={audioMuted ? "Turn Audio ON" : "Turn Audio OFF"}
+                style={{ 
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "60px", 
+                  height: "20px", 
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                }} 
+                data-hover
+              >
+                <svg width="60" height="20" viewBox="0 0 80 20" style={{ overflow: "hidden" }}>
+                  <g style={{ animation: audioMuted ? "none" : "wave-scroll 2s linear infinite" }}>
+                    <path 
+                      d={audioMuted 
+                        ? "M 0 10 L 160 10" 
+                        : "M 0 10 Q 15 0, 30 10 T 60 10 T 90 10 T 120 10 T 150 10"} 
+                      fill="none" 
+                      stroke={audioMuted ? "rgba(255,255,255,0.3)" : "rgba(255, 255, 255, 0.9)"} 
+                      strokeWidth="1.5" 
+                      strokeLinecap="round"
+                      style={{ transition: "all 0.3s ease" }}
+                    />
+                    {!audioMuted && (
+                      <path 
+                        d="M 0 10 Q 15 20, 30 10 T 60 10 T 90 10 T 120 10 T 150 10" 
+                        fill="none" 
+                        stroke="rgba(255, 255, 255, 0.4)" 
+                        strokeWidth="1" 
+                        strokeLinecap="round"
+                      />
+                    )}
+                  </g>
+                </svg>
+              </button>
+              <div style={{
+                position: "absolute",
+                bottom: "50%",
+                marginBottom: "3px",
+                fontSize: "7px",
+                color: audioMuted ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.9)",
+                whiteSpace: "nowrap",
+                pointerEvents: "none",
+                letterSpacing: "0.2em",
+                transition: "all 0.3s ease",
+                textShadow: audioMuted ? "none" : "0 0 5px rgba(255,255,255,0.5)"
+              }}>
+                {audioMuted ? "CLICK TO PLAY" : "AUDIO SYNCED"}
+              </div>
+            </div>
+
+            <button onClick={() => setShowContact(!showContact)} className="nav-link" data-hover>CONTACT</button>
+          </div>
         </div>
+          
+          <style dangerouslySetInnerHTML={{__html: `
+          .nav-capsule {
+            max-width: 50px;
+          }
+          .nav-wrapper:hover .nav-capsule {
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.2) !important;
+          }
+          .nav-wrapper:hover .nav-icon {
+            transform: scale(0.8);
+            opacity: 0.3;
+          }
+          .nav-wrapper:hover .nav-content {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+            transition-delay: 0.1s !important;
+          }
+          .nav-link {
+            cursor: pointer;
+            color: rgba(255,255,255,0.7);
+            background: none;
+            border: none;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            font-family: inherit;
+            padding: 0;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+          }
+          .nav-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+          }
+            @keyframes wave-scroll {
+              from { transform: translateX(0); }
+              to { transform: translateX(-60px); }
+            }
+            @keyframes fadeInUp {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes scrollPulse {
+              0%, 100% { opacity: 0.4; transform: scaleY(1); }
+              50% { opacity: 0.8; transform: scaleY(1.2); }
+            }
+          `}} />
       </div>
       
       {/* ═══ CONTACT MODAL ═══ */}

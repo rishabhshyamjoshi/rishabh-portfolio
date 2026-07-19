@@ -6,71 +6,40 @@ import { motion } from "framer-motion";
 
 export default function WorkContactCapsule() {
   return (
-    <div className="flex items-center justify-between px-6 py-2 rounded-full border border-white/20 bg-black/60 backdrop-blur-md text-[0.65rem] tracking-widest font-[var(--font-mono)] text-white/70 shadow-[0_0_20px_rgba(255,255,255,0.05)] w-[300px] max-w-full interactive hover:border-white/40 transition-colors duration-500">
+    <div className="relative flex items-center justify-between w-[340px] max-w-full font-[var(--font-mono)] text-[0.65rem] tracking-[0.3em] interactive group">
       
-      {/* WORK Link */}
-      <Link href="/" className="hover:text-white transition-colors uppercase tracking-[0.2em] relative group py-2">
-        <span className="relative z-10">WORK</span>
-        <div className="absolute -inset-2 bg-white/5 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-      </Link>
+      {/* High-tech HUD Brackets */}
+      <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/30 group-hover:border-cyan-400/70 transition-colors duration-500" />
+      <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-white/30 group-hover:border-cyan-400/70 transition-colors duration-500" />
+      <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-white/30 group-hover:border-cyan-400/70 transition-colors duration-500" />
+      <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/30 group-hover:border-cyan-400/70 transition-colors duration-500" />
 
-      {/* Animated Wave Separator */}
-      <div className="flex-1 flex justify-center items-center pointer-events-none px-4">
-        <svg
-          width="48"
-          height="12"
-          viewBox="0 0 48 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="opacity-70"
-        >
-          <motion.path
-            d="M0 6 C 12 6, 12 0, 24 6 C 36 12, 36 6, 48 6"
-            stroke="url(#wave-grad)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            initial={{ strokeDasharray: "100 100", strokeDashoffset: 100 }}
-            animate={{ strokeDashoffset: 0 }}
-            transition={{
-              repeat: Infinity,
-              duration: 3,
-              ease: "linear",
-            }}
+      {/* Main Container */}
+      <div className="w-full flex items-center justify-between px-6 py-2.5 bg-black/40 backdrop-blur-md border-y border-white/5 group-hover:bg-black/60 transition-all duration-500">
+        
+        {/* WORK Link */}
+        <Link href="/" className="relative text-white/60 hover:text-white transition-colors duration-300 uppercase flex items-center gap-3">
+          <span className="w-1.5 h-1.5 bg-cyan-500/70 shadow-[0_0_8px_rgba(0,240,255,0.6)] animate-pulse" />
+          WORK
+        </Link>
+
+        {/* Dynamic Center Element (Laser Scanner) */}
+        <div className="flex-1 flex justify-center items-center pointer-events-none px-4 relative overflow-hidden">
+          <div className="w-full h-[1px] bg-white/10" />
+          <motion.div 
+            className="absolute top-1/2 -translate-y-1/2 left-0 w-16 h-[1.5px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_10px_rgba(0,240,255,1)]"
+            animate={{ left: ["-20%", "120%"] }}
+            transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
           />
-          <motion.path
-            d="M0 6 C 12 12, 12 6, 24 6 C 36 0, 36 6, 48 6"
-            stroke="url(#wave-grad-2)"
-            strokeWidth="1"
-            strokeLinecap="round"
-            initial={{ strokeDasharray: "100 100", strokeDashoffset: -100 }}
-            animate={{ strokeDashoffset: 0 }}
-            transition={{
-              repeat: Infinity,
-              duration: 4,
-              ease: "linear",
-            }}
-          />
-          <defs>
-            <linearGradient id="wave-grad" x1="0" y1="0" x2="48" y2="0" gradientUnits="userSpaceOnUse">
-              <stop stopColor="rgba(255,255,255,0)" />
-              <stop offset="0.5" stopColor="rgba(255,255,255,1)" />
-              <stop offset="1" stopColor="rgba(255,255,255,0)" />
-            </linearGradient>
-            <linearGradient id="wave-grad-2" x1="0" y1="0" x2="48" y2="0" gradientUnits="userSpaceOnUse">
-              <stop stopColor="rgba(0,240,255,0)" />
-              <stop offset="0.5" stopColor="rgba(0,240,255,0.6)" />
-              <stop offset="1" stopColor="rgba(0,240,255,0)" />
-            </linearGradient>
-          </defs>
-        </svg>
+        </div>
+
+        {/* CONTACT Link */}
+        <a href="mailto:hello@rj.industries" className="relative text-white/60 hover:text-white transition-colors duration-300 uppercase flex items-center gap-3">
+          CONTACT
+          <span className="w-1.5 h-1.5 bg-rose-500/70 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse" />
+        </a>
+        
       </div>
-
-      {/* CONTACT Link */}
-      <a href="mailto:hello@rj.industries" className="hover:text-white transition-colors uppercase tracking-[0.2em] relative group py-2">
-        <span className="relative z-10">CONTACT</span>
-        <div className="absolute -inset-2 bg-white/5 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-      </a>
-      
     </div>
   );
 }

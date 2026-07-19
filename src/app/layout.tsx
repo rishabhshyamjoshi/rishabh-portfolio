@@ -18,19 +18,18 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Active Theory · Creative Digital Experiences",
-  description: "Founded in 2012. We blend story, art & technology as an in-house team of passionate makers. Our industry-leading web toolset consistently delivers award-winning work through quality & performance.",
-  openGraph: {
-    title: "Active Theory · Creative Digital Experiences",
-    description: "Founded in 2012. We blend story, art & technology as an in-house team of passionate makers.",
-    type: "website",
-  },
+  title: "RJ INDUSTRIES | Next-Gen Portfolio",
+  description: "Innovation beyond limits. Portfolio of Rishabh Joshi.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${orbitron.variable} ${spaceGrotesk.variable}`}>
-      <body>
+      <body className="bg-black text-white overflow-hidden">
         <CustomCursor />
         {children}
       </body>

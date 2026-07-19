@@ -68,11 +68,11 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     if (activeProject) {
       muffleIntensity = 0.85;
     } else {
-      // Intense muffling effect while scrolling
-      muffleIntensity = Math.min(scrollDelta * 10, 1.0);
+      // Muffling effect while scrolling (reduced 25%)
+      muffleIntensity = Math.min(scrollDelta * 7.5, 0.75);
       
-      // Intense target pan (full ear to ear)
-      const targetPan = Math.max(-1.0, Math.min(1.0, rawScrollDelta * 5)); 
+      // Target pan (reduced 25%)
+      const targetPan = Math.max(-0.75, Math.min(0.75, rawScrollDelta * 3.75)); 
       // Lerp for smooth effect
       smoothPan.current = THREE.MathUtils.lerp(smoothPan.current, targetPan, 0.05);
     }
@@ -272,7 +272,6 @@ export default function Scene() {
         
         <ProjectScreens scrollProgress={scrollProgress} onProjectClick={setActiveProject} />
         <TeamScreens scrollProgress={scrollProgress} onMemberClick={setActiveProject} />
-        
         <MovementFX scrollProgress={scrollProgress} />
         
         <EffectComposer multisampling={0}>

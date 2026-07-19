@@ -3,7 +3,7 @@
 import { useRef, useMemo, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { Float, useGLTF } from "@react-three/drei";
+import { Float, useGLTF, Html } from "@react-three/drei";
 import { AudioController } from "../utils/AudioController";
 
 // ════════════════════════════════════════════════════════════════
@@ -36,27 +36,42 @@ function FragmentMesh({ frag, index, scrollProgress }: { frag: any, index: numbe
       const data = audio.getFrequencyData();
       if (data.length > 0) {
         const bassAvg = (data[0] + data[1] + data[2]) / 3;
-        audioPulse = (bassAvg / 255) * 0.15;
+        // Substantially increased base audio pulse for stronger reaction
+        audioPulse = (bassAvg / 255) * 0.65;
       }
     }
     
-    // Smooth out the pulse so it doesn't jitter
-    smoothPulse.current = THREE.MathUtils.lerp(smoothPulse.current, audioPulse, 0.12);
+    // Smooth out the pulse so it doesn't jitter, but keep it snappy
+    smoothPulse.current = THREE.MathUtils.lerp(smoothPulse.current, audioPulse, 0.25);
     const sp = smoothPulse.current;
 
-    const expansion = Math.sin(scrollProgress * Math.PI) * 5 + (sp * 3.0);
+    // Subtle expansion bounce (0.5x)
+    const expansion = Math.sin(scrollProgress * Math.PI) * 5 + (sp * 0.5);
     targetPos.current.copy(frag.center).multiplyScalar(1 + expansion);
-    meshRef.current.position.lerp(targetPos.current, 0.06);
+    meshRef.current.position.lerp(targetPos.current, 0.15); // Snappier movement
     
-    // Subtle scale pulse on beat
-    const scalePulse = 1.0 + sp * 0.4;
-    meshRef.current.scale.setScalar(THREE.MathUtils.lerp(meshRef.current.scale.x, scalePulse, 0.1));
+    // Subtle scale pulse on beat (0.5x)
+    const scalePulse = 1.0 + sp * 0.5;
+    meshRef.current.scale.setScalar(THREE.MathUtils.lerp(meshRef.current.scale.x, scalePulse, 0.2));
 
-    // Color shifts slightly with beat — subtle blue-white glow
-    materialRef.current.color.lerpColors(colorBase, colorPulse, sp * 2);
-    materialRef.current.emissive.lerpColors(emissiveBase, emissivePulse, sp * 2.5);
-    materialRef.current.emissiveIntensity = 0.5 + sp * 3.0;
-    materialRef.current.opacity = 0.5 + sp * 0.3;
+    // Invisible during the entire Projects section (1 to 3), visible at Home (0) and Team (4)
+    let fadeOut = 1.0;
+    if (scrollProgress > 0.2 && scrollProgress < 3.8) {
+      if (scrollProgress < 0.8) {
+        fadeOut = 1.0 - (scrollProgress - 0.2) / 0.6; // Fade out leaving Home
+      } else if (scrollProgress > 3.2) {
+        fadeOut = (scrollProgress - 3.2) / 0.6; // Fade in entering Team
+      } else {
+        fadeOut = 0; // Completely invisible for projects
+      }
+    }
+    meshRef.current.visible = fadeOut > 0.01; // Completely disable rendering when faded
+
+    // Color shifts slightly with beat — intense blue-white glow
+    materialRef.current.color.lerpColors(colorBase, colorPulse, sp * 3);
+    materialRef.current.emissive.lerpColors(emissiveBase, emissivePulse, sp * 4.0);
+    materialRef.current.emissiveIntensity = 0.5 + sp * 0.5; // Subtle intensity spike on beat (0.5x)
+    materialRef.current.opacity = (0.5 + sp * 0.5) * fadeOut;
   });
 
   return (
@@ -72,6 +87,103 @@ function FragmentMesh({ frag, index, scrollProgress }: { frag: any, index: numbe
         side={THREE.DoubleSide}
       />
     </mesh>
+  );
+}
+
+function Satellite() {
+  const satRef = useRef<THREE.Group>(null);
+  const lightRef = useRef<THREE.PointLight>(null);
+  const [hovered, setHovered] = useState(false);
+  
+  const { scene } = useGLTF("/debris.glb");
+  const debrisScene = useMemo(() => {
+    const clone = scene.clone(true);
+    // Optional: tweak materials if needed
+    clone.traverse((child: any) => {
+      if (child.isMesh && child.material) {
+        child.material = child.material.clone();
+        child.material.metalness = 0.8;
+        child.material.roughness = 0.3;
+        child.material.needsUpdate = true;
+      }
+    });
+    return clone;
+  }, [scene]);
+  
+  useFrame((state) => {
+    if (!satRef.current) return;
+    const t = state.clock.getElapsedTime();
+    const radius = 3.2; // Orbit slightly outside the wireframe
+    const speed = 0.6;
+    
+    // Orbital path
+    satRef.current.position.x = Math.sin(t * speed) * radius;
+    satRef.current.position.z = Math.cos(t * speed) * radius;
+    satRef.current.position.y = Math.sin(t * speed * 0.4) * 1.2; 
+    
+    // Add some spin to the debris itself so it tumbles
+    satRef.current.rotation.x = t * 0.2;
+    satRef.current.rotation.y = t * 0.5;
+    
+    // Blink red beacon light
+    if (lightRef.current) {
+       lightRef.current.intensity = Math.sin(t * 8) > 0 ? 2 : 0;
+    }
+  });
+
+  return (
+    <group 
+      ref={satRef}
+      onClick={(e) => {
+        e.stopPropagation();
+        window.open('/manufacturing', '_blank');
+      }}
+      onPointerOver={(e) => { 
+        e.stopPropagation(); 
+        document.body.style.cursor = 'pointer'; 
+        setHovered(true);
+      }}
+      onPointerOut={() => { 
+        document.body.style.cursor = 'auto'; 
+        setHovered(false);
+      }}
+    >
+      <primitive object={debrisScene} scale={0.1} />
+      
+      {/* 3D UI Tracking Label */}
+      <Html
+        position={[0, 0.4, 0]}
+        center
+        distanceFactor={10}
+        style={{ pointerEvents: "none" }}
+      >
+        <div style={{
+          padding: "4px 8px",
+          background: "rgba(0, 0, 0, 0.7)",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
+          borderRadius: "4px",
+          color: "white",
+          fontSize: "10px",
+          letterSpacing: "0.2em",
+          whiteSpace: "nowrap",
+          backdropFilter: "blur(4px)",
+          textTransform: "uppercase",
+          opacity: hovered ? 1 : 0.4,
+          transform: hovered ? "scale(1.1)" : "scale(1)",
+          transition: "all 0.3s ease",
+          boxShadow: hovered ? "0 0 10px rgba(255,255,255,0.2)" : "none"
+        }}>
+          {hovered ? "EXPLORE MANUFACTURING" : "SATELLITE INTEL"}
+        </div>
+      </Html>
+
+      {/* Beacon Light attached to the debris */}
+      <pointLight ref={lightRef} position={[0.3, 0.3, 0]} color="#ff0000" distance={3} decay={2} />
+      <mesh position={[0.3, 0.3, 0]}>
+        <sphereGeometry args={[0.015]} />
+        <meshBasicMaterial color="#ff0000" />
+      </mesh>
+    </group>
   );
 }
 
@@ -158,6 +270,7 @@ function EarthPlanet({ scrollProgress, position }: { scrollProgress: number, pos
       <pointLight ref={glowRef} intensity={4} color="#88aaff" distance={20} decay={2} />
       <pointLight intensity={2} color="#ffffff" distance={12} decay={2} />
       <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
+        <Satellite />
         <group ref={groupRef}>
           <primitive ref={innerCoreRef} object={clonedScene} scale={1.5} />
           {fragments.map((frag, i) => (
