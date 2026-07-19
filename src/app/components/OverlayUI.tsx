@@ -312,7 +312,6 @@ export default function OverlayUI() {
               50% { opacity: 0.8; transform: scaleY(1.2); }
             }
           `}} />
-      </div>
       
       {/* ═══ CONTACT MODAL ═══ */}
       <div 
