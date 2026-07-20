@@ -27,7 +27,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         setPhase("reveal");
         setTimeout(() => {
           setPhase("done");
-          window.dispatchEvent(new CustomEvent("preloaderComplete"));
           setTimeout(onComplete, 500);
         }, 600);
       }, 600);
@@ -42,7 +41,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         setPhase("reveal");
         setTimeout(() => {
           setPhase("done");
-          window.dispatchEvent(new CustomEvent("preloaderComplete"));
           setTimeout(onComplete, 500);
         }, 600);
       }

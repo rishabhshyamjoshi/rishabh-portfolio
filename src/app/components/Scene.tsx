@@ -12,9 +12,8 @@ import ProjectScreens from "./ProjectScreens";
 import TeamScreens from "./TeamScreens";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
-import LogoRing from "./LogoRing";
 
-function CameraController({ setScrollProgress, activeProject, hasEntered }: { setScrollProgress: (v: number) => void, activeProject: any, hasEntered: boolean }) {
+function CameraController({ setScrollProgress, activeProject }: { setScrollProgress: (v: number) => void, activeProject: any }) {
   const { camera, pointer } = useThree();
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
@@ -28,7 +27,7 @@ function CameraController({ setScrollProgress, activeProject, hasEntered }: { se
     let lastTouchY = 0;
 
     const handleWheel = (e: WheelEvent) => {
-      if (activeProject || !hasEntered) return; 
+      if (activeProject) return; 
       targetScroll.current += e.deltaY * 0.001;
       if (targetScroll.current > 4) targetScroll.current = 4;
       if (targetScroll.current < 0) targetScroll.current = 0;
@@ -39,7 +38,7 @@ function CameraController({ setScrollProgress, activeProject, hasEntered }: { se
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (activeProject || !hasEntered) return;
+      if (activeProject) return;
       const currentY = e.touches[0].clientY;
       const deltaY = lastTouchY - currentY;
       targetScroll.current += deltaY * 0.005; // Slightly faster multiplier for touch dragging
@@ -66,13 +65,6 @@ function CameraController({ setScrollProgress, activeProject, hasEntered }: { se
   }, [activeProject]);
 
   useFrame((state) => {
-    if (!hasEntered) {
-      // Cinematic zoomed-in state while loading
-      camera.position.lerp(new THREE.Vector3(0, 0, 1.8), 0.05);
-      camera.lookAt(0, 0, 0);
-      return;
-    }
-
     const rawScrollDelta = targetScroll.current - currentScroll.current;
     const scrollDelta = Math.abs(rawScrollDelta);
     currentScroll.current += rawScrollDelta * 0.02;
@@ -266,7 +258,7 @@ function MovementFX({ scrollProgress }: { scrollProgress: number }) {
   );
 }
 
-export default function Scene({ hasEntered = true }: { hasEntered?: boolean }) {
+export default function Scene() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeProject, setActiveProject] = useState<any>(null);
 
@@ -289,13 +281,12 @@ export default function Scene({ hasEntered = true }: { hasEntered?: boolean }) {
         <directionalLight position={[-10, 5, -10]} intensity={1.2} color="#ffccaa" />
         <directionalLight position={[0, -10, 5]} intensity={0.8} color="#6688cc" />
         
-        <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} hasEntered={hasEntered} />
+        <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
         
         <Stars radius={120} depth={60} count={500} factor={3} saturation={0} fade speed={0.5} />
         <Environment />
         
         <Suspense fallback={null}>
-          <LogoRing />
           <SolarSystem scrollProgress={scrollProgress} />
         </Suspense>
         
