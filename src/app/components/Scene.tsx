@@ -12,6 +12,7 @@ import ProjectScreens from "./ProjectScreens";
 import TeamScreens from "./TeamScreens";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
+import LogoRing from "./LogoRing";
 
 function CameraController({ setScrollProgress, activeProject }: { setScrollProgress: (v: number) => void, activeProject: any }) {
   const { camera, pointer } = useThree();
@@ -23,11 +24,19 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
   const currentLookAt = useRef(new THREE.Vector3(0, 0, -2));
   const smoothPan = useRef(0);
 
+  const [hasEntered, setHasEntered] = useState(false);
+
+  useEffect(() => {
+    const onEnter = () => setHasEntered(true);
+    window.addEventListener("preloaderComplete", onEnter);
+    return () => window.removeEventListener("preloaderComplete", onEnter);
+  }, []);
+
   useEffect(() => {
     let lastTouchY = 0;
 
     const handleWheel = (e: WheelEvent) => {
-      if (activeProject) return; 
+      if (activeProject || !hasEntered) return; 
       targetScroll.current += e.deltaY * 0.001;
       if (targetScroll.current > 4) targetScroll.current = 4;
       if (targetScroll.current < 0) targetScroll.current = 0;
@@ -38,7 +47,7 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (activeProject) return;
+      if (activeProject || !hasEntered) return;
       const currentY = e.touches[0].clientY;
       const deltaY = lastTouchY - currentY;
       targetScroll.current += deltaY * 0.005; // Slightly faster multiplier for touch dragging
@@ -65,6 +74,13 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
   }, [activeProject]);
 
   useFrame((state) => {
+    if (!hasEntered) {
+      // Cinematic zoomed-in state while loading
+      camera.position.lerp(new THREE.Vector3(0, 0, 1.8), 0.05);
+      camera.lookAt(0, 0, 0);
+      return;
+    }
+
     const rawScrollDelta = targetScroll.current - currentScroll.current;
     const scrollDelta = Math.abs(rawScrollDelta);
     currentScroll.current += rawScrollDelta * 0.02;
@@ -282,6 +298,8 @@ export default function Scene() {
         <directionalLight position={[0, -10, 5]} intensity={0.8} color="#6688cc" />
         
         <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
+        
+        <LogoRing />
         
         <Stars radius={120} depth={60} count={500} factor={3} saturation={0} fade speed={0.5} />
         <Environment />

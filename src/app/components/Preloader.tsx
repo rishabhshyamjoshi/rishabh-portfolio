@@ -27,6 +27,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         setPhase("reveal");
         setTimeout(() => {
           setPhase("done");
+          window.dispatchEvent(new CustomEvent("preloaderComplete"));
           setTimeout(onComplete, 500);
         }, 600);
       }, 600);
@@ -41,6 +42,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
         setPhase("reveal");
         setTimeout(() => {
           setPhase("done");
+          window.dispatchEvent(new CustomEvent("preloaderComplete"));
           setTimeout(onComplete, 500);
         }, 600);
       }
@@ -98,9 +100,8 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
                 top: 0,
                 height: "100%",
                 width: `${displayProgress}%`,
-                background: "#d4af37",
+                background: "#fff",
                 transition: "width 0.2s ease-out",
-                boxShadow: "0 0 10px rgba(212, 175, 55, 0.5)",
               }}
             />
           </div>
