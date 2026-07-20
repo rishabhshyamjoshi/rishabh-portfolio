@@ -40,7 +40,7 @@ export default function Home() {
       {!loaded && <Preloader onComplete={handlePreloaderComplete} />}
 
       {/* R3F WebGL Scene (Always rendered so useProgress can track model loading) */}
-      <Scene />
+      <Scene hasEntered={loaded} />
       
       {/* HTML DOM Overlay */}
       {loaded && <OverlayUI />}

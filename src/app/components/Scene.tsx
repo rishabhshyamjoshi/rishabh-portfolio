@@ -14,7 +14,7 @@ import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
 import LogoRing from "./LogoRing";
 
-function CameraController({ setScrollProgress, activeProject }: { setScrollProgress: (v: number) => void, activeProject: any }) {
+function CameraController({ setScrollProgress, activeProject, hasEntered }: { setScrollProgress: (v: number) => void, activeProject: any, hasEntered: boolean }) {
   const { camera, pointer } = useThree();
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
@@ -23,14 +23,6 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
   const currentParallax = useRef(new THREE.Vector2(0, 0));
   const currentLookAt = useRef(new THREE.Vector3(0, 0, -2));
   const smoothPan = useRef(0);
-
-  const [hasEntered, setHasEntered] = useState(false);
-
-  useEffect(() => {
-    const onEnter = () => setHasEntered(true);
-    window.addEventListener("preloaderComplete", onEnter);
-    return () => window.removeEventListener("preloaderComplete", onEnter);
-  }, []);
 
   useEffect(() => {
     let lastTouchY = 0;
@@ -274,7 +266,7 @@ function MovementFX({ scrollProgress }: { scrollProgress: number }) {
   );
 }
 
-export default function Scene() {
+export default function Scene({ hasEntered = true }: { hasEntered?: boolean }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeProject, setActiveProject] = useState<any>(null);
 
@@ -297,14 +289,13 @@ export default function Scene() {
         <directionalLight position={[-10, 5, -10]} intensity={1.2} color="#ffccaa" />
         <directionalLight position={[0, -10, 5]} intensity={0.8} color="#6688cc" />
         
-        <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
-        
-        <LogoRing />
+        <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} hasEntered={hasEntered} />
         
         <Stars radius={120} depth={60} count={500} factor={3} saturation={0} fade speed={0.5} />
         <Environment />
         
         <Suspense fallback={null}>
+          <LogoRing />
           <SolarSystem scrollProgress={scrollProgress} />
         </Suspense>
         
