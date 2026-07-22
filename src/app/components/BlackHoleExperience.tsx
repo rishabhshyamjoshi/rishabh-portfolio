@@ -295,12 +295,12 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
               document.body.style.cursor = "auto";
             }}
           >
-            {/* Scaled down appropriately to fit crisp in frame */}
-            <primitive object={clonedScene} scale={0.45} />
+            {/* Scaled down 100x as requested */}
+            <primitive object={clonedScene} scale={0.0045} />
 
             {/* Soft Ambient Lights */}
-            <pointLight intensity={2.5} color="#00f0ff" distance={10} decay={2} />
-            <pointLight intensity={1.5} color="#ff0066" distance={12} decay={2} />
+            <pointLight intensity={2.0} color="#00f0ff" distance={6} decay={2} />
+            <pointLight intensity={1.0} color="#ff0066" distance={8} decay={2} />
           </group>
         </Float>
 
