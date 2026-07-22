@@ -39,18 +39,19 @@ interface BlackHoleExperienceProps {
   activeModule?: string | null;
 }
 
+// Newtonian Gravity Constant (Scaled for the simulation)
+const GM = 25.0;
+
 const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperienceProps>(
   ({ position = [0, 0, 0], onSwallowed, onWave, activeModule }, ref) => {
     const groupRef = useRef<THREE.Group>(null);
     const modelRef = useRef<THREE.Group>(null);
-    const gridMeshRef = useRef<THREE.Mesh>(null);
-    const jetsRef = useRef<THREE.Points>(null);
-    const diskParticlesRef = useRef<THREE.Points>(null);
 
     const [gravWaveActive, setGravWaveActive] = useState(false);
     const [waveRadius, setWaveRadius] = useState(0);
 
-    const { scene, animations } = useGLTF("/black_hole.glb");
+    // Using the user's latest uploaded blackhole.glb
+    const { scene, animations } = useGLTF("/blackhole.glb");
 
     // Clone GLTF scene & auto-scale to perfect 3.2 Three.js units via Box3
     const clonedScene = useMemo(() => {
@@ -60,6 +61,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       const size = new THREE.Vector3();
       box.getSize(size);
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      // Target scale keeps the model at a consistent visible size regardless of the source file
       const targetScale = 3.2 / maxDim;
       clone.scale.setScalar(targetScale);
 
@@ -78,83 +80,35 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
     const burstsRef = useRef<ParticleBurst[]>([]);
     const nextId = useRef(1);
 
-    // Spacetime Grid Deformation Mesh (dark blue wireframe funnel)
-    const gridGeometry = useMemo(() => {
-      const size = 30;
-      const divisions = 30;
-      const geom = new THREE.PlaneGeometry(size, size, divisions, divisions);
-      geom.rotateX(-Math.PI / 2);
-      return geom;
-    }, []);
-
-    // Funnel depression
-    useFrame(() => {
-      if (!gridMeshRef.current) return;
-      const pos = gridMeshRef.current.geometry.attributes.position;
-      for (let i = 0; i < pos.count; i++) {
-        const x = pos.getX(i);
-        const z = pos.getZ(i);
-        const dist = Math.sqrt(x * x + z * z);
-        const funnelDepth = -8 / Math.max(1.2, Math.pow(dist, 0.85));
-        pos.setY(i, funnelDepth);
-      }
-      gridMeshRef.current.geometry.attributes.position.needsUpdate = true;
-    });
-
-    // Accretion Particles
-    const { diskPositions, diskColors } = useMemo(() => {
-      const count = 800;
-      const diskPositions = new Float32Array(count * 3);
-      const diskColors = new Float32Array(count * 3);
-      const c1 = new THREE.Color("#ffaa00"); // Fiery Yellow/Orange
-      const c2 = new THREE.Color("#ff3300"); // Deep Red/Orange
-      const c3 = new THREE.Color("#ffffff"); // Intense White core
-
-      for (let i = 0; i < count; i++) {
-        const radius = 2.5 + Math.random() * 8;
-        const angle = Math.random() * Math.PI * 2;
-        diskPositions[i * 3] = Math.cos(angle) * radius;
-        diskPositions[i * 3 + 1] = (Math.random() - 0.5) * 0.2;
-        diskPositions[i * 3 + 2] = Math.sin(angle) * radius;
-
-        const mixColor = radius < 3.5 ? c3 : radius < 5.5 ? c1 : c2;
-        diskColors[i * 3] = mixColor.r;
-        diskColors[i * 3 + 1] = mixColor.g;
-        diskColors[i * 3 + 2] = mixColor.b;
-      }
-      return { diskPositions, diskColors };
-    }, []);
-
-    // Polar Jets Particles
-    const jetPositions = useMemo(() => {
-      const count = 300;
-      const pos = new Float32Array(count * 3);
-      for (let i = 0; i < count; i++) {
-        const height = (Math.random() - 0.5) * 20;
-        const radius = (1 - Math.abs(height) / 20) * 0.5 + 0.05;
-        const angle = Math.random() * Math.PI * 2;
-        pos[i * 3] = Math.cos(angle) * radius;
-        pos[i * 3 + 1] = height;
-        pos[i * 3 + 2] = Math.sin(angle) * radius;
-      }
-      return pos;
-    }, []);
-
     const scroll = useScroll();
 
-    // Spawn Throwable Object
+    // Spawn Throwable Object with Real Orbital Mechanics
     const spawnObject = useCallback(
       (type: "probe" | "asteroid" | "energy") => {
         const angle = Math.random() * Math.PI * 2;
         const distance = 8 + Math.random() * 4;
-        const startX = Math.cos(angle) * distance;
-        const startY = (Math.random() - 0.5) * 2;
-        const startZ = Math.sin(angle) * distance;
+        
+        // Initial position (random point on a circle)
+        const pos = new THREE.Vector3(
+          Math.cos(angle) * distance,
+          (Math.random() - 0.5) * 1.5,
+          Math.sin(angle) * distance
+        );
 
-        const tangentX = -Math.sin(angle) * (0.12 + Math.random() * 0.08);
-        const tangentZ = Math.cos(angle) * (0.12 + Math.random() * 0.08);
-        const inwardX = -startX * 0.01;
-        const inwardZ = -startZ * 0.01;
+        // To create a stable circular orbit, velocity must be tangential to position
+        // v = sqrt(GM / r)
+        const r = pos.length();
+        const vMag = Math.sqrt(GM / r);
+        
+        // Tangent vector in XZ plane
+        const tangent = new THREE.Vector3(-pos.z, 0, pos.x).normalize();
+        
+        // Add some random variation (0.7 to 1.1) to create elliptical orbits instead of perfect circles
+        const velocityModifier = 0.7 + Math.random() * 0.4;
+        const velocity = tangent.multiplyScalar(vMag * velocityModifier);
+
+        // Add a slight inward/outward component to make trajectories more chaotic
+        velocity.add(new THREE.Vector3((Math.random() - 0.5)*0.5, (Math.random() - 0.5)*0.5, (Math.random() - 0.5)*0.5));
 
         const colors = {
           probe: "#00f0ff",
@@ -165,10 +119,10 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
         const newObj: ThrownObject = {
           id: nextId.current++,
           type,
-          position: new THREE.Vector3(startX, startY, startZ),
-          velocity: new THREE.Vector3(tangentX + inwardX, (Math.random() - 0.5) * 0.04, tangentZ + inwardZ),
+          position: pos,
+          velocity: velocity,
           rotation: new THREE.Vector3(Math.random(), Math.random(), Math.random()),
-          rotSpeed: new THREE.Vector3((Math.random() - 0.5) * 0.1, (Math.random() - 0.5) * 0.1, (Math.random() - 0.5) * 0.1),
+          rotSpeed: new THREE.Vector3((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2),
           scale: type === "probe" ? 0.25 : type === "asteroid" ? 0.4 : 0.3,
           color: colors[type],
           life: 0,
@@ -225,16 +179,8 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
 
       // Model rotation
       if (modelRef.current) {
-        modelRef.current.rotation.y = t * 0.25;
-        modelRef.current.rotation.z = Math.sin(t * 0.4) * 0.05;
-      }
-
-      if (diskParticlesRef.current) {
-        diskParticlesRef.current.rotation.y = t * 0.6;
-      }
-
-      if (jetsRef.current) {
-        jetsRef.current.rotation.y = -t * 1.2;
+        modelRef.current.rotation.y = t * 0.15;
+        modelRef.current.rotation.z = Math.sin(t * 0.2) * 0.05;
       }
 
       // Gravitational Wave Expansion
@@ -248,7 +194,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
         });
       }
 
-      // Objects Physics Simulation
+      // True Newtonian Physics Simulation for Objects
       const currentObjs = objectsRef.current;
       const remainingObjs: ThrownObject[] = [];
 
@@ -259,16 +205,25 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
         const distSq = obj.position.lengthSq();
         const dist = Math.sqrt(distSq);
 
-        const G = 6.0;
-        const forceMag = G / Math.max(0.6, distSq);
+        // a = -GM / r^2
+        // We use Math.max(0.1, distSq) to prevent infinite acceleration at the center
+        const accelerationMag = GM / Math.max(0.1, distSq);
         const pullDir = obj.position.clone().negate().normalize();
+        
+        const acceleration = pullDir.multiplyScalar(accelerationMag);
 
-        obj.velocity.addScaledVector(pullDir, forceMag * delta * 50);
-        obj.position.add(obj.velocity);
-        obj.rotation.add(obj.rotSpeed);
+        // Update velocity (v = v + at)
+        obj.velocity.addScaledVector(acceleration, delta);
+        
+        // Update position (p = p + vt)
+        obj.position.addScaledVector(obj.velocity, delta);
+        
+        // Update rotation
+        obj.rotation.addScaledVector(obj.rotSpeed, delta);
 
-        const eventHorizonRadius = 1.4;
+        const eventHorizonRadius = 1.0;
         if (dist < eventHorizonRadius) {
+          // Object crossed the event horizon
           if (onSwallowed) onSwallowed(1);
           try {
             AudioController.getInstance().playObjectSwallowedSound();
@@ -279,9 +234,9 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
             burstParticles.push({
               pos: obj.position.clone(),
               vel: new THREE.Vector3(
-                (Math.random() - 0.5) * 3,
-                (Math.random() - 0.5) * 3,
-                (Math.random() - 0.5) * 3
+                (Math.random() - 0.5) * 5,
+                (Math.random() - 0.5) * 5,
+                (Math.random() - 0.5) * 5
               ),
               opacity: 1,
             });
@@ -300,6 +255,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
 
       objectsRef.current = remainingObjs;
 
+      // Burst particle simulation
       burstsRef.current = burstsRef.current
         .map((b) => {
           b.life += delta;
@@ -315,7 +271,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
     return (
       <group position={position} ref={groupRef}>
         {/* ═══ 3D BLACK HOLE GLTF MODEL ═══ */}
-        <Float speed={1.5} rotationIntensity={0.15} floatIntensity={0.2}>
+        <Float speed={1.0} rotationIntensity={0.1} floatIntensity={0.1}>
           <group
             ref={modelRef}
             onClick={(e) => {
@@ -329,56 +285,14 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
               document.body.style.cursor = "auto";
             }}
           >
-            {/* Auto-scaled via Box3 bounding box */}
+            {/* Auto-scaled via Box3 bounding box (User's blackhole.glb) */}
             <primitive object={clonedScene} />
 
-            {/* Intense Fiery Ambient Lights (Interstellar look) */}
+            {/* Intense Fiery Ambient Lights to illuminate the model */}
             <pointLight intensity={3.0} color="#ff8800" distance={8} decay={2} />
             <pointLight intensity={1.5} color="#ff3300" distance={12} decay={2} />
           </group>
         </Float>
-
-        {/* Accretion Disk Particles */}
-        <points ref={diskParticlesRef}>
-          <bufferGeometry>
-            <bufferAttribute attach="attributes-position" args={[diskPositions, 3]} />
-            <bufferAttribute attach="attributes-color" args={[diskColors, 3]} />
-          </bufferGeometry>
-          <pointsMaterial
-            size={0.06}
-            vertexColors
-            transparent
-            opacity={0.7}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </points>
-
-        {/* Polar Jets Particles */}
-        <points ref={jetsRef}>
-          <bufferGeometry>
-            <bufferAttribute attach="attributes-position" args={[jetPositions, 3]} />
-          </bufferGeometry>
-          <pointsMaterial
-            size={0.05}
-            color="#ffaa00"
-            transparent
-            opacity={0.6}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </points>
-
-        {/* Spacetime Gravity Grid Mesh */}
-        <mesh ref={gridMeshRef} geometry={gridGeometry} position={[0, -3.5, 0]}>
-          <meshBasicMaterial
-            color="#ff3300"
-            wireframe
-            transparent
-            opacity={0.12}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
 
         {/* Gravitational Wave Pulse */}
         {gravWaveActive && (
@@ -408,6 +322,7 @@ function ThrownObjectsRenderer({ objects }: { objects: ThrownObject[] }) {
     <>
       {objects.map((obj) => {
         const dist = obj.position.length();
+        // Tidal force stretching (Spaghettification)
         const stretchZ = Math.max(1, 3.5 / Math.max(0.6, dist));
         const compressXY = Math.max(0.2, 1 / Math.sqrt(stretchZ));
 
@@ -459,4 +374,4 @@ function BurstRenderer({ bursts }: { bursts: ParticleBurst[] }) {
 }
 
 export default BlackHoleExperience;
-useGLTF.preload("/black_hole.glb");
+useGLTF.preload("/blackhole.glb");
