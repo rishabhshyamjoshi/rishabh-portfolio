@@ -209,30 +209,38 @@ export default function CustomCursor() {
           justifyContent: "center",
         }}
       >
-        {/* SVG Filter for Gooey Effect (Applied only to background blobs if needed) */}
-        <svg style={{ width: 0, height: 0, position: "absolute" }}>
-          <defs>
-            <filter id="goo">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
-              <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-            </filter>
-          </defs>
-        </svg>
+        {/* Dynamic Styles for Aesthetic Animations */}
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes cosmicSpin {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+          }
+        `}} />
 
         {/* The Central Ethereal Core */}
         <div style={{
           position: "absolute",
-          width: "400px", height: "400px",
+          width: "450px", height: "450px",
           borderRadius: "50%",
           transform: `translate(-50%, -50%) scale(${menuOpen ? 1 : 0})`,
-          opacity: menuOpen ? 1 : 0,
+          opacity: menuOpen ? 0.9 : 0,
           transition: "transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease",
-          background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 70%)",
-          boxShadow: menuOpen ? "0 0 80px rgba(255, 255, 255, 0.05)" : "none",
-          filter: "blur(15px)",
           pointerEvents: "none",
-        }} />
+        }}>
+          {/* Rotating Cosmic Gradient */}
+          <div style={{
+            width: "100%", height: "100%",
+            borderRadius: "50%",
+            background: "conic-gradient(from 0deg, #ff007f, #7928ca, #00f0ff, #ff007f)",
+            filter: "blur(70px)",
+            opacity: 0.7,
+            animation: menuOpen ? "cosmicSpin 15s linear infinite" : "none",
+            position: "absolute",
+            top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+          }} />
+        </div>
 
         {/* The Menu Items Container */}
         <div style={{
@@ -264,18 +272,18 @@ export default function CustomCursor() {
                   top: "50%",
                   transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.1 : 1})`,
                   background: isSelected 
-                    ? "rgba(255, 255, 255, 0.15)"
-                    : "rgba(255, 255, 255, 0.03)",
-                  backdropFilter: "blur(20px)",
-                  WebkitBackdropFilter: "blur(20px)",
-                  border: isSelected ? "1px solid rgba(255, 255, 255, 0.7)" : "1px solid rgba(255, 255, 255, 0.1)",
-                  color: isSelected ? "#ffffff" : "rgba(255,255,255,0.6)",
+                    ? "rgba(255, 255, 255, 0.95)"
+                    : "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(30px)",
+                  WebkitBackdropFilter: "blur(30px)",
+                  border: isSelected ? "1px solid #ffffff" : "1px solid rgba(255, 255, 255, 0.4)",
+                  color: isSelected ? "#000000" : "#ffffff",
                   boxShadow: isSelected 
-                    ? "0 10px 40px rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05)" 
-                    : "0 4px 20px rgba(0, 0, 0, 0.4)",
+                    ? "0 10px 40px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 1)" 
+                    : "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1)",
                   fontSize: "0.6rem",
                   fontFamily: "var(--font-jakarta), sans-serif",
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: "0.2em",
                   padding: "14px 24px",
                   borderRadius: "50px", 
