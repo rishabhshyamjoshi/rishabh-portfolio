@@ -10,7 +10,6 @@ import Environment from "./Environment";
 import SolarSystem from "./TheCore";
 import ProjectScreens from "./ProjectScreens";
 import TeamScreens from "./TeamScreens";
-import BlackHoleExperience from "./BlackHoleExperience";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
 
@@ -293,9 +292,6 @@ export default function Scene() {
         
         <ProjectScreens scrollProgress={scrollProgress} onProjectClick={setActiveProject} />
         <TeamScreens scrollProgress={scrollProgress} onMemberClick={setActiveProject} />
-        <Suspense fallback={null}>
-          <BlackHoleExperience scrollProgress={scrollProgress} position={[80, 0, -2]} />
-        </Suspense>
         <MovementFX scrollProgress={scrollProgress} />
         
         <EffectComposer multisampling={0}>

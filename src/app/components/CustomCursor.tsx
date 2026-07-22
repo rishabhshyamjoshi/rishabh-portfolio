@@ -8,7 +8,7 @@ const MENU_ITEMS = [
   { label: "TEAM", angle: 30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 2 })) },
   { label: "AUDIO", angle: 90, action: () => window.dispatchEvent(new CustomEvent("toggleAudio")) },
   { label: "CONTACT", angle: 150, action: () => window.dispatchEvent(new CustomEvent("toggleContact")) },
-  { label: "BLACK HOLE", angle: 210, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 3 })) },
+  { label: "ACADEMY", angle: 210, action: () => window.location.href = "/academy" },
 ];
 
 export default function CustomCursor() {
