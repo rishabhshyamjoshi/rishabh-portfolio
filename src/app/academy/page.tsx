@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Stars, ScrollControls } from "@react-three/drei";
+import { Stars, ScrollControls, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise, Glitch } from "@react-three/postprocessing";
 import { GlitchMode } from "postprocessing";
 import { Vector2 } from "three";
@@ -54,9 +54,12 @@ export default function AcademyPage() {
           dpr={[1, 1]}
         >
           <color attach="background" args={["#020408"]} />
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[10, 15, 10]} intensity={1.5} color="#ffffff" />
-          <directionalLight position={[-10, -10, -10]} intensity={0.8} color="#ff3300" />
+          <ambientLight intensity={1.0} />
+          <directionalLight position={[10, 15, 10]} intensity={2.5} color="#ffffff" />
+          <directionalLight position={[-10, -10, -10]} intensity={1.5} color="#ffaa00" />
+          
+          {/* Environment map to ensure PBR textures and reflections are visible */}
+          <Environment preset="night" />
 
           <Stars radius={100} depth={50} count={600} factor={3} saturation={0} fade speed={0.5} />
 
