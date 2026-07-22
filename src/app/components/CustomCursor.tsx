@@ -128,6 +128,8 @@ export default function CustomCursor() {
       time += 0.05;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const isAcademy = typeof window !== "undefined" && window.location.pathname === "/academy";
+
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
       const dx = centerX - mouse.current.x;
@@ -135,12 +137,12 @@ export default function CustomCursor() {
       const distToCenter = Math.sqrt(dx * dx + dy * dy) || 1;
       const gravityRadius = 550; // Increased influence radius
 
-      // Calculate stronger gravitational pull towards Singularity center
+      // Calculate stronger gravitational pull towards Singularity center ONLY in /academy section
       let pullX = 0;
       let pullY = 0;
       let pullIntensity = 0;
 
-      if (distToCenter < gravityRadius) {
+      if (isAcademy && distToCenter < gravityRadius) {
         pullIntensity = Math.pow(1 - distToCenter / gravityRadius, 1.4);
         const pullFactor = pullIntensity * 120; // Increased gravity pull force
         pullX = (dx / distToCenter) * pullFactor;
@@ -160,11 +162,11 @@ export default function CustomCursor() {
         pts[i].x += (pts[i - 1].x - pts[i].x) * lerp;
         pts[i].y += (pts[i - 1].y - pts[i].y) * lerp;
 
-        // Gravitational warping / spaghettification on trail points near singularity
+        // Gravitational warping / spaghettification on trail points near singularity ONLY in /academy section
         const pdx = centerX - pts[i].x;
         const pdy = centerY - pts[i].y;
         const pDist = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
-        if (pDist < gravityRadius) {
+        if (isAcademy && pDist < gravityRadius) {
           const ptPull = Math.pow(1 - pDist / gravityRadius, 2) * (i / numPoints) * 6.5;
           pts[i].x += (pdx / pDist) * ptPull;
           pts[i].y += (pdy / pDist) * ptPull;
