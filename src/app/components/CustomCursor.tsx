@@ -220,17 +220,17 @@ export default function CustomCursor() {
           </defs>
         </svg>
 
-        {/* The Central Organic Core (Replaces Radar Circle) */}
+        {/* The Central Ethereal Core */}
         <div style={{
           position: "absolute",
-          width: "250px", height: "250px",
+          width: "400px", height: "400px",
           borderRadius: "50%",
           transform: `translate(-50%, -50%) scale(${menuOpen ? 1 : 0})`,
           opacity: menuOpen ? 1 : 0,
-          transition: "transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease",
-          background: "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(0, 240, 255, 0.05), transparent 60%)",
-          boxShadow: menuOpen ? "0 0 60px rgba(0, 240, 255, 0.15), inset 0 0 40px rgba(255, 255, 255, 0.05)" : "none",
-          filter: "blur(5px)",
+          transition: "transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease",
+          background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 70%)",
+          boxShadow: menuOpen ? "0 0 80px rgba(255, 255, 255, 0.05)" : "none",
+          filter: "blur(15px)",
           pointerEvents: "none",
         }} />
 
@@ -243,8 +243,7 @@ export default function CustomCursor() {
         }}>
           {MENU_ITEMS.map((item, i) => {
             const rad = (item.angle * Math.PI) / 180;
-            // When closed, radius is 0 (all pull to center). When open, radius is 115.
-            const radius = menuOpen ? 115 : 0; 
+            const radius = menuOpen ? 120 : 0; 
             const x = Math.cos(rad) * radius;
             const y = Math.sin(rad) * radius;
             const isSelected = selectedIndex === i;
@@ -261,38 +260,36 @@ export default function CustomCursor() {
                 onMouseEnter={() => setSelectedIndex(i)}
                 style={{
                   position: "absolute",
-                  // Center of the container
                   left: "50%",
                   top: "50%",
-                  // Move outwards, apply spring scale for selected state
-                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.15 : 1})`,
+                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.1 : 1})`,
                   background: isSelected 
-                    ? "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(0, 240, 255, 0.2))" 
-                    : "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02))",
-                  backdropFilter: "blur(12px)",
-                  border: isSelected ? "1px solid rgba(255, 255, 255, 0.6)" : "1px solid rgba(255, 255, 255, 0.15)",
-                  color: isSelected ? "#fff" : "rgba(255,255,255,0.7)",
+                    ? "rgba(255, 255, 255, 0.15)"
+                    : "rgba(255, 255, 255, 0.03)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  border: isSelected ? "1px solid rgba(255, 255, 255, 0.7)" : "1px solid rgba(255, 255, 255, 0.1)",
+                  color: isSelected ? "#ffffff" : "rgba(255,255,255,0.6)",
                   boxShadow: isSelected 
-                    ? "0 10px 30px rgba(0, 240, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)" 
-                    : "0 4px 15px rgba(0, 0, 0, 0.2)",
-                  fontSize: "0.65rem",
-                  fontFamily: "var(--font-jakarta), sans-serif", // Modern sans-serif
-                  fontWeight: 600,
-                  letterSpacing: "0.15em",
-                  padding: "12px 20px",
-                  borderRadius: "40px", // Pill shape
+                    ? "0 10px 40px rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05)" 
+                    : "0 4px 20px rgba(0, 0, 0, 0.4)",
+                  fontSize: "0.6rem",
+                  fontFamily: "var(--font-jakarta), sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.2em",
+                  padding: "14px 24px",
+                  borderRadius: "50px", 
                   cursor: "pointer",
-                  // Spring animation: bounce outward when opening, smooth return when closing
                   transition: `
                     transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                    background 0.3s ease, 
-                    border 0.3s ease, 
-                    color 0.3s ease, 
-                    box-shadow 0.3s ease,
+                    background 0.4s ease, 
+                    border 0.4s ease, 
+                    color 0.4s ease, 
+                    box-shadow 0.4s ease,
                     opacity 0.4s ease
                   `,
                   opacity: menuOpen ? 1 : 0,
-                  transitionDelay: `${menuOpen ? i * 0.06 : 0}s`, // Staggered opening
+                  transitionDelay: `${menuOpen ? i * 0.05 : 0}s`,
                 }}
               >
                 {item.label}
