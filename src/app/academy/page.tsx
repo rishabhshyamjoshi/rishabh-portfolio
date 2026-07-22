@@ -54,17 +54,17 @@ function RawBlackHoleModel() {
     if (actions && Object.keys(actions).length > 0) {
       Object.values(actions).forEach((action) => {
         if (action) {
-          action.timeScale = 2.5; // Speed up baked animation 2.5x so relative velocity is never zero
+          action.timeScale = 6.0; // Fast rotation of outer orange accretion disk
           action.play();
         }
       });
     }
   }, [actions]);
 
-  // Continuous extra spin so relative velocity is fast and active
+  // Fast continuous spin of the outer disk layer
   useFrame((state, delta) => {
     if (modelRef.current) {
-      modelRef.current.rotation.y += delta * 0.6;
+      modelRef.current.rotation.y += delta * 1.8;
     }
   });
 
@@ -75,7 +75,7 @@ function RawBlackHoleModel() {
   );
 }
 
-// Hollywood Sci-Fi Scroll-Controlled Camera Rig (Clean 360° Orbit)
+// Hollywood Sci-Fi Scroll Camera Rig: Approach -> 360° Orbit -> Opposite Side Deep Space Exit
 function CinematicCameraRig() {
   const scroll = useScroll();
 
@@ -83,23 +83,34 @@ function CinematicCameraRig() {
     if (!scroll) return;
     const offset = scroll.offset; // 0.0 (top) -> 1.0 (bottom)
 
-    // Phase 1 (0.0 to 0.35): Deep Space Approach — Blackhole is far, camera zooms in close
-    // Phase 2 (0.35 to 1.0): Smooth 360° Circular Orbit Flyby close up
     let radius = 15;
     let angle = 0;
     let elevation = 2;
 
-    if (offset < 0.35) {
-      const p = offset / 0.35;
+    if (offset < 0.3) {
+      // Phase 1: Deep Space Approach (Front Side) — Camera zooms in from 65 to 15
+      const p = offset / 0.3;
       const easeP = Math.pow(p, 0.8);
       radius = THREE.MathUtils.lerp(65, 15, easeP);
       elevation = THREE.MathUtils.lerp(20, 2, easeP);
-      angle = THREE.MathUtils.lerp(0, Math.PI * 0.3, easeP);
+      angle = THREE.MathUtils.lerp(0, Math.PI * 0.4, easeP);
+    } else if (offset < 0.7) {
+      // Phase 2: Close-up 360° Orbital Tour around Singularity
+      const p = (offset - 0.3) / 0.4;
+      radius = 15 - Math.sin(p * Math.PI) * 1.5; // Stays safely outside (>13.5)
+      elevation = 2 + Math.sin(p * Math.PI) * 5;
+      angle = Math.PI * 0.4 + p * (Math.PI * 2); // Full 360° orbit
     } else {
-      const p = (offset - 0.35) / 0.65;
-      radius = 15 - Math.sin(p * Math.PI) * 1.5; // Smooth close flyby (stays > 13.5)
-      elevation = 2 + Math.sin(p * Math.PI) * 4;
-      angle = Math.PI * 0.3 + p * (Math.PI * 2); // Smooth 360-degree rotation
+      // Phase 3: Exit Zoom-out to Deep Space on OPPOSITE SIDE
+      const p = (offset - 0.7) / 0.3;
+      const easeP = Math.pow(p, 1.2);
+      
+      const startAngle = Math.PI * 0.4 + Math.PI * 2;
+      const targetAngle = startAngle + Math.PI * 0.5; // Continue heading away on opposite side
+      
+      radius = THREE.MathUtils.lerp(15, 65, easeP);
+      elevation = THREE.MathUtils.lerp(2, -15, easeP); // Deep space exit trajectory
+      angle = THREE.MathUtils.lerp(startAngle, targetAngle, easeP);
     }
 
     // Add mouse parallax sway for depth
@@ -115,9 +126,10 @@ function CinematicCameraRig() {
     state.camera.position.lerp(targetCamPos, 0.08);
     state.camera.lookAt(0, 0, 0);
 
-    // Modulate audio depth/filter based on scroll proximity
+    // Modulate audio depth/filter based on scroll proximity (deeper when close, fading when far)
     try {
-      AudioController.getInstance().applyMovementEffect(offset);
+      const proximityFactor = 1 - Math.min(1, Math.abs(radius - 15) / 50);
+      AudioController.getInstance().applyMovementEffect(proximityFactor);
     } catch (e) {}
   });
 
