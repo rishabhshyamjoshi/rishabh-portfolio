@@ -48,15 +48,24 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
     const [gravWaveActive, setGravWaveActive] = useState(false);
     const [waveRadius, setWaveRadius] = useState(0);
 
-    const { scene } = useGLTF("/black_hole.glb");
+    const { scene, animations } = useGLTF("/black_hole.glb");
 
-    // Clone GLTF scene safely without overexposing materials
+    // Clone GLTF scene & auto-scale to perfect 3.2 Three.js units via Box3
     const clonedScene = useMemo(() => {
       const clone = scene.clone(true);
+      
+      const box = new THREE.Box3().setFromObject(clone);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const targetScale = 3.2 / maxDim;
+      clone.scale.setScalar(targetScale);
+
       clone.traverse((child: any) => {
         if (child.isMesh && child.material) {
           child.material = child.material.clone();
           child.material.side = THREE.DoubleSide;
+          child.material.needsUpdate = true;
         }
       });
       return clone;
@@ -295,8 +304,8 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
               document.body.style.cursor = "auto";
             }}
           >
-            {/* Scaled down 100x as requested */}
-            <primitive object={clonedScene} scale={0.0045} />
+            {/* Auto-scaled via Box3 bounding box */}
+            <primitive object={clonedScene} />
 
             {/* Soft Ambient Lights */}
             <pointLight intensity={2.0} color="#00f0ff" distance={6} decay={2} />
