@@ -54,7 +54,7 @@ function RawBlackHoleModel() {
     if (actions && Object.keys(actions).length > 0) {
       Object.values(actions).forEach((action) => {
         if (action) {
-          action.timeScale = 2.5; // Speed up baked animation 2.5x so relative velocity is never zero
+          action.timeScale = 2.5; // Speed up baked animation so relative velocity is never zero
           action.play();
         }
       });
@@ -75,50 +75,135 @@ function RawBlackHoleModel() {
   );
 }
 
-// Hollywood Sci-Fi Centered Infinity-Loop (Figure-8) Camera Rig
+// Ambient Space Dust Particles to create realistic interstellar surrounding
+function SpaceDust() {
+  const count = 1200;
+  const { positions, colors } = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const color1 = new THREE.Color("#ff9900");
+    const color2 = new THREE.Color("#00d4ff");
+
+    for (let i = 0; i < count; i++) {
+      const radius = 15 + Math.random() * 60;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI;
+
+      pos[i * 3] = radius * Math.cos(theta) * Math.cos(phi);
+      pos[i * 3 + 1] = radius * Math.sin(phi);
+      pos[i * 3 + 2] = radius * Math.sin(theta) * Math.cos(phi);
+
+      const mixCol = Math.random() > 0.5 ? color1 : color2;
+      col[i * 3] = mixCol.r;
+      col[i * 3 + 1] = mixCol.g;
+      col[i * 3 + 2] = mixCol.b;
+    }
+    return { positions: pos, colors: col };
+  }, []);
+
+  const pointsRef = useRef<THREE.Points>(null);
+  useFrame((_, delta) => {
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y += delta * 0.05;
+    }
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.12}
+        vertexColors
+        transparent
+        opacity={0.65}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+// Hollywood Sci-Fi Elliptical Orbit & Interactive 360 Mouse Drag Camera Rig
 function CinematicCameraRig() {
   const scroll = useScroll();
+  const isDragging = useRef(false);
+  const previousMouse = useRef({ x: 0, y: 0 });
+  const dragAngles = useRef({ x: 0, y: 0 });
+
+  // Handle Mouse Drag for 360 User Control
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      // Don't drag if clicking UI buttons/links
+      if ((e.target as HTMLElement)?.closest("a, button")) return;
+      isDragging.current = true;
+      previousMouse.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      const deltaX = e.clientX - previousMouse.current.x;
+      const deltaY = e.clientY - previousMouse.current.y;
+
+      dragAngles.current.x += deltaX * 0.005;
+      dragAngles.current.y = THREE.MathUtils.clamp(dragAngles.current.y + deltaY * 0.005, -Math.PI / 3, Math.PI / 3);
+
+      previousMouse.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseUp = () => {
+      isDragging.current = false;
+    };
+
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
 
   useFrame((state) => {
     if (!scroll) return;
     const offset = scroll.offset; // 0.0 (top) -> 1.0 (bottom)
 
-    let camX = 0;
-    let camY = 18;
-    let camZ = 60;
+    // Elliptical Orbit Parametric Equations: Semi-major axis = 24, Semi-minor axis = 14
+    const a = 24;
+    const b = 14;
+    
+    // Base scroll orbital angle (0 to 2PI)
+    const baseAngle = offset * Math.PI * 2;
+    
+    // Add user's interactive 360 mouse drag offset
+    const totalAngle = baseAngle + dragAngles.current.x;
 
-    if (offset < 0.25) {
-      // Approach Phase: Deep space zoom-in towards the blackhole origin
-      const p = offset / 0.25;
-      const easeP = Math.pow(p, 0.7);
-      camZ = THREE.MathUtils.lerp(60, 16, easeP);
-      camY = THREE.MathUtils.lerp(18, 0, easeP);
-      camX = 0;
-    } else {
-      // Centered Infinity Loop (Figure-8) Orbit Phase around (0,0,0)
-      // t goes 0 -> 2PI over the remaining 75% scroll
-      const p = (offset - 0.25) / 0.75;
-      const t = p * Math.PI * 2;
+    // Calculate Elliptical Coordinates
+    let rawX = Math.sin(totalAngle) * a;
+    let rawZ = Math.cos(totalAngle) * b;
+    let rawY = Math.sin(offset * Math.PI * 2) * 5 + dragAngles.current.y * 12;
 
-      // Spherical Figure-8 parametric orbit:
-      // x = R * sin(t), z = R * cos(t), y = H * sin(2t)
-      // Radius oscillates slightly (14 to 18) to form a true 3D lemniscate loop around origin
-      const R = 16 + Math.cos(2 * t) * 2;
-      const H = 6.5;
-
-      camX = Math.sin(t) * R;
-      camZ = Math.cos(t) * R;
-      camY = Math.sin(2 * t) * H;
+    // Distance Safety Check: Ensure camera distance is ALWAYS >= 13.5 (Never clips inside blackhole)
+    const currentPos = new THREE.Vector3(rawX, rawY, rawZ);
+    const dist = currentPos.length();
+    const minDistance = 13.5;
+    
+    if (dist < minDistance) {
+      currentPos.normalize().multiplyScalar(minDistance);
     }
 
-    // Add subtle mouse parallax sway for depth
+    // Mouse parallax for subtle depth
     const parallaxX = state.pointer.x * 1.5;
     const parallaxY = state.pointer.y * 1.5;
 
-    const targetCamPos = new THREE.Vector3(camX + parallaxX, camY + parallaxY, camZ);
+    const targetCamPos = new THREE.Vector3(currentPos.x + parallaxX, currentPos.y + parallaxY, currentPos.z);
 
     state.camera.position.lerp(targetCamPos, 0.08);
-    state.camera.lookAt(0, 0, 0); // Always stay locked onto the Black Hole Singularity at (0,0,0)
+    state.camera.lookAt(0, 0, 0);
 
     // Modulate audio depth/filter based on scroll proximity
     try {
@@ -162,7 +247,7 @@ export default function AcademyPage() {
           <span>&larr;</span> RETURN TO CORE
         </Link>
         <div className="flex items-center gap-6 text-[0.55rem] tracking-[0.3em] text-white/60">
-          <span>EVENT HORIZON // 360° TOUR</span>
+          <span>ELLIPTICAL ORBIT // 360° INTERACTIVE</span>
           <button
             onClick={toggleAudio}
             className="flex items-center gap-2 border border-cyan-500/40 px-3 py-1 rounded-full text-cyan-400 hover:bg-cyan-500/20 transition-all duration-300"
@@ -178,24 +263,26 @@ export default function AcademyPage() {
           MASS: 4.1M M☉ | DILATION: ACTIVE
         </span>
         <span className="text-[0.55rem] tracking-[0.3em] text-cyan-400/80 animate-pulse">
-          SCROLL MOUSE DOWN TO OPERATE 360° CINEMATIC ORBIT
+          SCROLL TO ORBIT | CLICK & DRAG MOUSE FOR 360° MANUAL CONTROL
         </span>
       </div>
 
       {/* ═══ 3D CANVAS FULLSCREEN ═══ */}
       <div className="absolute inset-0 z-0">
         <Canvas
-          camera={{ position: [0, 30, 90], fov: 45 }}
+          camera={{ position: [0, 10, 30], fov: 45 }}
           gl={{ antialias: true }}
         >
-          {/* Deep Space Background Stars */}
-          <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+          {/* Real Space Surrounding Environment */}
+          <Stars radius={120} depth={60} count={4000} factor={4} saturation={0} fade speed={1.2} />
+          <SpaceDust />
 
-          {/* Dramatic Lighting Rig */}
-          <ambientLight intensity={0.8} />
-          <directionalLight position={[15, 20, 15]} intensity={3.5} color="#ffffff" />
-          <pointLight position={[-12, -8, -12]} intensity={5} color="#ffaa00" />
-          <pointLight position={[12, 8, -12]} intensity={4} color="#00e1ff" />
+          {/* Realistic High-Contrast Lighting Rig */}
+          <ambientLight intensity={0.9} />
+          <directionalLight position={[20, 25, 15]} intensity={4.0} color="#ffffff" />
+          <pointLight position={[-15, -10, -15]} intensity={6.0} color="#ff8800" />
+          <pointLight position={[15, 10, -15]} intensity={5.0} color="#00d4ff" />
+          <pointLight position={[0, 15, 0]} intensity={3.0} color="#ffffff" />
           
           <Suspense fallback={null}>
             <ScrollControls pages={4} damping={0.25}>
@@ -206,9 +293,9 @@ export default function AcademyPage() {
 
           {/* Movie Post-Processing */}
           <EffectComposer>
-            <Bloom intensity={1.4} luminanceThreshold={0.2} luminanceSmoothing={0.9} />
+            <Bloom intensity={1.5} luminanceThreshold={0.18} luminanceSmoothing={0.9} />
             <ChromaticAberration offset={new Vector2(0.002, 0.002)} />
-            <Vignette eskil={false} offset={0.15} darkness={1.1} />
+            <Vignette eskil={false} offset={0.15} darkness={1.15} />
             <Noise opacity={0.025} />
           </EffectComposer>
         </Canvas>
@@ -218,3 +305,4 @@ export default function AcademyPage() {
 }
 
 useGLTF.preload("/blackhole.glb");
+
