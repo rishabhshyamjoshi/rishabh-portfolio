@@ -2,8 +2,7 @@
 
 import { OrbitControls, useGLTF, useProgress, useAnimations, ScrollControls, useScroll, Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise } from "@react-three/postprocessing";
-import { Vector2 } from "three";
+import { EffectComposer, Bloom, Vignette, Noise } from "@react-three/postprocessing";
 import Link from "next/link";
 import CustomCursor from "../components/CustomCursor";
 import { useEffect, useMemo, useRef, useState, Suspense } from "react";
@@ -33,9 +32,40 @@ function LoaderOverlay() {
   );
 }
 
+// Center Relativistic Light Beam (Polar Jet through singularity core)
+function PolarLightBeam() {
+  return (
+    <group>
+      {/* Top Beam */}
+      <mesh position={[0, 12, 0]}>
+        <cylinderGeometry args={[0.08, 0.45, 24, 32, 1, true]} />
+        <meshBasicMaterial
+          color="#00f0ff"
+          transparent
+          opacity={0.7}
+          blending={THREE.AdditiveBlending}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Bottom Beam */}
+      <mesh position={[0, -12, 0]} rotation={[Math.PI, 0, 0]}>
+        <cylinderGeometry args={[0.08, 0.45, 24, 32, 1, true]} />
+        <meshBasicMaterial
+          color="#ffaa00"
+          transparent
+          opacity={0.7}
+          blending={THREE.AdditiveBlending}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
+  );
+}
+
 function RawBlackHoleModel() {
   const { scene, animations } = useGLTF("/blackhole.glb");
   const { actions } = useAnimations(animations, scene);
+  const groupRef = useRef<THREE.Group>(null);
 
   // Enhance model materials for high metallic gloss & specular shine
   useMemo(() => {
@@ -56,55 +86,59 @@ function RawBlackHoleModel() {
     }
   }, [actions]);
 
-  return <primitive object={scene} scale={5} />;
+  // Frame loop for Rapid Relativistic Spin & Mouse Gravitational Tilt
+  useFrame((state, delta) => {
+    if (!groupRef.current) return;
+
+    // Fast relativistic spinning (outer accretion disk velocity)
+    groupRef.current.rotation.y += delta * 3.5;
+
+    // Gravitational mouse attraction effect (tilts blackhole towards cursor)
+    const targetTiltX = state.pointer.y * 0.35;
+    const targetTiltZ = -state.pointer.x * 0.35;
+
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetTiltX, 0.08);
+    groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetTiltZ, 0.08);
+  });
+
+  return (
+    <group ref={groupRef}>
+      <primitive object={scene} scale={5} />
+      <PolarLightBeam />
+    </group>
+  );
 }
 
-// Hollywood Sci-Fi Cinematic Scroll-Controlled Camera Rig
-function CinematicCameraRig() {
+// Hollywood Sci-Fi Figure-8 (Lemniscate) Infinity Scroll Camera Rig
+function InfinityCameraRig() {
   const scroll = useScroll();
 
   useFrame((state) => {
     if (!scroll) return;
-    const offset = scroll.offset; // 0.0 (top) -> 1.0 (bottom)
+    const offset = scroll.offset; // 0.0 -> 1.0
 
-    // Stage 1 (0.0 to 0.45): Deep Space Approach — Blackhole is far, camera zooms in close
-    // Stage 2 (0.45 to 1.0): 360° Orbit Flyby — Full rotation around the singularity close up
-    let radius = 14;
-    let angle = 0;
-    let elevation = 2;
+    // Parameter t maps scroll offset (0 to 1) to full 2*PI circle loop
+    const t = offset * Math.PI * 2;
 
-    if (offset < 0.45) {
-      // Approach ratio (0 to 1)
-      const progress = offset / 0.45;
-      const easeProgress = Math.pow(progress, 0.8);
+    // Bernoulli Lemniscate (Figure-8 / Infinity symbol \infty) math
+    // Starts at X=18, Z=0, and loops around in an 8 shape back to X=18, Z=0!
+    const A = 18; // Size radius of figure-8
+    const denom = 1 + Math.sin(t) * Math.sin(t);
 
-      // Distance lerps from 65 (far out in deep space) to 14 (close orbit)
-      radius = THREE.MathUtils.lerp(65, 14, easeProgress);
-      elevation = THREE.MathUtils.lerp(20, 2, easeProgress);
-      angle = THREE.MathUtils.lerp(0, Math.PI * 0.35, easeProgress);
-    } else {
-      // Flyby ratio (0 to 1)
-      const progress = (offset - 0.45) / 0.55;
+    const fig8X = (A * Math.cos(t)) / denom;
+    const fig8Z = (A * Math.sin(t) * Math.cos(t)) / denom;
+    const fig8Y = Math.sin(t * 2) * 4 + 2; // Cinematic vertical elevation curve
 
-      radius = 14 - Math.sin(progress * Math.PI) * 2; // Subtle close-dip to 12
-      elevation = 2 + Math.sin(progress * Math.PI * 2) * 5; // Cinematic wave tilt
-      angle = Math.PI * 0.35 + progress * (Math.PI * 2 - Math.PI * 0.35); // Complete 360° rotation
-    }
+    // Mouse parallax for subtle depth
+    const parallaxX = state.pointer.x * 1.2;
+    const parallaxY = state.pointer.y * 1.2;
 
-    // Add mouse parallax sway for depth
-    const parallaxX = state.pointer.x * 1.5;
-    const parallaxY = state.pointer.y * 1.5;
-
-    const camX = Math.sin(angle) * radius + parallaxX;
-    const camZ = Math.cos(angle) * radius;
-    const camY = elevation + parallaxY;
-
-    const targetCamPos = new THREE.Vector3(camX, camY, camZ);
+    const targetCamPos = new THREE.Vector3(fig8X + parallaxX, fig8Y + parallaxY, fig8Z);
 
     state.camera.position.lerp(targetCamPos, 0.08);
     state.camera.lookAt(0, 0, 0);
 
-    // Modulate audio depth/filter based on proximity & scroll
+    // Modulate audio depth/filter based on scroll proximity
     try {
       AudioController.getInstance().applyMovementEffect(offset);
     } catch (e) {}
@@ -146,7 +180,7 @@ export default function AcademyPage() {
           <span>&larr;</span> RETURN TO CORE
         </Link>
         <div className="flex items-center gap-6 text-[0.55rem] tracking-[0.3em] text-white/60">
-          <span>EVENT HORIZON // 360° TOUR</span>
+          <span>EVENT HORIZON // FIGURE-8 TOUR</span>
           <button
             onClick={toggleAudio}
             className="flex items-center gap-2 border border-cyan-500/40 px-3 py-1 rounded-full text-cyan-400 hover:bg-cyan-500/20 transition-all duration-300"
@@ -162,21 +196,21 @@ export default function AcademyPage() {
           MASS: 4.1M M☉ | DILATION: ACTIVE
         </span>
         <span className="text-[0.55rem] tracking-[0.3em] text-cyan-400/80 animate-pulse">
-          SCROLL MOUSE DOWN TO OPERATE 360° CINEMATIC ORBIT
+          SCROLL MOUSE DOWN TO OPERATE FIGURE-8 (∞) CINEMATIC ORBIT
         </span>
       </div>
 
       {/* ═══ 3D CANVAS FULLSCREEN ═══ */}
       <div className="absolute inset-0 z-0">
         <Canvas
-          camera={{ position: [0, 30, 90], fov: 45 }}
+          camera={{ position: [18, 2, 0], fov: 45 }}
           gl={{ antialias: true }}
         >
-          {/* Deep Space Background Stars */}
+          {/* Crisp Deep Space Background Stars (No RGB / No Blur) */}
           <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
 
           {/* Dramatic Lighting Rig */}
-          <ambientLight intensity={0.8} />
+          <ambientLight intensity={0.9} />
           <directionalLight position={[15, 20, 15]} intensity={3.5} color="#ffffff" />
           <pointLight position={[-12, -8, -12]} intensity={5} color="#ffaa00" />
           <pointLight position={[12, 8, -12]} intensity={4} color="#00e1ff" />
@@ -184,16 +218,15 @@ export default function AcademyPage() {
           <Suspense fallback={null}>
             <ScrollControls pages={4} damping={0.25}>
               <RawBlackHoleModel />
-              <CinematicCameraRig />
+              <InfinityCameraRig />
             </ScrollControls>
           </Suspense>
 
-          {/* Movie Post-Processing */}
+          {/* Movie Post-Processing (Crisp Stars preserved, no Chromatic Aberration) */}
           <EffectComposer>
-            <Bloom intensity={1.4} luminanceThreshold={0.2} luminanceSmoothing={0.9} />
-            <ChromaticAberration offset={new Vector2(0.002, 0.002)} />
+            <Bloom intensity={1.5} luminanceThreshold={0.2} luminanceSmoothing={0.9} />
             <Vignette eskil={false} offset={0.15} darkness={1.1} />
-            <Noise opacity={0.025} />
+            <Noise opacity={0.02} />
           </EffectComposer>
         </Canvas>
       </div>
@@ -202,3 +235,4 @@ export default function AcademyPage() {
 }
 
 useGLTF.preload("/blackhole.glb");
+
