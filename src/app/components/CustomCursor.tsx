@@ -209,73 +209,31 @@ export default function CustomCursor() {
           justifyContent: "center",
         }}
       >
-        {/* Dynamic Styles for Aesthetic Animations */}
-        <style dangerouslySetInnerHTML={{__html: `
-          @keyframes cosmicSpin {
-            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); }
-            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
-          }
-        `}} />
-
-        {/* The Central Ethereal Core */}
-        <div style={{
-          position: "absolute",
-          width: "400px", height: "400px",
-          borderRadius: "50%",
-          transform: `translate(-50%, -50%) scale(${menuOpen ? 1 : 0})`,
-          opacity: menuOpen ? 1 : 0,
-          transition: "transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease",
-          pointerEvents: "none",
+        {/* Nebula-Pulse Menu Container */}
+      <div
+        ref={hudRef}
+        className="nebula-menu"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          pointerEvents: menuOpen ? "auto" : "none",
+          zIndex: 999999,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-        }}>
-          {/* Subtle White Ambient Glow */}
-          <div style={{
-            position: "absolute",
-            width: "100%", height: "100%",
-            borderRadius: "50%",
-            background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 60%)",
-            filter: "blur(20px)",
-          }} />
+        }}
+      >
+        {/* Central Nebula Core */}
+        <div className="nebula-core" />
 
-          {/* Delicate Orbital Ring */}
-          <svg
-            width="280" height="280"
-            viewBox="0 0 280 280"
-            style={{
-              position: "absolute",
-              animation: menuOpen ? "cosmicSpin 20s linear infinite" : "none",
-              opacity: 0.3,
-            }}
-          >
-            <circle 
-              cx="140" cy="140" r="139" 
-              fill="none" 
-              stroke="#ffffff" 
-              strokeWidth="0.5" 
-              strokeDasharray="4 8"
-            />
-            <circle 
-              cx="140" cy="140" r="130" 
-              fill="none" 
-              stroke="#ffffff" 
-              strokeWidth="0.2" 
-            />
-          </svg>
-        </div>
-
-        {/* The Menu Items Container */}
-        <div style={{
-          position: "absolute",
-          width: "300px", height: "300px",
-          transform: `translate(-50%, -50%)`,
-          pointerEvents: menuOpen ? "auto" : "none",
-        }}>
+        {/* Menu Items */}
+        <div className="nebula-items">
           {MENU_ITEMS.map((item, i) => {
             const rad = (item.angle * Math.PI) / 180;
-            const radius = menuOpen ? 120 : 0; 
+            const radius = menuOpen ? 115 : 0;
             const x = Math.cos(rad) * radius;
             const y = Math.sin(rad) * radius;
             const isSelected = selectedIndex === i;
@@ -283,7 +241,7 @@ export default function CustomCursor() {
             return (
               <button
                 key={i}
-                className="radial-btn"
+                className="nebula-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   item.action();
@@ -294,34 +252,7 @@ export default function CustomCursor() {
                   position: "absolute",
                   left: "50%",
                   top: "50%",
-                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.05 : 1})`,
-                  background: isSelected 
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(255, 255, 255, 0.02)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
-                  border: isSelected ? "1px solid rgba(255, 255, 255, 0.6)" : "1px solid rgba(255, 255, 255, 0.15)",
-                  color: isSelected ? "#ffffff" : "rgba(255,255,255,0.5)",
-                  boxShadow: isSelected 
-                    ? "0 0 30px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.1)" 
-                    : "0 4px 20px rgba(0, 0, 0, 0.2)",
-                  fontSize: "0.55rem",
-                  fontFamily: "var(--font-jakarta), sans-serif",
-                  fontWeight: 400,
-                  letterSpacing: "0.25em",
-                  padding: "12px 24px",
-                  borderRadius: "40px", 
-                  cursor: "pointer",
-                  transition: `
-                    transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), 
-                    background 0.4s ease, 
-                    border 0.4s ease, 
-                    color 0.4s ease, 
-                    box-shadow 0.4s ease,
-                    opacity 0.4s ease
-                  `,
-                  opacity: menuOpen ? 1 : 0,
-                  transitionDelay: `${menuOpen ? i * 0.04 : 0}s`,
+                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.15 : 1})`,
                 }}
               >
                 {item.label}
@@ -330,6 +261,78 @@ export default function CustomCursor() {
           })}
         </div>
       </div>
+      {/* Inline styles for nebula theme */}
+      <style jsx>{`
+        .nebula-menu {
+          /* optional background for full-screen nebula */
+          /* Could add a subtle gradient here if desired */
+        }
+        .nebula-core {
+          position: absolute;
+          width: 250px;
+          height: 250px;
+          border-radius: 50%;
+          transform: translate(-50%, -50%) scale(${menuOpen ? 1 : 0});
+          opacity: ${menuOpen ? 1 : 0};
+          transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+          background: radial-gradient(
+            circle at 30% 30%,
+            rgba(255,255,255,0.1),
+            rgba(255,0,150,0.08),
+            transparent 60%
+          );
+          box-shadow: 0 0 60px rgba(255,0,150,0.15), inset 0 0 40px rgba(255,255,255,0.05);
+          filter: blur(5px);
+        }
+        .nebula-items {
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          transform: translate(-50%, -50%);
+          pointer-events: ${menuOpen ? "auto" : "none"};
+        }
+        .nebula-btn {
+          background: rgba(255,255,255,0.07);
+          border: 1px solid rgba(255,255,255,0.15);
+          color: rgba(255,255,255,0.8);
+          backdrop-filter: blur(12px);
+          border-radius: 40px;
+          padding: 12px 20px;
+          font-size: 0.65rem;
+          font-family: var(--font-jakarta), sans-serif;
+          font-weight: 600;
+          letter-spacing: 0.15em;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          transition: transform 0.8s cubic-bezier(0.34,1.56,0.64,1),
+                      background 0.3s ease,
+                      border 0.3s ease,
+                      color 0.3s ease,
+                      box-shadow 0.3s ease,
+                      opacity 0.4s ease;
+          opacity: ${menuOpen ? 1 : 0};
+          transition-delay: ${menuOpen ? "calc(var(--i) * 0.06s)" : "0s"};
+        }
+        .nebula-btn:hover {
+          background: rgba(255,255,255,0.2);
+          border-color: rgba(255,255,255,0.6);
+          color: #fff;
+          box-shadow: 0 10px 30px rgba(255,0,150,0.3), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .nebula-btn::after {
+          content: '';
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+          animation: nebulaPulse 3s infinite ease-in-out;
+          pointer-events: none;
+        }
+        @keyframes nebulaPulse {
+          0%,100% { transform:scale(1); opacity:.6; }
+          50% { transform:scale(1.12); opacity:1; }
+        }
+      `}</style>
     </>
   );
 }
