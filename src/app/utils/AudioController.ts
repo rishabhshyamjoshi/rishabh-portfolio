@@ -168,4 +168,40 @@ export class AudioController {
     osc.start();
     osc.stop(this.context.currentTime + 0.1);
   }
+
+  public playLaunchProbeSound() {
+    if (!this.context || this.isMuted) return;
+    const osc = this.context.createOscillator();
+    const gain = this.context.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(300, this.context.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1400, this.context.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.25, this.context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.2);
+    osc.connect(gain);
+    gain.connect(this.context.destination);
+    osc.start();
+    osc.stop(this.context.currentTime + 0.2);
+  }
+
+  public playObjectSwallowedSound() {
+    if (!this.context || this.isMuted) return;
+    const now = this.context.currentTime;
+    
+    // Sub-bass pitch dive
+    const osc = this.context.createOscillator();
+    const gain = this.context.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(25, now + 0.6);
+    
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    
+    osc.connect(gain);
+    gain.connect(this.context.destination);
+    osc.start();
+    osc.stop(now + 0.6);
+  }
 }
+
