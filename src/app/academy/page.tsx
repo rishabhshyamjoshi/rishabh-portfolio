@@ -59,42 +59,55 @@ function RawBlackHoleModel() {
   return <primitive object={scene} scale={5} />;
 }
 
-// Hollywood Sci-Fi Cinematic Entrance & Scroll Tour Camera Rig
+// Hollywood Sci-Fi Cinematic Scroll-Controlled Camera Rig
 function CinematicCameraRig() {
   const scroll = useScroll();
-  const startTime = useRef<number | null>(null);
 
   useFrame((state) => {
-    const time = state.clock.getElapsedTime();
-    if (startTime.current === null) startTime.current = time;
+    if (!scroll) return;
+    const offset = scroll.offset; // 0.0 (top) -> 1.0 (bottom)
 
-    const elapsed = time - startTime.current;
-    // Entrance progress smoothly goes 0 -> 1 in 2.5 seconds
-    const entrance = Math.min(1, Math.pow(elapsed / 2.5, 0.7));
+    // Stage 1 (0.0 to 0.45): Deep Space Approach — Blackhole is far, camera zooms in close
+    // Stage 2 (0.45 to 1.0): 360° Orbit Flyby — Full rotation around the singularity close up
+    let radius = 14;
+    let angle = 0;
+    let elevation = 2;
 
-    // Deep space starting camera pos -> Swoops in towards blackhole
-    const startCamPos = new THREE.Vector3(0, 35, 90);
-    
-    // Calculate 360 orbit target camera pos based on scroll
-    const scrollOffset = scroll ? scroll.offset : 0;
-    const radius = 14;
-    const angle = scrollOffset * Math.PI * 2;
-    
-    // Add mouse parallax sway
+    if (offset < 0.45) {
+      // Approach ratio (0 to 1)
+      const progress = offset / 0.45;
+      const easeProgress = Math.pow(progress, 0.8);
+
+      // Distance lerps from 65 (far out in deep space) to 14 (close orbit)
+      radius = THREE.MathUtils.lerp(65, 14, easeProgress);
+      elevation = THREE.MathUtils.lerp(20, 2, easeProgress);
+      angle = THREE.MathUtils.lerp(0, Math.PI * 0.35, easeProgress);
+    } else {
+      // Flyby ratio (0 to 1)
+      const progress = (offset - 0.45) / 0.55;
+
+      radius = 14 - Math.sin(progress * Math.PI) * 2; // Subtle close-dip to 12
+      elevation = 2 + Math.sin(progress * Math.PI * 2) * 5; // Cinematic wave tilt
+      angle = Math.PI * 0.35 + progress * (Math.PI * 2 - Math.PI * 0.35); // Complete 360° rotation
+    }
+
+    // Add mouse parallax sway for depth
     const parallaxX = state.pointer.x * 1.5;
     const parallaxY = state.pointer.y * 1.5;
 
-    const targetX = Math.sin(angle) * radius + parallaxX;
-    const targetZ = Math.cos(angle) * radius;
-    const targetY = Math.sin(scrollOffset * Math.PI) * 5 + parallaxY + 2;
+    const camX = Math.sin(angle) * radius + parallaxX;
+    const camZ = Math.cos(angle) * radius;
+    const camY = elevation + parallaxY;
 
-    const targetCamPos = new THREE.Vector3(targetX, targetY, targetZ);
+    const targetCamPos = new THREE.Vector3(camX, camY, camZ);
 
-    // Interpolate camera from far start position to dynamic target orbit
-    const currentCamPos = new THREE.Vector3().lerpVectors(startCamPos, targetCamPos, entrance);
-    
-    state.camera.position.lerp(currentCamPos, 0.08);
+    state.camera.position.lerp(targetCamPos, 0.08);
     state.camera.lookAt(0, 0, 0);
+
+    // Modulate audio depth/filter based on proximity & scroll
+    try {
+      AudioController.getInstance().applyMovementEffect(offset);
+    } catch (e) {}
   });
 
   return null;
