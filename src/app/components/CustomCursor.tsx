@@ -127,24 +127,60 @@ export default function CustomCursor() {
       
       time += 0.05;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const dx = centerX - mouse.current.x;
+      const dy = centerY - mouse.current.y;
+      const distToCenter = Math.sqrt(dx * dx + dy * dy) || 1;
+      const gravityRadius = 450;
+
+      // Calculate gravitational pull towards Singularity center
+      let pullX = 0;
+      let pullY = 0;
+      let pullIntensity = 0;
+
+      if (distToCenter < gravityRadius) {
+        pullIntensity = Math.pow(1 - distToCenter / gravityRadius, 1.6);
+        const pullFactor = pullIntensity * 70; // Magnetic pull force
+        pullX = (dx / distToCenter) * pullFactor;
+        pullY = (dy / distToCenter) * pullFactor;
+      }
+
       const pts = points.current;
-      pts[0].x = mouse.current.x;
-      pts[0].y = mouse.current.y;
+      // Lead cursor point pulled towards black hole
+      pts[0].x = mouse.current.x + pullX;
+      pts[0].y = mouse.current.y + pullY;
       
       const lerp = hovering ? 0.4 : 0.3;
       for (let i = 1; i < numPoints; i++) {
         if (!pts[i] || !pts[i-1]) continue;
+
+        // Base follow lerp
         pts[i].x += (pts[i - 1].x - pts[i].x) * lerp;
         pts[i].y += (pts[i - 1].y - pts[i].y) * lerp;
+
+        // Gravitational warping / spaghettification on trail points near singularity
+        const pdx = centerX - pts[i].x;
+        const pdy = centerY - pts[i].y;
+        const pDist = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
+        if (pDist < gravityRadius) {
+          const ptPull = Math.pow(1 - pDist / gravityRadius, 2) * (i / numPoints) * 4.5;
+          pts[i].x += (pdx / pDist) * ptPull;
+          pts[i].y += (pdy / pDist) * ptPull;
+        }
       }
       
-      const baseColor = "rgba(255, 255, 255,";
-      const glowColor = "#ffffff";
+      // Dynamic glowing colors: Cyan/Amber warp glow when pulled into gravity field
+      const baseColor = pullIntensity > 0.1 
+        ? `rgba(255, ${Math.floor(255 - pullIntensity * 150)}, ${Math.floor(255 - pullIntensity * 200)},`
+        : "rgba(255, 255, 255,";
+      
+      const glowColor = pullIntensity > 0.3 ? "#ffaa00" : "#ffffff";
       
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 12 + pullIntensity * 15;
       ctx.shadowColor = glowColor;
 
       for (let s = 0; s < numStrands; s++) {
@@ -166,7 +202,7 @@ export default function CustomCursor() {
           const widthTaper = Math.sin(progress * Math.PI);
           const phase = (s / numStrands) * Math.PI * 2;
           const wave = Math.sin(time * 2 + progress * 8 + phase);
-          const amplitude = hovering ? 30 : 15;
+          const amplitude = (hovering ? 30 : 15) * (1 + pullIntensity * 0.8);
           
           strandPts.push({ x: p.x + nx * wave * widthTaper * amplitude, y: p.y + ny * wave * widthTaper * amplitude });
         }
@@ -180,10 +216,10 @@ export default function CustomCursor() {
         
         const gradient = ctx.createLinearGradient(pts[numPoints - 1].x, pts[numPoints - 1].y, pts[0].x, pts[0].y);
         gradient.addColorStop(0, `${baseColor} 0)`);
-        gradient.addColorStop(0.5, `${baseColor} 0.3)`);
-        gradient.addColorStop(1, `${baseColor} 0.8)`);
+        gradient.addColorStop(0.5, `${baseColor} ${0.3 + pullIntensity * 0.4})`);
+        gradient.addColorStop(1, `${baseColor} ${0.8 + pullIntensity * 0.2})`);
         
-        ctx.lineWidth = hovering ? 3 : 1.5;
+        ctx.lineWidth = (hovering ? 3 : 1.5) + pullIntensity * 1.5;
         ctx.strokeStyle = gradient;
         ctx.stroke();
       }
