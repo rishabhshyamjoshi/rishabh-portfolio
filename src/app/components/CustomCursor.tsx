@@ -224,37 +224,6 @@ export default function CustomCursor() {
         ctx.stroke();
       }
 
-      // Draw Event Horizon Core & Photon Accretion Ring at Cursor Tip when near blackhole
-      if (pullIntensity > 0.15) {
-        const ringRadius = 12 * pullIntensity;
-        
-        // 1. Dark Singularity Core
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(pts[0].x, pts[0].y, ringRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "#000000";
-        ctx.fill();
-        
-        // 2. Fiery Event Horizon Photon Ring
-        ctx.lineWidth = 2 + pullIntensity * 3;
-        ctx.strokeStyle = "#ffaa00";
-        ctx.shadowColor = "#ff3300";
-        ctx.shadowBlur = 20 * pullIntensity;
-        ctx.stroke();
-        
-        // 3. Orbiting Photon Sparks
-        for (let k = 0; k < 3; k++) {
-          const sparkAngle = time * 4 + (k * Math.PI * 2) / 3;
-          const sx = pts[0].x + Math.cos(sparkAngle) * (ringRadius + 4);
-          const sy = pts[0].y + Math.sin(sparkAngle) * (ringRadius + 4);
-          ctx.beginPath();
-          ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = "#ffffff";
-          ctx.fill();
-        }
-        ctx.restore();
-      }
-
       if (hudRef.current) {
         hudRef.current.style.transform = `translate(${lockedPos.current.x}px, ${lockedPos.current.y}px)`;
       }
