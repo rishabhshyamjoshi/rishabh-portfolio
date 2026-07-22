@@ -221,25 +221,49 @@ export default function CustomCursor() {
         {/* The Central Ethereal Core */}
         <div style={{
           position: "absolute",
-          width: "450px", height: "450px",
+          width: "400px", height: "400px",
           borderRadius: "50%",
           transform: `translate(-50%, -50%) scale(${menuOpen ? 1 : 0})`,
-          opacity: menuOpen ? 0.9 : 0,
+          opacity: menuOpen ? 1 : 0,
           transition: "transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease",
           pointerEvents: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}>
-          {/* Rotating Cosmic Gradient */}
+          {/* Subtle White Ambient Glow */}
           <div style={{
+            position: "absolute",
             width: "100%", height: "100%",
             borderRadius: "50%",
-            background: "conic-gradient(from 0deg, #ff007f, #7928ca, #00f0ff, #ff007f)",
-            filter: "blur(70px)",
-            opacity: 0.7,
-            animation: menuOpen ? "cosmicSpin 15s linear infinite" : "none",
-            position: "absolute",
-            top: "50%", left: "50%",
-            transform: "translate(-50%, -50%)",
+            background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 60%)",
+            filter: "blur(20px)",
           }} />
+
+          {/* Delicate Orbital Ring */}
+          <svg
+            width="280" height="280"
+            viewBox="0 0 280 280"
+            style={{
+              position: "absolute",
+              animation: menuOpen ? "cosmicSpin 20s linear infinite" : "none",
+              opacity: 0.3,
+            }}
+          >
+            <circle 
+              cx="140" cy="140" r="139" 
+              fill="none" 
+              stroke="#ffffff" 
+              strokeWidth="0.5" 
+              strokeDasharray="4 8"
+            />
+            <circle 
+              cx="140" cy="140" r="130" 
+              fill="none" 
+              stroke="#ffffff" 
+              strokeWidth="0.2" 
+            />
+          </svg>
         </div>
 
         {/* The Menu Items Container */}
@@ -270,26 +294,26 @@ export default function CustomCursor() {
                   position: "absolute",
                   left: "50%",
                   top: "50%",
-                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.1 : 1})`,
+                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.05 : 1})`,
                   background: isSelected 
-                    ? "rgba(255, 255, 255, 0.95)"
-                    : "rgba(255, 255, 255, 0.15)",
-                  backdropFilter: "blur(30px)",
-                  WebkitBackdropFilter: "blur(30px)",
-                  border: isSelected ? "1px solid #ffffff" : "1px solid rgba(255, 255, 255, 0.4)",
-                  color: isSelected ? "#000000" : "#ffffff",
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "rgba(255, 255, 255, 0.02)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
+                  border: isSelected ? "1px solid rgba(255, 255, 255, 0.6)" : "1px solid rgba(255, 255, 255, 0.15)",
+                  color: isSelected ? "#ffffff" : "rgba(255,255,255,0.5)",
                   boxShadow: isSelected 
-                    ? "0 10px 40px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 1)" 
-                    : "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1)",
-                  fontSize: "0.6rem",
+                    ? "0 0 30px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.1)" 
+                    : "0 4px 20px rgba(0, 0, 0, 0.2)",
+                  fontSize: "0.55rem",
                   fontFamily: "var(--font-jakarta), sans-serif",
-                  fontWeight: 600,
-                  letterSpacing: "0.2em",
-                  padding: "14px 24px",
-                  borderRadius: "50px", 
+                  fontWeight: 400,
+                  letterSpacing: "0.25em",
+                  padding: "12px 24px",
+                  borderRadius: "40px", 
                   cursor: "pointer",
                   transition: `
-                    transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                    transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), 
                     background 0.4s ease, 
                     border 0.4s ease, 
                     color 0.4s ease, 
@@ -297,7 +321,7 @@ export default function CustomCursor() {
                     opacity 0.4s ease
                   `,
                   opacity: menuOpen ? 1 : 0,
-                  transitionDelay: `${menuOpen ? i * 0.05 : 0}s`,
+                  transitionDelay: `${menuOpen ? i * 0.04 : 0}s`,
                 }}
               >
                 {item.label}
