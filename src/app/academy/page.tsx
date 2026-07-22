@@ -214,7 +214,7 @@ export default function AcademyPage() {
           {/* Movie Post-Processing */}
           <EffectComposer>
             <Bloom intensity={1.4} luminanceThreshold={0.2} luminanceSmoothing={0.9} />
-            <ChromaticAberration offset={new Vector2(0.002, 0.002)} />
+            <ChromaticAberration offset={new Vector2(0.002, 0.002)} radialModulation={false} modulationOffset={0} />
             <Vignette eskil={false} offset={0.15} darkness={1.1} />
             <Noise opacity={0.025} />
           </EffectComposer>
