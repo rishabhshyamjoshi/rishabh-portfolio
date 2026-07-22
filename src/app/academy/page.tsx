@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
+import { Stars, ScrollControls } from "@react-three/drei";
 import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise, Glitch } from "@react-three/postprocessing";
 import { GlitchMode } from "postprocessing";
 import { Vector2 } from "three";
@@ -43,7 +43,7 @@ export default function AcademyPage() {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen bg-[#020408] text-white selection:bg-[#00f0ff] selection:text-black overflow-hidden font-[var(--font-mono)]">
+    <div className="relative min-h-screen bg-[#020408] text-white selection:bg-[#ffaa00] selection:text-black overflow-hidden font-[var(--font-mono)]">
       <CustomCursor />
 
       {/* ═══ 3D CANVAS FULLSCREEN ═══ */}
@@ -56,21 +56,23 @@ export default function AcademyPage() {
           <color attach="background" args={["#020408"]} />
           <ambientLight intensity={0.4} />
           <directionalLight position={[10, 15, 10]} intensity={1.5} color="#ffffff" />
-          <directionalLight position={[-10, -10, -10]} intensity={0.8} color="#ff0066" />
+          <directionalLight position={[-10, -10, -10]} intensity={0.8} color="#ff3300" />
 
           <Stars radius={100} depth={50} count={600} factor={3} saturation={0} fade speed={0.5} />
 
           <Suspense fallback={null}>
-            <BlackHoleExperience
-              ref={blackHoleRef}
-              position={[0, 0, 0]}
-              onSwallowed={() => {
-                setSwallowedCount((prev) => prev + 1);
-                triggerGlitch();
-              }}
-              onWave={triggerGlitch}
-              activeModule={activeModule}
-            />
+            <ScrollControls pages={4} damping={0.25}>
+              <BlackHoleExperience
+                ref={blackHoleRef}
+                position={[0, 0, 0]}
+                onSwallowed={() => {
+                  setSwallowedCount((prev) => prev + 1);
+                  triggerGlitch();
+                }}
+                onWave={triggerGlitch}
+                activeModule={activeModule}
+              />
+            </ScrollControls>
           </Suspense>
 
           {/* Cinematic Post-Processing Pipeline */}
@@ -102,7 +104,7 @@ export default function AcademyPage() {
         <div className="pointer-events-auto">
           <Link
             href="/"
-            className="flex items-center gap-3 border border-[#00f0ff]/30 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-[0.65rem] tracking-[0.2em] text-[#00f0ff] hover:bg-[#00f0ff]/10 hover:border-[#00f0ff] transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.15)]"
+            className="flex items-center gap-3 border border-[#ffaa00]/30 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full text-[0.65rem] tracking-[0.2em] text-[#ffaa00] hover:bg-[#ffaa00]/10 hover:border-[#ffaa00] transition-all duration-300 shadow-[0_0_20px_rgba(255,170,0,0.15)]"
           >
             <span>&larr;</span> RETURN TO CORE
           </Link>
@@ -115,11 +117,11 @@ export default function AcademyPage() {
 
       {/* ═══ TOP RIGHT TELEMETRY HUD CARD (Clean 2D Overlay) ═══ */}
       <div className="fixed top-24 right-8 z-40 w-80 pointer-events-auto">
-        <div className="border border-[#00f0ff]/30 bg-black/75 backdrop-blur-xl p-5 rounded-2xl space-y-4 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
-          <div className="flex justify-between items-center border-b border-[#00f0ff]/20 pb-3">
+        <div className="border border-[#ffaa00]/30 bg-black/75 backdrop-blur-xl p-5 rounded-2xl space-y-4 shadow-[0_0_30px_rgba(255,170,0,0.15)]">
+          <div className="flex justify-between items-center border-b border-[#ffaa00]/20 pb-3">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#00f0ff] animate-ping" />
-              <h1 className="text-[0.7rem] font-bold tracking-[0.2em] text-[#00f0ff]">
+              <span className="w-2 h-2 rounded-full bg-[#ffaa00] animate-ping" />
+              <h1 className="text-[0.7rem] font-bold tracking-[0.2em] text-[#ffaa00]">
                 BLACK HOLE SINGULARITY
               </h1>
             </div>
@@ -138,11 +140,11 @@ export default function AcademyPage() {
             </div>
             <div>
               <span className="text-[0.5rem] text-white/40 block tracking-widest">TIME DILATION</span>
-              <span className="font-bold text-[#ff0066]">∞ (CRITICAL)</span>
+              <span className="font-bold text-[#ff3300]">∞ (CRITICAL)</span>
             </div>
             <div>
               <span className="text-[0.5rem] text-white/40 block tracking-widest">CONSUMED</span>
-              <span className="font-bold text-[#00f0ff]">{swallowedCount} OBJECTS</span>
+              <span className="font-bold text-[#ffaa00]">{swallowedCount} OBJECTS</span>
             </div>
           </div>
 
@@ -150,7 +152,7 @@ export default function AcademyPage() {
           <div className="flex gap-2 pt-2">
             <button
               onClick={() => blackHoleRef.current?.spawnObject("probe")}
-              className="flex-1 py-2 bg-[#00f0ff]/15 border border-[#00f0ff]/50 rounded-lg text-[#00f0ff] text-[0.55rem] tracking-wider hover:bg-[#00f0ff]/30 transition-all font-bold"
+              className="flex-1 py-2 bg-[#ffaa00]/15 border border-[#ffaa00]/50 rounded-lg text-[#ffaa00] text-[0.55rem] tracking-wider hover:bg-[#ffaa00]/30 transition-all font-bold"
             >
               + PROBE
             </button>
@@ -162,7 +164,7 @@ export default function AcademyPage() {
             </button>
             <button
               onClick={() => blackHoleRef.current?.triggerGravWave()}
-              className="flex-1 py-2 bg-[#ff0066]/15 border border-[#ff0066]/50 rounded-lg text-[#ff0066] text-[0.55rem] tracking-wider hover:bg-[#ff0066]/30 transition-all font-bold"
+              className="flex-1 py-2 bg-[#ff3300]/15 border border-[#ff3300]/50 rounded-lg text-[#ff3300] text-[0.55rem] tracking-wider hover:bg-[#ff3300]/30 transition-all font-bold"
             >
               ⚡ WAVE
             </button>
@@ -172,10 +174,10 @@ export default function AcademyPage() {
 
       {/* ═══ BOTTOM LEFT RESEARCH MODULES CARD ═══ */}
       <div className="fixed bottom-8 left-8 z-40 max-w-sm pointer-events-auto space-y-4">
-        <div className="border border-[#00f0ff]/20 bg-black/75 backdrop-blur-xl p-5 rounded-2xl space-y-3 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+        <div className="border border-[#ffaa00]/20 bg-black/75 backdrop-blur-xl p-5 rounded-2xl space-y-3 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#00f0ff]" />
-            <h2 className="text-[0.7rem] font-bold tracking-[0.2em] text-[#00f0ff]">
+            <span className="w-2 h-2 rounded-full bg-[#ffaa00]" />
+            <h2 className="text-[0.7rem] font-bold tracking-[0.2em] text-[#ffaa00]">
               ASTROPHYSICS RESEARCH LAB
             </h2>
           </div>
@@ -194,7 +196,7 @@ export default function AcademyPage() {
                 onClick={() => setActiveModule(m.id)}
                 className={`text-[0.55rem] tracking-[0.15em] px-3 py-1.5 rounded-lg border transition-all ${
                   activeModule === m.id
-                    ? "bg-[#00f0ff]/20 border-[#00f0ff] text-white shadow-[0_0_10px_rgba(0,240,255,0.4)]"
+                    ? "bg-[#ffaa00]/20 border-[#ffaa00] text-white shadow-[0_0_10px_rgba(255,170,0,0.4)]"
                     : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/30"
                 }`}
               >
@@ -208,9 +210,9 @@ export default function AcademyPage() {
       {/* Module Modal Info */}
       {activeModule && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-6">
-          <div className="border border-[#00f0ff]/40 bg-[#040914]/95 p-8 rounded-2xl max-w-lg w-full space-y-6 text-white shadow-[0_0_50px_rgba(0,240,255,0.2)]">
-            <div className="flex justify-between items-center border-b border-[#00f0ff]/20 pb-4">
-              <h3 className="text-sm font-bold tracking-[0.25em] text-[#00f0ff]">
+          <div className="border border-[#ffaa00]/40 bg-[#040914]/95 p-8 rounded-2xl max-w-lg w-full space-y-6 text-white shadow-[0_0_50px_rgba(255,170,0,0.2)]">
+            <div className="flex justify-between items-center border-b border-[#ffaa00]/20 pb-4">
+              <h3 className="text-sm font-bold tracking-[0.25em] text-[#ffaa00]">
                 {activeModule === "horizon"
                   ? "EVENT HORIZON DYNAMICS"
                   : activeModule === "quantum"
@@ -233,7 +235,7 @@ export default function AcademyPage() {
             </p>
             <button
               onClick={() => setActiveModule(null)}
-              className="w-full py-3 bg-[#00f0ff]/15 border border-[#00f0ff] text-[#00f0ff] rounded-lg text-xs font-bold tracking-[0.2em] hover:bg-[#00f0ff]/30 transition-all"
+              className="w-full py-3 bg-[#ffaa00]/15 border border-[#ffaa00] text-[#ffaa00] rounded-lg text-xs font-bold tracking-[0.2em] hover:bg-[#ffaa00]/30 transition-all"
             >
               RESUME SIMULATION
             </button>

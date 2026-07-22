@@ -3,7 +3,7 @@
 import { useRef, useMemo, useState, useCallback, useImperativeHandle, forwardRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useGLTF, Float } from "@react-three/drei";
+import { useGLTF, Float, useScroll } from "@react-three/drei";
 import { AudioController } from "../utils/AudioController";
 
 interface ThrownObject {
@@ -106,9 +106,9 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       const count = 800;
       const diskPositions = new Float32Array(count * 3);
       const diskColors = new Float32Array(count * 3);
-      const c1 = new THREE.Color("#00f0ff");
-      const c2 = new THREE.Color("#ff0066");
-      const c3 = new THREE.Color("#88ccff");
+      const c1 = new THREE.Color("#ffaa00"); // Fiery Yellow/Orange
+      const c2 = new THREE.Color("#ff3300"); // Deep Red/Orange
+      const c3 = new THREE.Color("#ffffff"); // Intense White core
 
       for (let i = 0; i < count; i++) {
         const radius = 2.5 + Math.random() * 8;
@@ -117,7 +117,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
         diskPositions[i * 3 + 1] = (Math.random() - 0.5) * 0.2;
         diskPositions[i * 3 + 2] = Math.sin(angle) * radius;
 
-        const mixColor = radius < 4.5 ? c2 : Math.random() > 0.5 ? c1 : c3;
+        const mixColor = radius < 3.5 ? c3 : radius < 5.5 ? c1 : c2;
         diskColors[i * 3] = mixColor.r;
         diskColors[i * 3 + 1] = mixColor.g;
         diskColors[i * 3 + 2] = mixColor.b;
@@ -139,6 +139,8 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       }
       return pos;
     }, []);
+
+    const scroll = useScroll();
 
     // Spawn Throwable Object
     const spawnObject = useCallback(
@@ -201,13 +203,24 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       if (!groupRef.current) return;
       const t = state.clock.getElapsedTime();
 
-      // Cinematic Camera Parallax & Zoom
-      const targetZoom = activeModule ? 5 : 10;
+      // Cinematic Camera Parallax, Zoom & 360 Scroll Orbit
+      const targetZoom = activeModule ? 5 : 12;
+      const scrollOffset = scroll ? scroll.offset : 0;
+      
+      // Calculate 360 Orbit based on scroll position (0 to 1 -> 0 to 2PI)
+      const orbitAngle = scrollOffset * Math.PI * 2;
+      
+      // Add subtle mouse parallax on top of the orbit
       const parallaxX = (state.pointer.x * 2);
       const parallaxY = (state.pointer.y * 2);
       
-      const targetCamPos = new THREE.Vector3(parallaxX, parallaxY, targetZoom);
-      state.camera.position.lerp(targetCamPos, 0.03);
+      const camX = Math.sin(orbitAngle) * targetZoom + parallaxX;
+      const camZ = Math.cos(orbitAngle) * targetZoom;
+      // Slight vertical arc over the black hole during scroll
+      const camY = Math.sin(scrollOffset * Math.PI) * 4 + parallaxY;
+
+      const targetCamPos = new THREE.Vector3(camX, camY, camZ);
+      state.camera.position.lerp(targetCamPos, 0.05);
       state.camera.lookAt(0, 0, 0);
 
       // Model rotation
@@ -319,9 +332,9 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
             {/* Auto-scaled via Box3 bounding box */}
             <primitive object={clonedScene} />
 
-            {/* Soft Ambient Lights */}
-            <pointLight intensity={2.0} color="#00f0ff" distance={6} decay={2} />
-            <pointLight intensity={1.0} color="#ff0066" distance={8} decay={2} />
+            {/* Intense Fiery Ambient Lights (Interstellar look) */}
+            <pointLight intensity={3.0} color="#ff8800" distance={8} decay={2} />
+            <pointLight intensity={1.5} color="#ff3300" distance={12} decay={2} />
           </group>
         </Float>
 
@@ -348,9 +361,9 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
           </bufferGeometry>
           <pointsMaterial
             size={0.05}
-            color="#00f0ff"
+            color="#ffaa00"
             transparent
-            opacity={0.5}
+            opacity={0.6}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
@@ -359,7 +372,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
         {/* Spacetime Gravity Grid Mesh */}
         <mesh ref={gridMeshRef} geometry={gridGeometry} position={[0, -3.5, 0]}>
           <meshBasicMaterial
-            color="#003366"
+            color="#ff3300"
             wireframe
             transparent
             opacity={0.12}
@@ -372,7 +385,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[Math.max(0.1, waveRadius - 0.4), waveRadius, 64]} />
             <meshBasicMaterial
-              color="#00f0ff"
+              color="#ffaa00"
               side={THREE.DoubleSide}
               transparent
               opacity={Math.max(0, 1 - waveRadius / 20)}
