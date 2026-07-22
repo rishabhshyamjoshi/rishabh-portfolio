@@ -133,22 +133,22 @@ export default function CustomCursor() {
       const dx = centerX - mouse.current.x;
       const dy = centerY - mouse.current.y;
       const distToCenter = Math.sqrt(dx * dx + dy * dy) || 1;
-      const gravityRadius = 450;
+      const gravityRadius = 550; // Increased influence radius
 
-      // Calculate gravitational pull towards Singularity center
+      // Calculate stronger gravitational pull towards Singularity center
       let pullX = 0;
       let pullY = 0;
       let pullIntensity = 0;
 
       if (distToCenter < gravityRadius) {
-        pullIntensity = Math.pow(1 - distToCenter / gravityRadius, 1.6);
-        const pullFactor = pullIntensity * 70; // Magnetic pull force
+        pullIntensity = Math.pow(1 - distToCenter / gravityRadius, 1.4);
+        const pullFactor = pullIntensity * 120; // Increased gravity pull force
         pullX = (dx / distToCenter) * pullFactor;
         pullY = (dy / distToCenter) * pullFactor;
       }
 
       const pts = points.current;
-      // Lead cursor point pulled towards black hole
+      // Lead cursor point pulled strongly towards black hole
       pts[0].x = mouse.current.x + pullX;
       pts[0].y = mouse.current.y + pullY;
       
@@ -165,22 +165,22 @@ export default function CustomCursor() {
         const pdy = centerY - pts[i].y;
         const pDist = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
         if (pDist < gravityRadius) {
-          const ptPull = Math.pow(1 - pDist / gravityRadius, 2) * (i / numPoints) * 4.5;
+          const ptPull = Math.pow(1 - pDist / gravityRadius, 2) * (i / numPoints) * 6.5;
           pts[i].x += (pdx / pDist) * ptPull;
           pts[i].y += (pdy / pDist) * ptPull;
         }
       }
       
-      // Dynamic glowing colors: Cyan/Amber warp glow when pulled into gravity field
+      // Dynamic glowing colors: Amber/Gold accretion glow when pulled into gravity field
       const baseColor = pullIntensity > 0.1 
-        ? `rgba(255, ${Math.floor(255 - pullIntensity * 150)}, ${Math.floor(255 - pullIntensity * 200)},`
+        ? `rgba(255, ${Math.floor(255 - pullIntensity * 140)}, ${Math.floor(255 - pullIntensity * 220)},`
         : "rgba(255, 255, 255,";
       
       const glowColor = pullIntensity > 0.3 ? "#ffaa00" : "#ffffff";
       
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.shadowBlur = 12 + pullIntensity * 15;
+      ctx.shadowBlur = 12 + pullIntensity * 25;
       ctx.shadowColor = glowColor;
 
       for (let s = 0; s < numStrands; s++) {
@@ -202,7 +202,7 @@ export default function CustomCursor() {
           const widthTaper = Math.sin(progress * Math.PI);
           const phase = (s / numStrands) * Math.PI * 2;
           const wave = Math.sin(time * 2 + progress * 8 + phase);
-          const amplitude = (hovering ? 30 : 15) * (1 + pullIntensity * 0.8);
+          const amplitude = (hovering ? 30 : 15) * (1 + pullIntensity * 1.2);
           
           strandPts.push({ x: p.x + nx * wave * widthTaper * amplitude, y: p.y + ny * wave * widthTaper * amplitude });
         }
@@ -216,12 +216,43 @@ export default function CustomCursor() {
         
         const gradient = ctx.createLinearGradient(pts[numPoints - 1].x, pts[numPoints - 1].y, pts[0].x, pts[0].y);
         gradient.addColorStop(0, `${baseColor} 0)`);
-        gradient.addColorStop(0.5, `${baseColor} ${0.3 + pullIntensity * 0.4})`);
+        gradient.addColorStop(0.5, `${baseColor} ${0.3 + pullIntensity * 0.5})`);
         gradient.addColorStop(1, `${baseColor} ${0.8 + pullIntensity * 0.2})`);
         
-        ctx.lineWidth = (hovering ? 3 : 1.5) + pullIntensity * 1.5;
+        ctx.lineWidth = (hovering ? 3 : 1.5) + pullIntensity * 2.5;
         ctx.strokeStyle = gradient;
         ctx.stroke();
+      }
+
+      // Draw Event Horizon Core & Photon Accretion Ring at Cursor Tip when near blackhole
+      if (pullIntensity > 0.15) {
+        const ringRadius = 12 * pullIntensity;
+        
+        // 1. Dark Singularity Core
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(pts[0].x, pts[0].y, ringRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#000000";
+        ctx.fill();
+        
+        // 2. Fiery Event Horizon Photon Ring
+        ctx.lineWidth = 2 + pullIntensity * 3;
+        ctx.strokeStyle = "#ffaa00";
+        ctx.shadowColor = "#ff3300";
+        ctx.shadowBlur = 20 * pullIntensity;
+        ctx.stroke();
+        
+        // 3. Orbiting Photon Sparks
+        for (let k = 0; k < 3; k++) {
+          const sparkAngle = time * 4 + (k * Math.PI * 2) / 3;
+          const sx = pts[0].x + Math.cos(sparkAngle) * (ringRadius + 4);
+          const sy = pts[0].y + Math.sin(sparkAngle) * (ringRadius + 4);
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.fill();
+        }
+        ctx.restore();
       }
 
       if (hudRef.current) {
