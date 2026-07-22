@@ -136,131 +136,8 @@ function CinematicCameraRig() {
   return null;
 }
 
-interface ThrownObject {
-  id: number;
-  type: "probe" | "asteroid" | "energy";
-  position: THREE.Vector3;
-  velocity: THREE.Vector3;
-  rotation: THREE.Vector3;
-  rotSpeed: THREE.Vector3;
-  scale: number;
-  color: string;
-}
-
-interface ParticleBurst {
-  id: number;
-  position: THREE.Vector3;
-  color: string;
-  particles: { pos: THREE.Vector3; vel: THREE.Vector3; opacity: number }[];
-  life: number;
-}
-
-// Throwable Objects Renderer & Physical Newtonian Gravity Simulation
-function ThrowableObjectsManager({ 
-  objects, 
-  onSwallowed 
-}: { 
-  objects: ThrownObject[]; 
-  onSwallowed: (id: number, pos: THREE.Vector3, color: string) => void;
-}) {
-  useFrame((_, delta) => {
-    const GM = 28.0;
-    const eventHorizonRadius = 2.2; // Distance where blackhole GLB is touched
-
-    objects.forEach((obj) => {
-      const distSq = obj.position.lengthSq();
-      const dist = Math.sqrt(distSq);
-
-      if (dist < eventHorizonRadius) {
-        // Destroy object when it touches blackhole GLB!
-        onSwallowed(obj.id, obj.position.clone(), obj.color);
-        return;
-      }
-
-      // Newtonian Gravity: Acceleration a = -GM / r^2
-      const accelMag = GM / Math.max(0.2, distSq);
-      const pullDir = obj.position.clone().negate().normalize();
-      const accel = pullDir.multiplyScalar(accelMag);
-
-      // Integrate velocity and position
-      obj.velocity.addScaledVector(accel, delta);
-      obj.position.addScaledVector(obj.velocity, delta);
-
-      // Rotate object in space
-      obj.rotation.addScaledVector(obj.rotSpeed, delta);
-    });
-  });
-
-  return (
-    <>
-      {objects.map((obj) => {
-        const dist = obj.position.length();
-        // Tidal force stretching (Spaghettification) near event horizon
-        const stretchZ = Math.max(1, 4.0 / Math.max(0.8, dist));
-        const compressXY = Math.max(0.2, 1 / Math.sqrt(stretchZ));
-
-        return (
-          <group
-            key={obj.id}
-            position={[obj.position.x, obj.position.y, obj.position.z]}
-            rotation={[obj.rotation.x, obj.rotation.y, obj.rotation.z]}
-            scale={[obj.scale * compressXY, obj.scale * compressXY, obj.scale * stretchZ]}
-          >
-            {obj.type === "probe" ? (
-              <mesh>
-                <octahedronGeometry args={[1]} />
-                <meshStandardMaterial color={obj.color} emissive={obj.color} emissiveIntensity={1.2} wireframe />
-              </mesh>
-            ) : obj.type === "asteroid" ? (
-              <mesh>
-                <dodecahedronGeometry args={[1, 1]} />
-                <meshStandardMaterial color={obj.color} roughness={0.6} metalness={0.8} />
-              </mesh>
-            ) : (
-              <mesh>
-                <sphereGeometry args={[1, 16, 16]} />
-                <meshStandardMaterial color={obj.color} emissive={obj.color} emissiveIntensity={2.0} wireframe />
-              </mesh>
-            )}
-          </group>
-        );
-      })}
-    </>
-  );
-}
-
-function BurstParticleRenderer({ bursts }: { bursts: ParticleBurst[] }) {
-  useFrame((_, delta) => {
-    bursts.forEach((b) => {
-      b.life += delta;
-      b.particles.forEach((p) => {
-        p.pos.addScaledVector(p.vel, delta);
-        p.opacity = Math.max(0, 1 - b.life * 2.5);
-      });
-    });
-  });
-
-  return (
-    <>
-      {bursts.filter(b => b.life < 0.5).map((b) => (
-        <group key={b.id}>
-          {b.particles.map((p, idx) => (
-            <mesh key={idx} position={[p.pos.x, p.pos.y, p.pos.z]}>
-              <sphereGeometry args={[0.08, 8, 8]} />
-              <meshBasicMaterial color={b.color} transparent opacity={p.opacity} />
-            </mesh>
-          ))}
-        </group>
-      ))}
-    </>
-  );
-}
-
 export default function AcademyPage() {
   const [audioMuted, setAudioMuted] = useState(true);
-  const [objects, setObjects] = useState<ThrownObject[]>([]);
-  const [bursts, setBursts] = useState<ParticleBurst[]>([]);
-  const nextId = useRef(1);
 
   useEffect(() => {
     const initAudio = async () => {
@@ -276,72 +153,6 @@ export default function AcademyPage() {
   const toggleAudio = async () => {
     const muted = await AudioController.getInstance().toggleMute();
     setAudioMuted(muted);
-  };
-
-  const spawnObject = (type: "probe" | "asteroid" | "energy") => {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 9 + Math.random() * 4;
-    
-    // Spawn position on circular shell around blackhole
-    const pos = new THREE.Vector3(
-      Math.cos(angle) * distance,
-      (Math.random() - 0.5) * 2,
-      Math.sin(angle) * distance
-    );
-
-    // Initial tangential velocity for realistic orbital trajectory (v = sqrt(GM / r))
-    const GM = 28.0;
-    const r = pos.length();
-    const vMag = Math.sqrt(GM / r) * (0.75 + Math.random() * 0.4);
-    const tangent = new THREE.Vector3(-pos.z, 0, pos.x).normalize();
-    const velocity = tangent.multiplyScalar(vMag);
-    velocity.add(new THREE.Vector3((Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 0.4));
-
-    const colors = {
-      probe: "#00f0ff",
-      asteroid: "#ffaa44",
-      energy: "#ff00ea",
-    };
-
-    const newObj: ThrownObject = {
-      id: nextId.current++,
-      type,
-      position: pos,
-      velocity,
-      rotation: new THREE.Vector3(Math.random(), Math.random(), Math.random()),
-      rotSpeed: new THREE.Vector3((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3),
-      scale: type === "probe" ? 0.3 : type === "asteroid" ? 0.45 : 0.35,
-      color: colors[type],
-    };
-
-    setObjects((prev) => [...prev, newObj]);
-    try {
-      AudioController.getInstance().playLaunchProbeSound();
-    } catch (e) {}
-  };
-
-  const handleSwallowed = (id: number, pos: THREE.Vector3, color: string) => {
-    setObjects((prev) => prev.filter((o) => o.id !== id));
-    
-    // Trigger particle explosion burst upon touching blackhole
-    const particles = [];
-    for (let k = 0; k < 25; k++) {
-      particles.push({
-        pos: pos.clone(),
-        vel: new THREE.Vector3(
-          (Math.random() - 0.5) * 6,
-          (Math.random() - 0.5) * 6,
-          (Math.random() - 0.5) * 6
-        ),
-        opacity: 1,
-      });
-    }
-
-    setBursts((prev) => [...prev, { id: Date.now() + Math.random(), position: pos, color, particles, life: 0 }]);
-
-    try {
-      AudioController.getInstance().playObjectSwallowedSound();
-    } catch (e) {}
   };
 
   return (
@@ -369,32 +180,13 @@ export default function AcademyPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 h-[8vh] bg-black/90 z-40 border-t border-white/10 flex items-center justify-between px-8 pointer-events-auto backdrop-blur-sm">
+      <div className="fixed bottom-0 left-0 right-0 h-[7vh] bg-black/90 z-40 border-t border-white/10 flex items-center justify-between px-8 pointer-events-none backdrop-blur-sm">
         <span className="text-[0.55rem] tracking-[0.3em] text-white/40">
           MASS: 4.1M M☉ | DILATION: ACTIVE
         </span>
-        
-        {/* ═══ THROWABLE OBJECTS CONTROLS ═══ */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => spawnObject("probe")}
-            className="border border-cyan-500/50 bg-cyan-500/10 hover:bg-cyan-500/30 text-cyan-300 px-3.5 py-1.5 rounded-full text-[0.6rem] tracking-[0.2em] transition-all duration-300 shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-          >
-            + LAUNCH PROBE
-          </button>
-          <button
-            onClick={() => spawnObject("asteroid")}
-            className="border border-amber-500/50 bg-amber-500/10 hover:bg-amber-500/30 text-amber-300 px-3.5 py-1.5 rounded-full text-[0.6rem] tracking-[0.2em] transition-all duration-300 shadow-[0_0_10px_rgba(255,170,0,0.2)]"
-          >
-            + THROW ASTEROID
-          </button>
-          <button
-            onClick={() => spawnObject("energy")}
-            className="border border-pink-500/50 bg-pink-500/10 hover:bg-pink-500/30 text-pink-300 px-3.5 py-1.5 rounded-full text-[0.6rem] tracking-[0.2em] transition-all duration-300 shadow-[0_0_10px_rgba(255,0,234,0.2)]"
-          >
-            + THROW ENERGY
-          </button>
-        </div>
+        <span className="text-[0.55rem] tracking-[0.3em] text-cyan-400/80 animate-pulse">
+          SCROLL MOUSE DOWN TO OPERATE 360° CINEMATIC ORBIT
+        </span>
       </div>
 
       {/* ═══ 3D CANVAS FULLSCREEN ═══ */}
@@ -416,8 +208,6 @@ export default function AcademyPage() {
             <ScrollControls pages={4} damping={0.25}>
               <RawBlackHoleModel />
               <CinematicCameraRig />
-              <ThrowableObjectsManager objects={objects} onSwallowed={handleSwallowed} />
-              <BurstParticleRenderer bursts={bursts} />
             </ScrollControls>
           </Suspense>
 
