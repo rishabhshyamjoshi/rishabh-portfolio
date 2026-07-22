@@ -75,7 +75,7 @@ function RawBlackHoleModel() {
   );
 }
 
-// Hollywood Sci-Fi Infinity-Loop (Figure-8) Scroll Camera Rig
+// Hollywood Sci-Fi Centered Infinity-Loop (Figure-8) Camera Rig
 function CinematicCameraRig() {
   const scroll = useScroll();
 
@@ -84,41 +84,31 @@ function CinematicCameraRig() {
     const offset = scroll.offset; // 0.0 (top) -> 1.0 (bottom)
 
     let camX = 0;
-    let camY = 20;
-    let camZ = 65;
+    let camY = 18;
+    let camZ = 60;
 
-    if (offset < 0.3) {
-      // Approach Phase: Deep space zoom in towards blackhole
-      const p = offset / 0.3;
+    if (offset < 0.25) {
+      // Approach Phase: Deep space zoom-in towards the blackhole origin
+      const p = offset / 0.25;
       const easeP = Math.pow(p, 0.7);
-      camZ = THREE.MathUtils.lerp(65, 18, easeP);
-      camY = THREE.MathUtils.lerp(20, 3, easeP);
-      camX = THREE.MathUtils.lerp(0, -5, easeP);
+      camZ = THREE.MathUtils.lerp(60, 16, easeP);
+      camY = THREE.MathUtils.lerp(18, 0, easeP);
+      camX = 0;
     } else {
-      // Infinity Loop (Figure-8) Phase: Camera traces a 3D lemniscate loop around blackhole
-      const p = (offset - 0.3) / 0.7; // 0 to 1
-      const t = p * Math.PI * 2; // Full 2PI loop cycle
+      // Centered Infinity Loop (Figure-8) Orbit Phase around (0,0,0)
+      // t goes 0 -> 2PI over the remaining 75% scroll
+      const p = (offset - 0.25) / 0.75;
+      const t = p * Math.PI * 2;
 
-      // Gerono Lemniscate / Infinity Curve Parametric Equations
-      const a = 18; // Infinity loop scale
-      const denom = 1 + Math.pow(Math.cos(t), 2);
-      
-      const rawX = (a * Math.sin(t)) / denom;
-      const rawZ = (a * Math.sin(t) * Math.cos(t)) / denom + 15;
-      const rawY = 3 + Math.sin(t * 2) * 5;
+      // Spherical Figure-8 parametric orbit:
+      // x = R * sin(t), z = R * cos(t), y = H * sin(2t)
+      // Radius oscillates slightly (14 to 18) to form a true 3D lemniscate loop around origin
+      const R = 16 + Math.cos(2 * t) * 2;
+      const H = 6.5;
 
-      // Distance Safety Check: Ensure camera distance from origin is ALWAYS >= 13.5 (Never clips inside blackhole)
-      const currentPos = new THREE.Vector3(rawX, rawY, rawZ);
-      const dist = currentPos.length();
-      const minDistance = 13.5;
-      
-      if (dist < minDistance) {
-        currentPos.normalize().multiplyScalar(minDistance);
-      }
-
-      camX = currentPos.x;
-      camY = currentPos.y;
-      camZ = currentPos.z;
+      camX = Math.sin(t) * R;
+      camZ = Math.cos(t) * R;
+      camY = Math.sin(2 * t) * H;
     }
 
     // Add subtle mouse parallax sway for depth
@@ -128,7 +118,7 @@ function CinematicCameraRig() {
     const targetCamPos = new THREE.Vector3(camX + parallaxX, camY + parallaxY, camZ);
 
     state.camera.position.lerp(targetCamPos, 0.08);
-    state.camera.lookAt(0, 0, 0);
+    state.camera.lookAt(0, 0, 0); // Always stay locked onto the Black Hole Singularity at (0,0,0)
 
     // Modulate audio depth/filter based on scroll proximity
     try {
