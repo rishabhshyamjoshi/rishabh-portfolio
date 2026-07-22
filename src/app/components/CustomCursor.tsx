@@ -2,13 +2,31 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { AudioController } from "./../utils/AudioController";
+
+const handleNav = (detail: number) => {
+  if (typeof window !== "undefined") {
+    if (window.location.pathname !== "/") {
+      window.location.href = "/";
+    } else {
+      window.dispatchEvent(new CustomEvent("navTo", { detail }));
+    }
+  }
+};
+
 const MENU_ITEMS = [
-  { label: "HOME", angle: -90, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 0 })) },
-  { label: "PRODUCTS", angle: -30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 1 })) },
-  { label: "TEAM", angle: 30, action: () => window.dispatchEvent(new CustomEvent("navTo", { detail: 2 })) },
-  { label: "AUDIO", angle: 90, action: () => window.dispatchEvent(new CustomEvent("toggleAudio")) },
-  { label: "CONTACT", angle: 150, action: () => window.dispatchEvent(new CustomEvent("toggleContact")) },
-  { label: "ACADEMY", angle: 210, action: () => window.location.href = "/academy" },
+  { label: "HOME", angle: -90, action: () => handleNav(0) },
+  { label: "PRODUCTS", angle: -30, action: () => handleNav(1) },
+  { label: "TEAM", angle: 30, action: () => handleNav(2) },
+  { label: "AUDIO", angle: 90, action: () => AudioController.getInstance().toggleMute() },
+  { label: "CONTACT", angle: 150, action: () => {
+    if (typeof window !== "undefined" && window.location.pathname !== "/") {
+      window.location.href = "mailto:hello@rj.industries";
+    } else {
+      window.dispatchEvent(new CustomEvent("toggleContact"));
+    }
+  } },
+  { label: "ACADEMY", angle: 210, action: () => { if (typeof window !== "undefined" && window.location.pathname !== "/academy") window.location.href = "/academy"; } },
 ];
 
 export default function CustomCursor() {
