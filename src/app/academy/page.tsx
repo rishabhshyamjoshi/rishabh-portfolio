@@ -3,21 +3,41 @@
 import { Suspense, useState, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise, Glitch } from "@react-three/postprocessing";
+import { GlitchMode } from "postprocessing";
+import { Vector2 } from "three";
 import Link from "next/link";
 import BlackHoleExperience, { BlackHoleControls } from "../components/BlackHoleExperience";
 import CustomCursor from "../components/CustomCursor";
 import WorkContactCapsule from "../components/WorkContactCapsule";
+import { AudioController } from "../utils/AudioController";
 
 export default function AcademyPage() {
   const [mounted, setMounted] = useState(false);
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [swallowedCount, setSwallowedCount] = useState(0);
+  const [glitchActive, setGlitchActive] = useState(false);
+
+  const triggerGlitch = () => {
+    setGlitchActive(true);
+    setTimeout(() => setGlitchActive(false), 800);
+  };
 
   const blackHoleRef = useRef<BlackHoleControls>(null);
 
   useEffect(() => {
     setMounted(true);
+    // Initialize cinematic ambient drone on mount
+    const initAudio = async () => {
+      try {
+        const audio = AudioController.getInstance();
+        await audio.init();
+        if (audio.isMuted) {
+          await audio.toggleMute();
+        }
+      } catch (e) {}
+    };
+    initAudio();
   }, []);
 
   if (!mounted) return null;
@@ -44,19 +64,41 @@ export default function AcademyPage() {
             <BlackHoleExperience
               ref={blackHoleRef}
               position={[0, 0, 0]}
-              onSwallowed={() => setSwallowedCount((prev) => prev + 1)}
+              onSwallowed={() => {
+                setSwallowedCount((prev) => prev + 1);
+                triggerGlitch();
+              }}
+              onWave={triggerGlitch}
+              activeModule={activeModule}
             />
           </Suspense>
 
-          {/* Low bloom intensity to eliminate whiteout glare */}
+          {/* Cinematic Post-Processing Pipeline */}
           <EffectComposer multisampling={0}>
-            <Bloom luminanceThreshold={0.85} luminanceSmoothing={0.9} intensity={0.2} />
+            <Bloom luminanceThreshold={0.85} luminanceSmoothing={0.9} intensity={0.25} />
+            <ChromaticAberration offset={new Vector2(0.002, 0.002)} />
+            <Noise opacity={0.15} />
+            <Vignette eskil={false} offset={0.1} darkness={1.1} />
+            {glitchActive && (
+              <Glitch
+                delay={new Vector2(0, 0)}
+                duration={new Vector2(0.3, 0.8)}
+                strength={new Vector2(0.1, 0.3)}
+                mode={GlitchMode.SPORADIC}
+                active={glitchActive}
+                ratio={0.85}
+              />
+            )}
           </EffectComposer>
         </Canvas>
       </div>
 
+      {/* ═══ CINEMATIC LETTERBOX ═══ */}
+      <div className="fixed top-0 left-0 w-full h-[8vh] bg-black z-30 pointer-events-none shadow-[0_10px_30px_rgba(0,0,0,0.8)]" />
+      <div className="fixed bottom-0 left-0 w-full h-[8vh] bg-black z-30 pointer-events-none shadow-[0_-10px_30px_rgba(0,0,0,0.8)]" />
+
       {/* ═══ TOP BAR NAVIGATION ═══ */}
-      <div className="fixed top-8 left-8 right-8 z-50 flex justify-between items-start pointer-events-none">
+      <div className="fixed top-10 left-8 right-8 z-50 flex justify-between items-start pointer-events-none">
         <div className="pointer-events-auto">
           <Link
             href="/"

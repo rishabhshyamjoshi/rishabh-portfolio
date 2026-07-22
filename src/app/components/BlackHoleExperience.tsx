@@ -35,10 +35,12 @@ interface BlackHoleExperienceProps {
   scrollProgress?: number;
   position?: [number, number, number];
   onSwallowed?: (count: number) => void;
+  onWave?: () => void;
+  activeModule?: string | null;
 }
 
 const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperienceProps>(
-  ({ position = [0, 0, 0], onSwallowed }, ref) => {
+  ({ position = [0, 0, 0], onSwallowed, onWave, activeModule }, ref) => {
     const groupRef = useRef<THREE.Group>(null);
     const modelRef = useRef<THREE.Group>(null);
     const gridMeshRef = useRef<THREE.Mesh>(null);
@@ -182,10 +184,11 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
     const triggerGravWave = useCallback(() => {
       setGravWaveActive(true);
       setWaveRadius(0);
+      if (onWave) onWave();
       try {
         AudioController.getInstance().playObjectSwallowedSound();
       } catch (e) {}
-    }, []);
+    }, [onWave]);
 
     // Expose control methods to parent via ref
     useImperativeHandle(ref, () => ({
@@ -197,6 +200,15 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
     useFrame((state, delta) => {
       if (!groupRef.current) return;
       const t = state.clock.getElapsedTime();
+
+      // Cinematic Camera Parallax & Zoom
+      const targetZoom = activeModule ? 5 : 10;
+      const parallaxX = (state.pointer.x * 2);
+      const parallaxY = (state.pointer.y * 2);
+      
+      const targetCamPos = new THREE.Vector3(parallaxX, parallaxY, targetZoom);
+      state.camera.position.lerp(targetCamPos, 0.03);
+      state.camera.lookAt(0, 0, 0);
 
       // Model rotation
       if (modelRef.current) {
