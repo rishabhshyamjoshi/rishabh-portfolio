@@ -359,6 +359,89 @@ function MarsPlanet({ scrollProgress, position }: { scrollProgress: number, posi
 }
 
 
+function Contact3DTerminal({ position }: { position: [number, number, number] }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const ringRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    const t = state.clock.getElapsedTime();
+    groupRef.current.rotation.y = t * 0.2;
+    groupRef.current.rotation.x = Math.sin(t * 0.3) * 0.1;
+    if (ringRef.current) {
+      ringRef.current.rotation.z = -t * 0.4;
+      ringRef.current.rotation.x = t * 0.2;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <Float speed={1.8} rotationIntensity={0.3} floatIntensity={0.6}>
+        <group ref={groupRef}>
+          {/* Outer Hologram Glass Core */}
+          <mesh>
+            <octahedronGeometry args={[2.5, 0]} />
+            <meshPhysicalMaterial
+              color="#00f0ff"
+              wireframe
+              emissive="#00f0ff"
+              emissiveIntensity={0.6}
+              transparent
+              opacity={0.6}
+            />
+          </mesh>
+
+          {/* Inner Glowing Core */}
+          <mesh>
+            <icosahedronGeometry args={[1.2, 1]} />
+            <meshStandardMaterial
+              color="#ff00aa"
+              emissive="#ff00aa"
+              emissiveIntensity={1.5}
+              wireframe
+            />
+          </mesh>
+
+          {/* Spinning Energy Ring */}
+          <group ref={ringRef}>
+            <mesh>
+              <torusGeometry args={[3.8, 0.03, 16, 100]} />
+              <meshBasicMaterial color="#00f0ff" transparent opacity={0.8} />
+            </mesh>
+          </group>
+
+          <pointLight intensity={5} color="#00f0ff" distance={15} />
+          <pointLight intensity={3} color="#ff00aa" distance={10} />
+
+          <Html
+            position={[0, 3.8, 0]}
+            center
+            distanceFactor={12}
+            style={{ pointerEvents: "none" }}
+          >
+            <div style={{
+              padding: "6px 14px",
+              background: "rgba(5, 10, 20, 0.85)",
+              border: "1px solid rgba(0, 240, 255, 0.4)",
+              borderRadius: "6px",
+              color: "#00f0ff",
+              fontSize: "11px",
+              letterSpacing: "0.25em",
+              whiteSpace: "nowrap",
+              backdropFilter: "blur(8px)",
+              textTransform: "uppercase",
+              fontWeight: 600,
+              boxShadow: "0 0 15px rgba(0, 240, 255, 0.3)"
+            }}>
+              STATION 03 // RJ INDUSTRIES HQ
+            </div>
+          </Html>
+        </group>
+      </Float>
+    </group>
+  );
+}
+
 // ════════════════════════════════════════════════════════════════
 // MASTER EXPORT
 // ════════════════════════════════════════════════════════════════
@@ -370,6 +453,7 @@ export default function SolarSystem({ scrollProgress }: { scrollProgress: number
     <group>
       <EarthPlanet scrollProgress={getLocalProgress(0)} position={[0, 0, -2]} />
       <MarsPlanet scrollProgress={getLocalProgress(1)} position={[40, 0, -2]} />
+      <Contact3DTerminal position={[80, 0, -2]} />
     </group>
   );
 }
