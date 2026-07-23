@@ -10,7 +10,7 @@ import Environment from "./Environment";
 import SolarSystem from "./TheCore";
 import ProjectScreens from "./ProjectScreens";
 import TeamScreens from "./TeamScreens";
-import SpaceContactHub from "./SpaceContactHub";
+import FooterScreen from "./FooterScreen";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
 
@@ -30,7 +30,7 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     const handleWheel = (e: WheelEvent) => {
       if (activeProject) return; 
       targetScroll.current += e.deltaY * 0.001;
-      if (targetScroll.current > 4) targetScroll.current = 4;
+      if (targetScroll.current > 5) targetScroll.current = 5;
       if (targetScroll.current < 0) targetScroll.current = 0;
     };
     
@@ -43,7 +43,7 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       const currentY = e.touches[0].clientY;
       const deltaY = lastTouchY - currentY;
       targetScroll.current += deltaY * 0.005; // Slightly faster multiplier for touch dragging
-      if (targetScroll.current > 4) targetScroll.current = 4;
+      if (targetScroll.current > 5) targetScroll.current = 5;
       if (targetScroll.current < 0) targetScroll.current = 0;
       lastTouchY = currentY;
     };
@@ -148,8 +148,10 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       const nextProjectX = (N + 1) * 40;
       
       const getOrbitRadius = (planetIndex: number) => {
-        // Earth (0) is small, Mars (1) is massive now
-        return planetIndex === 0 ? 8 : 18;
+        // Earth (0) is small, Mars (1) is massive now, Footer (2) is medium
+        if (planetIndex === 0) return 8;
+        if (planetIndex === 1) return 18;
+        return 12;
       };
       
       const r1 = getOrbitRadius(N);
@@ -289,11 +291,11 @@ export default function Scene() {
         
         <Suspense fallback={null}>
           <SolarSystem scrollProgress={scrollProgress} />
-          <SpaceContactHub scrollProgress={scrollProgress} />
         </Suspense>
         
         <ProjectScreens scrollProgress={scrollProgress} onProjectClick={setActiveProject} />
         <TeamScreens scrollProgress={scrollProgress} onMemberClick={setActiveProject} />
+        <FooterScreen scrollProgress={scrollProgress} />
         <MovementFX scrollProgress={scrollProgress} />
         
         <EffectComposer multisampling={0}>

@@ -103,14 +103,7 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
     const t = state.clock.getElapsedTime();
     currentTime.current = t;
     
-    let localScrollProgress = 0;
-    if (scrollProgress > 2 && scrollProgress <= 3) {
-      localScrollProgress = scrollProgress - 2;
-    } else if (scrollProgress > 3 && scrollProgress <= 4) {
-      localScrollProgress = Math.max(0, 1 - (scrollProgress - 3));
-    } else {
-      localScrollProgress = 0;
-    }
+    const localScrollProgress = scrollProgress > 2 ? Math.min(1, scrollProgress - 2) : 0;
     const radius = Math.pow(localScrollProgress, 1.5) * 22; // Increased to 22 to clear the massive Mars
     const x = 40 + Math.cos(member.angle + t * 0.2) * radius;
     const z = Math.sin(member.angle + t * 0.2) * radius - 2; 
