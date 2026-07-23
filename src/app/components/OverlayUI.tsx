@@ -145,6 +145,20 @@ export default function OverlayUI() {
         </div>
       </div>
 
+      {/* Right-click hint */}
+      <div style={{
+        position: "absolute",
+        bottom: "3%",
+        right: "2%",
+        fontSize: "0.5rem",
+        letterSpacing: "0.2em",
+        color: "rgba(255,255,255,0.3)",
+        animation: "fadeInUp 2s ease 2s both",
+        pointerEvents: "none"
+      }}>
+        RIGHT CLICK FOR MENU
+      </div>
+
           <style dangerouslySetInnerHTML={{__html: `
             @keyframes fadeInUp {
               from { opacity: 0; transform: translateY(20px); }
