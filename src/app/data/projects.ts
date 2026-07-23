@@ -14,36 +14,38 @@ export interface ProjectData {
 export const PROJECTS: ProjectData[] = [
   {
     id: 1,
-    title: "RJ.GLASS GEN-ONE",
+    title: "K.I.N.E.T.I.C GLASSES",
     shortDesc: "Consumer AR / K.I.N.E.T.I.C. Division",
     longDesc: "The flagship consumer AR product from RJ Industries. Powered by the proprietary RJ-A1 Chip, these glasses deliver high-performance, private, offline-capable AI models directly to your visual field.",
     techStack: ["WebGL", "RJ-A1 Chip", "React", "WebSockets"],
     angle: 0,
     scale: [4, 3, 1],
     link: "/project/1",
-    image: "/rj-glasses.png", // Keep the original for the first one
+    image: "/rj-glasses.png",
   },
   {
     id: 2,
-    title: "AI EDUCATION ECOSYSTEM",
-    shortDesc: "Empowering 400K+ Students",
-    longDesc: "A massive, distributed educational platform. Turning complex technology into digestible, actionable knowledge for over 400,000 students across 21+ platforms worldwide.",
-    techStack: ["Node.js", "Redis", "Next.js", "React"],
+    title: "NAM EAS PORTFOLIO",
+    shortDesc: "Professional Portfolio Website",
+    longDesc: "A complete portfolio website engineered for performance and immersive user experience. Discover the work and capabilities of NAM EAS.",
+    techStack: ["React", "WebGL", "Three.js"],
     angle: Math.PI / 3, // 60 degrees
     scale: [5, 3, 1],
-    link: "/project/2",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop", // Cyberpunk desk
+    link: "https://rj01.netlify.app",
+    externalLink: "https://rj01.netlify.app",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop", 
   },
   {
     id: 3,
-    title: "MOD-CPU HARDWARE",
-    shortDesc: "High-Performance Edge AI",
-    longDesc: "A custom hardware solution designed to run AI models locally. Fast, entirely private, and completely offline-capable. No cloud required. Engineered for the future.",
-    techStack: ["C++", "CUDA", "Embedded Systems"],
+    title: "RENDERING DAYLIGHT",
+    shortDesc: "Web-Based Graphics Experiment",
+    longDesc: "An interactive graphics engine exploring real-time rendering, light scattering, and complex shading techniques directly in the browser.",
+    techStack: ["WebGL", "GLSL", "Shaders"],
     angle: (Math.PI * 2) / 3, // 120 degrees
     scale: [3, 2, 1],
-    link: "/project/3",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop", // Microchip
+    link: "https://rishabhshyamjoshi.github.io/Rendering-daylight/",
+    externalLink: "https://rishabhshyamjoshi.github.io/Rendering-daylight/",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop", 
   },
   {
     id: 4,

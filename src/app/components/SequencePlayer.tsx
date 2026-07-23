@@ -105,8 +105,8 @@ export default function SequencePlayer() {
   }, [loaded]);
 
   const handleWheel = (e: React.WheelEvent) => {
-    // 1 scroll tick (deltaY ~ 100) * 0.0002 = 0.02 progress = ~4 frames out of 192.
-    const delta = e.deltaY * 0.0002; 
+    // 1 scroll tick (deltaY ~ 100) = 5 frames
+    const delta = (e.deltaY / 100) * (5 / (totalFrames - 1));
     progressRef.current += delta;
     progressRef.current = Math.max(0, Math.min(1, progressRef.current));
     
@@ -127,8 +127,6 @@ export default function SequencePlayer() {
         ref={canvasRef} 
         className="w-full h-full block" 
       />
-      {/* Overlay gradient so text remains readable over the video */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#020202]/80 via-[#020202]/20 to-transparent pointer-events-none" />
     </div>
   );
 }

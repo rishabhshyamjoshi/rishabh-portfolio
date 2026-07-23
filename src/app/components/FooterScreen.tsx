@@ -6,12 +6,10 @@ import { Text } from "@react-three/drei";
 import * as THREE from "three";
 
 const FOOTER_LINKS = [
-  { text: "INSTAGRAM", url: "#instagram" },
-  { text: "EMAIL", url: "mailto:hello@rjindustries.com" },
-  { text: "CONTACT", url: "#contact" },
-  { text: "WORK WITH US", url: "#work" },
-  { text: "TWITTER / X", url: "#twitter" },
-  { text: "LINKEDIN", url: "#linkedin" },
+  { text: "INSTAGRAM", url: "https://www.instagram.com/rj_industries01/" },
+  { text: "MOBILE", url: "tel:+918208812534" },
+  { text: "EMAIL", url: "mailto:contact@rjindustries.dev" },
+  { text: "LINKEDIN", url: "https://www.linkedin.com/company/rj-industries01/" },
 ];
 
 function FooterLink({ text, url, position, rotation }: { text: string, url: string, position: [number, number, number], rotation: [number, number, number] }) {
