@@ -8,6 +8,7 @@ export default function OverlayUI() {
   const [displayScroll, setDisplayScroll] = useState(0);
   const [audioMuted, setAudioMuted] = useState(true);
   const [showContact, setShowContact] = useState(false);
+  const [showRightClickWarning, setShowRightClickWarning] = useState(true);
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
 
@@ -145,28 +146,7 @@ export default function OverlayUI() {
         </div>
       </div>
 
-      {/* Right-click hint as a HUD Warning */}
-      <div style={{
-        position: "absolute",
-        bottom: "4%",
-        right: "3%",
-        fontSize: "0.55rem",
-        letterSpacing: "0.2em",
-        color: "#ff4444",
-        animation: "warningPulse 2s infinite, fadeInUp 2s ease 2s both",
-        pointerEvents: "none",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        padding: "0.4rem 0.8rem",
-        border: "1px solid rgba(255, 68, 68, 0.4)",
-        backgroundColor: "rgba(255, 68, 68, 0.05)",
-        backdropFilter: "blur(4px)",
-        textShadow: "0 0 8px rgba(255, 68, 68, 0.6)",
-      }}>
-        <span style={{ fontWeight: "bold", animation: "blink 1s infinite step-end" }}>[!]</span> 
-        RIGHT CLICK FOR MENU
-      </div>
+
 
           <style dangerouslySetInnerHTML={{__html: `
             @keyframes fadeInUp {
@@ -225,6 +205,72 @@ export default function OverlayUI() {
           
           <button onClick={() => setShowContact(false)} style={{ marginTop: "1.5rem", background: "none", border: "none", color: "rgba(255,255,255,0.25)", cursor: "pointer", fontSize: "0.6rem", letterSpacing: "0.1em" }} data-hover>
             CLOSE
+          </button>
+        </div>
+      </div>
+
+      {/* ═══ SYSTEM ALERT MODAL (Right Click Hint) ═══ */}
+      <div 
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: showRightClickWarning ? "rgba(0,0,0,0.85)" : "transparent",
+          backdropFilter: showRightClickWarning ? "blur(10px)" : "none",
+          pointerEvents: showRightClickWarning ? "auto" : "none",
+          transition: "all 0.4s ease",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 60,
+          opacity: showRightClickWarning ? 1 : 0,
+        }}
+      >
+        <div style={{
+          background: "rgba(20, 5, 5, 0.95)",
+          border: "1px solid rgba(255, 68, 68, 0.4)",
+          padding: "3rem 3rem",
+          borderRadius: "8px",
+          maxWidth: "450px",
+          textAlign: "center",
+          transform: showRightClickWarning ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
+          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 0 40px rgba(255, 68, 68, 0.15)",
+        }}>
+          <div style={{
+            color: "#ff4444",
+            fontSize: "2.5rem",
+            marginBottom: "1rem",
+            animation: "warningPulse 2s infinite"
+          }}>
+            ⚠
+          </div>
+          <h2 style={{ fontSize: "1.4rem", color: "#ff4444", marginBottom: "1rem", letterSpacing: "0.2em", fontWeight: 600 }}>SYSTEM ALERT</h2>
+          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", marginBottom: "2.5rem", letterSpacing: "0.1em", lineHeight: 1.6 }}>
+            Right-click anywhere on the screen to access the Navigation Menu.
+          </p>
+          <button 
+            onClick={() => setShowRightClickWarning(false)} 
+            style={{ 
+              padding: "0.8rem 2.5rem", 
+              background: "rgba(255, 68, 68, 0.15)", 
+              border: "1px solid rgba(255, 68, 68, 0.5)", 
+              color: "#ff4444", 
+              cursor: "pointer", 
+              fontSize: "0.75rem", 
+              letterSpacing: "0.2em",
+              transition: "all 0.2s",
+              borderRadius: "4px"
+            }} 
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(255, 68, 68, 0.3)";
+              e.currentTarget.style.boxShadow = "0 0 15px rgba(255, 68, 68, 0.4)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255, 68, 68, 0.15)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            ACKNOWLEDGE
           </button>
         </div>
       </div>
