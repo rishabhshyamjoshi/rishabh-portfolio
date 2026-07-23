@@ -62,25 +62,51 @@ export default function ProjectDetailModal({ item, onClose }: { item: any | null
           ))}
         </div>
 
-        <a 
-          href={isProject ? `/project/${item.id}` : item.linkedin}  
-          className="nav-pill interactive"
-          style={{
-            display: "inline-block",
-            padding: "1rem 2.5rem",
-            background: "rgba(0, 240, 255, 0.1)",
-            color: "#00f0ff",
-            border: "1px solid #00f0ff",
-            textDecoration: "none",
-            letterSpacing: "0.1em",
-            fontSize: "0.9rem",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-          }}
-          data-hover
-        >
-          {isProject ? "VIEW FULL CASE STUDY" : "ESTABLISH UPLINK"}
-        </a>
+        <div className="flex flex-wrap gap-4">
+          <a 
+            href={isProject ? (item.externalLink || `/project/${item.id}`) : item.linkedin}  
+            target={item.externalLink ? "_blank" : "_self"}
+            rel={item.externalLink ? "noopener noreferrer" : undefined}
+            className="nav-pill interactive"
+            style={{
+              display: "inline-block",
+              padding: "1rem 2.5rem",
+              background: "rgba(0, 240, 255, 0.1)",
+              color: "#00f0ff",
+              border: "1px solid #00f0ff",
+              textDecoration: "none",
+              letterSpacing: "0.1em",
+              fontSize: "0.9rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+            }}
+            data-hover
+          >
+            {isProject ? (item.externalLink ? "VISIT MUMUKSHOGAME.COM ↗" : "VIEW FULL CASE STUDY") : "ESTABLISH UPLINK"}
+          </a>
+
+          {isProject && item.externalLink && (
+            <a 
+              href={`/project/${item.id}`}  
+              className="nav-pill interactive"
+              style={{
+                display: "inline-block",
+                padding: "1rem 2rem",
+                background: "rgba(255, 255, 255, 0.05)",
+                color: "#fff",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                textDecoration: "none",
+                letterSpacing: "0.1em",
+                fontSize: "0.85rem",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+              }}
+              data-hover
+            >
+              CASE STUDY
+            </a>
+          )}
+        </div>
       </div>
       
       <style dangerouslySetInnerHTML={{__html: `

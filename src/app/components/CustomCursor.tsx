@@ -16,7 +16,7 @@ const handleNav = (detail: number) => {
 
 const MENU_ITEMS = [
   { label: "HOME", angle: -90, action: () => handleNav(0) },
-  { label: "PRODUCTS", angle: -30, action: () => handleNav(1) },
+  { label: "PROJECTS", angle: -30, action: () => handleNav(1) },
   { label: "TEAM", angle: 30, action: () => handleNav(2) },
   { label: "AUDIO", angle: 90, action: () => AudioController.getInstance().toggleMute() },
   { label: "CONTACT", angle: 150, action: () => {

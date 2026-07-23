@@ -7,6 +7,7 @@ export interface ProjectData {
   angle: number;
   scale: [number, number, number];
   link: string;
+  externalLink?: string;
   image: string;
 }
 
@@ -19,7 +20,7 @@ export const PROJECTS: ProjectData[] = [
     techStack: ["WebGL", "RJ-A1 Chip", "React", "WebSockets"],
     angle: 0,
     scale: [4, 3, 1],
-    link: "/product",
+    link: "/project/1",
     image: "/rj-glasses.png", // Keep the original for the first one
   },
   {
@@ -30,7 +31,7 @@ export const PROJECTS: ProjectData[] = [
     techStack: ["Node.js", "Redis", "Next.js", "React"],
     angle: Math.PI / 3, // 60 degrees
     scale: [5, 3, 1],
-    link: "/team",
+    link: "/project/2",
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop", // Cyberpunk desk
   },
   {
@@ -41,7 +42,7 @@ export const PROJECTS: ProjectData[] = [
     techStack: ["C++", "CUDA", "Embedded Systems"],
     angle: (Math.PI * 2) / 3, // 120 degrees
     scale: [3, 2, 1],
-    link: "/product",
+    link: "/project/3",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop", // Microchip
   },
   {
@@ -52,19 +53,20 @@ export const PROJECTS: ProjectData[] = [
     techStack: ["GLSL Shaders", "React Three Fiber", "Zustand"],
     angle: Math.PI, // 180 degrees
     scale: [4, 3, 1],
-    link: "/team",
+    link: "/project/4",
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop", // Abstract liquid
   },
   {
     id: 5,
-    title: "AEROSPACE PROPULSION",
-    shortDesc: "Next-Gen Ion Thrusters",
-    longDesc: "Advanced propulsion systems designed for deep-space missions. Leveraging proprietary plasma dynamics to increase fuel efficiency by 400% compared to traditional chemical rockets.",
-    techStack: ["Plasma Dynamics", "C++", "Aerospace Eng"],
+    title: "MUMUKSHO GAME",
+    shortDesc: "Cosmic Action Adventure Universe",
+    longDesc: "An immersive gaming experience blending rich narrative lore, high-octane combat mechanics, and stunning visual worldbuilding. Discover the universe and play at mumukshogame.com.",
+    techStack: ["Unreal Engine 5", "C++", "3D Shaders", "Game Physics"],
     angle: (Math.PI * 4) / 3, // 240 degrees
     scale: [5, 3, 1],
-    link: "/product",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop", // Space/Earth
+    link: "https://mumukshogame.com",
+    externalLink: "https://mumukshogame.com",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop", // Futuristic gaming setup
   },
   {
     id: 6,
