@@ -62,6 +62,9 @@ export const metadata: Metadata = {
     title: "RJ Industries | Aerospace, Defense, and Advanced Manufacturing",
     description: "RJ Industries is a pioneer in aerospace, defense, and advanced manufacturing. Innovation beyond limits.",
     images: ["/og-image.png"],
+  },
+  verification: {
+    google: "uZtel35Vrxx63SypdVkrGwgR-amUg0nVDkHHRzorGUg",
   }
 };
 
