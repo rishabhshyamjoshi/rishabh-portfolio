@@ -58,14 +58,14 @@ export const PROJECTS: ProjectData[] = [
   },
   {
     id: 5,
-    title: "MUMUKSHO GAME",
+    title: "MUMUKSHU GAME",
     shortDesc: "Cosmic Action Adventure Universe",
-    longDesc: "An immersive gaming experience blending rich narrative lore, high-octane combat mechanics, and stunning visual worldbuilding. Discover the universe and play at mumukshogame.com.",
+    longDesc: "An immersive gaming experience blending rich narrative lore, high-octane combat mechanics, and stunning visual worldbuilding. Discover the universe and play at www.mumukshugame.com.",
     techStack: ["Unreal Engine 5", "C++", "3D Shaders", "Game Physics"],
     angle: (Math.PI * 4) / 3, // 240 degrees
     scale: [5, 3, 1],
-    link: "https://mumukshogame.com",
-    externalLink: "https://mumukshogame.com",
+    link: "https://www.mumukshugame.com",
+    externalLink: "https://www.mumukshugame.com",
     image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop", // Futuristic gaming setup
   },
   {

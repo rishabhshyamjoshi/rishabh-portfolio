@@ -166,7 +166,7 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
                 className="text-[#00f0ff] hover:text-white transition-all interactive w-fit border border-[#00f0ff]/40 hover:border-[#00f0ff] px-6 py-3 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 rounded-sm flex items-center gap-3 group shadow-[0_0_15px_rgba(0,240,255,0.2)]"
               >
                 <span className="w-1.5 h-1.5 bg-[#00f0ff] rounded-full group-hover:scale-150 transition-transform" /> 
-                VISIT MUMUKSHOGAME.COM ↗
+                VISIT WWW.MUMUKSHUGAME.COM ↗
               </a>
             ) : (
               <Link href="/" className="text-[#00f0ff]/70 hover:text-[#00f0ff] transition-all interactive w-fit border border-[#00f0ff]/20 hover:border-[#00f0ff]/60 px-6 py-3 bg-[#00f0ff]/5 rounded-sm flex items-center gap-3 group">

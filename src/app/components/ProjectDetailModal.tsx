@@ -82,7 +82,7 @@ export default function ProjectDetailModal({ item, onClose }: { item: any | null
             }}
             data-hover
           >
-            {isProject ? (item.externalLink ? "VISIT MUMUKSHOGAME.COM ↗" : "VIEW FULL CASE STUDY") : "ESTABLISH UPLINK"}
+            {isProject ? (item.externalLink ? "VISIT WWW.MUMUKSHUGAME.COM ↗" : "VIEW FULL CASE STUDY") : "ESTABLISH UPLINK"}
           </a>
 
           {isProject && item.externalLink && (
