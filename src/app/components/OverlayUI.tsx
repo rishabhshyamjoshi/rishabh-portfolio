@@ -215,10 +215,10 @@ export default function OverlayUI() {
         style={{
           position: "absolute",
           inset: 0,
-          background: showRightClickWarning ? "rgba(0,0,0,0.6)" : "transparent",
-          backdropFilter: showRightClickWarning ? "blur(10px)" : "none",
+          background: showRightClickWarning ? "rgba(0,0,0,0.4)" : "transparent",
+          backdropFilter: showRightClickWarning ? "blur(8px)" : "none",
           pointerEvents: showRightClickWarning ? "auto" : "none",
-          transition: "all 0.4s ease",
+          transition: "all 0.5s ease",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -227,41 +227,61 @@ export default function OverlayUI() {
         }}
       >
         <div style={{
-          background: "rgba(10, 10, 15, 0.8)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          padding: "2.5rem 3rem",
-          borderRadius: "12px",
-          maxWidth: "400px",
+          background: "linear-gradient(135deg, rgba(15, 15, 20, 0.95), rgba(5, 5, 8, 0.95))",
+          border: "1px solid rgba(0, 240, 255, 0.15)",
+          padding: "3rem",
+          borderRadius: "16px",
+          maxWidth: "420px",
           textAlign: "center",
           transform: showRightClickWarning ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
-          transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
+          transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05)",
+          fontFamily: "'Space Grotesk', sans-serif",
         }}>
-          <h2 style={{ fontSize: "1rem", color: "#fff", marginBottom: "1.2rem", letterSpacing: "0.15em", fontWeight: 400 }}>NAVIGATION</h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.8rem", marginBottom: "2rem", letterSpacing: "0.05em", lineHeight: 1.6 }}>
-            Right-click anywhere on the screen to access the navigation menu.
+          
+          <div style={{ 
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "48px",
+            height: "48px",
+            borderRadius: "50%",
+            background: "rgba(0, 240, 255, 0.1)",
+            marginBottom: "1.5rem"
+          }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" strokeWidth="2">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          <h2 style={{ fontSize: "1.4rem", color: "#fff", marginBottom: "1rem", letterSpacing: "0.1em", fontWeight: 500 }}>Navigation Menu</h2>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", marginBottom: "2.5rem", letterSpacing: "0.02em", lineHeight: 1.6 }}>
+            Right-click anywhere on the screen to access the cosmic navigation matrix and explore the universe.
           </p>
           <button 
             onClick={() => setShowRightClickWarning(false)} 
             style={{ 
-              padding: "0.7rem 2rem", 
-              background: "rgba(255, 255, 255, 0.05)", 
-              border: "1px solid rgba(255, 255, 255, 0.2)", 
-              color: "#fff", 
+              padding: "0.8rem 2.5rem", 
+              background: "rgba(0, 240, 255, 0.1)", 
+              border: "1px solid rgba(0, 240, 255, 0.3)", 
+              color: "#00f0ff", 
               cursor: "pointer", 
-              fontSize: "0.7rem", 
-              letterSpacing: "0.15em",
+              fontSize: "0.85rem", 
+              letterSpacing: "0.1em",
+              fontWeight: 500,
               transition: "all 0.3s ease",
-              borderRadius: "6px"
+              borderRadius: "8px"
             }} 
             onMouseOver={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.background = "rgba(0, 240, 255, 0.2)";
+              e.currentTarget.style.boxShadow = "0 0 15px rgba(0, 240, 255, 0.2)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+              e.currentTarget.style.background = "rgba(0, 240, 255, 0.1)";
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
-            OK
+            ENTER UNIVERSE
           </button>
         </div>
       </div>
