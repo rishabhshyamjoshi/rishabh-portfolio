@@ -19,13 +19,7 @@ const MENU_ITEMS = [
   { label: "PROJECTS", angle: -30, action: () => handleNav(1) },
   { label: "TEAM", angle: 30, action: () => handleNav(2) },
   { label: "AUDIO", angle: 90, action: () => AudioController.getInstance().toggleMute() },
-  { label: "CONTACT", angle: 150, action: () => {
-    if (typeof window !== "undefined" && window.location.pathname !== "/") {
-      window.location.href = "mailto:hello@rj.industries";
-    } else {
-      window.dispatchEvent(new CustomEvent("toggleContact"));
-    }
-  } },
+  { label: "CONTACT", angle: 150, action: () => handleNav(4) },
   { label: "ACADEMY", angle: 210, action: () => { if (typeof window !== "undefined" && window.location.pathname !== "/academy") window.location.href = "/academy"; } },
 ];
 

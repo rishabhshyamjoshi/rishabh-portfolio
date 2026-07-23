@@ -10,6 +10,7 @@ import Environment from "./Environment";
 import SolarSystem from "./TheCore";
 import ProjectScreens from "./ProjectScreens";
 import TeamScreens from "./TeamScreens";
+import SpaceContactHub from "./SpaceContactHub";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
 
@@ -288,6 +289,7 @@ export default function Scene() {
         
         <Suspense fallback={null}>
           <SolarSystem scrollProgress={scrollProgress} />
+          <SpaceContactHub scrollProgress={scrollProgress} />
         </Suspense>
         
         <ProjectScreens scrollProgress={scrollProgress} onProjectClick={setActiveProject} />

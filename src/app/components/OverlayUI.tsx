@@ -66,9 +66,6 @@ export default function OverlayUI() {
   // Hero section fades out as you scroll in either direction
   const heroOpacity = Math.max(0, 1 - Math.abs(displayScroll) * 4);
 
-  // End station contact section fades in when scrolling past Mars (scroll > 3.1 to 4.0)
-  const endSectionOpacity = Math.max(0, Math.min(1, (displayScroll - 3.1) * 2.5));
-
   return (
     <div
       style={{
@@ -80,7 +77,7 @@ export default function OverlayUI() {
         color: "rgba(255,255,255,0.9)",
       }}
     >
-      {/* ═══ END STATION CONTACT HUB — Fades in at scroll > 3.1 ═══ */}
+      {/* ═══ HERO SECTION — Full-screen cinematic landing ═══ */}
       <div
         style={{
           position: "absolute",
@@ -89,134 +86,75 @@ export default function OverlayUI() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          opacity: endSectionOpacity,
-          pointerEvents: endSectionOpacity > 0.1 ? "auto" : "none",
-          transition: "opacity 0.2s ease",
-          padding: "2rem",
+          opacity: heroOpacity,
+          transition: "opacity 0.1s ease",
+          pointerEvents: "none",
         }}
       >
-        <div 
-          className="relative max-w-2xl w-full bg-black/60 backdrop-blur-xl border border-[#00f0ff]/30 p-8 rounded-2xl shadow-[0_0_50px_rgba(0,240,255,0.15)] flex flex-col items-center text-center space-y-6"
-        >
-          {/* High-tech HUD Brackets */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#00f0ff]" />
-          <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#00f0ff]" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
-
-          {/* Station Badge */}
-          <div className="text-[0.6rem] tracking-[0.4em] text-[#00f0ff] uppercase font-bold border border-[#00f0ff]/30 bg-[#00f0ff]/10 px-4 py-1 rounded-full animate-pulse">
-            TRANSMISSION STATION 03 // RJ INDUSTRIES HQ
+        {/* Main title */}
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <div style={{
+            fontSize: "clamp(0.6rem, 1.2vw, 0.8rem)",
+            letterSpacing: "0.5em",
+            color: "rgba(255,255,255,0.35)",
+            marginBottom: "1.5rem",
+            fontWeight: 400,
+          }}>
+            INNOVATION BEYOND LIMITS
           </div>
+          <Image 
+            src="/logo.png" 
+            alt="RJ Industries Logo" 
+            width={700}
+            height={200}
+            style={{
+              width: "90%",
+              maxWidth: "700px",
+              height: "auto",
+              objectFit: "contain",
+              filter: "drop-shadow(0 0 20px rgba(136,170,255,0.3))",
+              marginTop: "1rem",
+              transform: "translateX(8%)",
+            }}
+          />
+        </div>
 
-          {/* Logo */}
-          <div className="py-2">
-            <Image 
-              src="/logo.png" 
-              alt="RJ Industries Logo" 
-              width={450}
-              height={130}
-              className="w-72 md:w-96 h-auto object-contain filter drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]"
-            />
+        {/* Subtle scroll indicator */}
+        <div style={{
+          position: "absolute",
+          bottom: "10%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "0.8rem",
+          animation: "fadeInUp 1.5s ease 1s both",
+        }}>
+          <div style={{
+            fontSize: "0.55rem",
+            letterSpacing: "0.3em",
+            color: "rgba(255,255,255,0.3)",
+          }}>
+            SWIPE OR SCROLL
           </div>
-
-          <p className="text-[0.75rem] md:text-[0.85rem] tracking-[0.15em] text-white/80 max-w-lg leading-relaxed uppercase">
-            Pioneering Spatial Computing, Neural Chips & Interactive WebGL Experiences.
-          </p>
-
-          {/* WORK WITH US CTA BUTTON */}
-          <div className="pt-2 w-full flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a 
-              href="mailto:hello@rj.industries?subject=Work%20With%20RJ%20Industries"
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#00f0ff]/20 to-[#00f0ff]/40 hover:from-[#00f0ff]/40 hover:to-[#00f0ff]/70 border border-[#00f0ff] text-white text-[0.7rem] tracking-[0.25em] font-bold rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(0,240,255,0.4)] hover:scale-105 interactive"
-              data-hover
-            >
-              💼 WORK WITH US / COLLABORATE ↗
-            </a>
-            
-            <a 
-              href="tel:+919876543210"
-              className="w-full sm:w-auto px-6 py-3.5 bg-white/5 hover:bg-white/15 border border-white/20 text-white/90 text-[0.7rem] tracking-[0.2em] font-bold rounded-lg transition-all duration-300 interactive"
-              data-hover
-            >
-              📞 CALL UPLINK
-            </a>
-          </div>
-
-          {/* CONTACT INFO GRID */}
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 text-left border-t border-white/10">
-            <div className="bg-white/5 border border-white/10 p-3 rounded-lg flex flex-col gap-1">
-              <span className="text-[0.55rem] text-[#00f0ff] tracking-[0.2em]">DIRECT EMAIL</span>
-              <a href="mailto:hello@rj.industries" className="text-[0.7rem] text-white hover:text-[#00f0ff] transition-colors truncate">
-                hello@rj.industries
-              </a>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 p-3 rounded-lg flex flex-col gap-1">
-              <span className="text-[0.55rem] text-[#00f0ff] tracking-[0.2em]">PHONE / WHATSAPP</span>
-              <a href="tel:+919876543210" className="text-[0.7rem] text-white hover:text-[#00f0ff] transition-colors">
-                +91 98765 43210
-              </a>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 p-3 rounded-lg flex flex-col gap-1">
-              <span className="text-[0.55rem] text-[#00f0ff] tracking-[0.2em]">MAIN DOMAIN</span>
-              <a href="https://rjindustries.dev" target="_blank" rel="noopener noreferrer" className="text-[0.7rem] text-white hover:text-[#00f0ff] transition-colors">
-                rjindustries.dev
-              </a>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 p-3 rounded-lg flex flex-col gap-1">
-              <span className="text-[0.55rem] text-[#00f0ff] tracking-[0.2em]">GLOBAL HQ LOCATION</span>
-              <span className="text-[0.7rem] text-white/90">
-                Mumbai, Maharashtra, India
-              </span>
-            </div>
-          </div>
-
-          {/* SOCIAL LINKS */}
-          <div className="w-full flex items-center justify-center gap-6 pt-2 text-[0.65rem] tracking-[0.2em]">
-            <a 
-              href="https://instagram.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-[#00f0ff]/80 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 interactive"
-              data-hover
-            >
-              <span>📸</span> INSTAGRAM
-            </a>
-            <a 
-              href="https://linkedin.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-[#00f0ff]/80 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 interactive"
-              data-hover
-            >
-              <span>💼</span> LINKEDIN
-            </a>
-            <a 
-              href="https://github.com/rishabhshyamjoshi" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-[#00f0ff]/80 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 interactive"
-              data-hover
-            >
-              <span>🐙</span> GITHUB
-            </a>
-          </div>
+          <div style={{
+            width: "1px",
+            height: "40px",
+            background: "linear-gradient(to bottom, rgba(255,255,255,0.4), transparent)",
+            animation: "scrollPulse 2s ease infinite",
+          }} />
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes scrollPulse {
-          0%, 100% { opacity: 0.4; transform: scaleY(1); }
-          50% { opacity: 0.8; transform: scaleY(1.2); }
-        }
-      `}} />
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes fadeInUp {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes scrollPulse {
+              0%, 100% { opacity: 0.4; transform: scaleY(1); }
+              50% { opacity: 0.8; transform: scaleY(1.2); }
+            }
+          `}} />
       
       {/* ═══ CONTACT MODAL ═══ */}
       <div 
