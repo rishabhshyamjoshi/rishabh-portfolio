@@ -209,12 +209,12 @@ export default function OverlayUI() {
         </div>
       </div>
 
-      {/* ═══ SYSTEM ALERT MODAL (Right Click Hint) ═══ */}
+      {/* ═══ NAVIGATION HINT MODAL ═══ */}
       <div 
         style={{
           position: "absolute",
           inset: 0,
-          background: showRightClickWarning ? "rgba(0,0,0,0.85)" : "transparent",
+          background: showRightClickWarning ? "rgba(0,0,0,0.6)" : "transparent",
           backdropFilter: showRightClickWarning ? "blur(10px)" : "none",
           pointerEvents: showRightClickWarning ? "auto" : "none",
           transition: "all 0.4s ease",
@@ -226,51 +226,41 @@ export default function OverlayUI() {
         }}
       >
         <div style={{
-          background: "rgba(20, 5, 5, 0.95)",
-          border: "1px solid rgba(255, 68, 68, 0.4)",
-          padding: "3rem 3rem",
-          borderRadius: "8px",
-          maxWidth: "450px",
+          background: "rgba(10, 10, 15, 0.8)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          padding: "2.5rem 3rem",
+          borderRadius: "12px",
+          maxWidth: "400px",
           textAlign: "center",
           transform: showRightClickWarning ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
           transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "0 0 40px rgba(255, 68, 68, 0.15)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
         }}>
-          <div style={{
-            color: "#ff4444",
-            fontSize: "2.5rem",
-            marginBottom: "1rem",
-            animation: "warningPulse 2s infinite"
-          }}>
-            ⚠
-          </div>
-          <h2 style={{ fontSize: "1.4rem", color: "#ff4444", marginBottom: "1rem", letterSpacing: "0.2em", fontWeight: 600 }}>SYSTEM ALERT</h2>
-          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", marginBottom: "2.5rem", letterSpacing: "0.1em", lineHeight: 1.6 }}>
-            Right-click anywhere on the screen to access the Navigation Menu.
+          <h2 style={{ fontSize: "1rem", color: "#fff", marginBottom: "1.2rem", letterSpacing: "0.15em", fontWeight: 400 }}>NAVIGATION</h2>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.8rem", marginBottom: "2rem", letterSpacing: "0.05em", lineHeight: 1.6 }}>
+            Right-click anywhere on the screen to access the navigation menu.
           </p>
           <button 
             onClick={() => setShowRightClickWarning(false)} 
             style={{ 
-              padding: "0.8rem 2.5rem", 
-              background: "rgba(255, 68, 68, 0.15)", 
-              border: "1px solid rgba(255, 68, 68, 0.5)", 
-              color: "#ff4444", 
+              padding: "0.7rem 2rem", 
+              background: "rgba(255, 255, 255, 0.05)", 
+              border: "1px solid rgba(255, 255, 255, 0.2)", 
+              color: "#fff", 
               cursor: "pointer", 
-              fontSize: "0.75rem", 
-              letterSpacing: "0.2em",
-              transition: "all 0.2s",
-              borderRadius: "4px"
+              fontSize: "0.7rem", 
+              letterSpacing: "0.15em",
+              transition: "all 0.3s ease",
+              borderRadius: "6px"
             }} 
             onMouseOver={(e) => {
-              e.currentTarget.style.background = "rgba(255, 68, 68, 0.3)";
-              e.currentTarget.style.boxShadow = "0 0 15px rgba(255, 68, 68, 0.4)";
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = "rgba(255, 68, 68, 0.15)";
-              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
             }}
           >
-            ACKNOWLEDGE
+            OK
           </button>
         </div>
       </div>
