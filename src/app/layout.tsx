@@ -28,12 +28,19 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RJ INDUSTRIES",
     description: "Innovation beyond limits. Aerospace, Defense, and Advanced Manufacturing by RJ Industries.",
+    images: [{
+      url: "/og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "RJ Industries Logo"
+    }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "RJ INDUSTRIES",
     description: "Innovation beyond limits. Aerospace, Defense, and Advanced Manufacturing by RJ Industries.",
+    images: ["/og-image.png"],
   }
 };
 
