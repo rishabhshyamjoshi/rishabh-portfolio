@@ -145,17 +145,26 @@ export default function OverlayUI() {
         </div>
       </div>
 
-      {/* Right-click hint */}
+      {/* Right-click hint as a HUD Warning */}
       <div style={{
         position: "absolute",
-        bottom: "3%",
-        right: "2%",
-        fontSize: "0.5rem",
+        bottom: "4%",
+        right: "3%",
+        fontSize: "0.55rem",
         letterSpacing: "0.2em",
-        color: "rgba(255,255,255,0.3)",
-        animation: "fadeInUp 2s ease 2s both",
-        pointerEvents: "none"
+        color: "#ff4444",
+        animation: "warningPulse 2s infinite, fadeInUp 2s ease 2s both",
+        pointerEvents: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        padding: "0.4rem 0.8rem",
+        border: "1px solid rgba(255, 68, 68, 0.4)",
+        backgroundColor: "rgba(255, 68, 68, 0.05)",
+        backdropFilter: "blur(4px)",
+        textShadow: "0 0 8px rgba(255, 68, 68, 0.6)",
       }}>
+        <span style={{ fontWeight: "bold", animation: "blink 1s infinite step-end" }}>[!]</span> 
         RIGHT CLICK FOR MENU
       </div>
 
@@ -167,6 +176,13 @@ export default function OverlayUI() {
             @keyframes scrollPulse {
               0%, 100% { opacity: 0.4; transform: scaleY(1); }
               50% { opacity: 0.8; transform: scaleY(1.2); }
+            }
+            @keyframes warningPulse {
+              0%, 100% { opacity: 0.7; box-shadow: 0 0 5px rgba(255,68,68,0.1); }
+              50% { opacity: 1; box-shadow: 0 0 15px rgba(255,68,68,0.4); }
+            }
+            @keyframes blink {
+              50% { opacity: 0; }
             }
           `}} />
       
