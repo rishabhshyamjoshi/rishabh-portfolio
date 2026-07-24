@@ -158,8 +158,12 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       const t = state.clock.getElapsedTime();
 
       // Cinematic Camera Parallax, Zoom & 360 Scroll Orbit
-      const targetZoom = activeModule ? 5 : 12;
       const scrollOffset = scroll ? scroll.offset : 0;
+      
+      // Dive factor: 0 to 1 as we reach the very bottom of the scroll
+      const diveFactor = Math.pow(Math.max(0, (scrollOffset - 0.8) / 0.2), 3);
+      
+      const targetZoom = activeModule ? 5 : (12 - diveFactor * 9); // Zooms from 12 down to 3
       
       // Calculate 360 Orbit based on scroll position (0 to 1 -> 0 to 2PI)
       const orbitAngle = scrollOffset * Math.PI * 2;
@@ -184,8 +188,8 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       const targetCamPos = new THREE.Vector3(camX + shakeX, camY + shakeY, camZ);
       state.camera.position.lerp(targetCamPos, 0.05);
       
-      // Slight FOV warp
-      const targetFov = 50 + (intensity * 15);
+      // Slight FOV warp + EXTREME SPAGHETTIFICATION at the bottom
+      const targetFov = 50 + (intensity * 15) + (diveFactor * 90); // FOV shoots up to 140+ to stretch the edges!
       if (state.camera instanceof THREE.PerspectiveCamera) {
         state.camera.fov += (targetFov - state.camera.fov) * 0.1;
         state.camera.updateProjectionMatrix();

@@ -1,9 +1,89 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
+
+const FOOTER_LINKS = [
+  { text: "INSTAGRAM", url: "https://www.instagram.com/rj_industries01/", icon: "📸" },
+  { text: "LINKEDIN", url: "https://www.linkedin.com/company/rj-industries01/", icon: "💼" },
+  { text: "EMAIL", url: "mailto:contact@rjindustries.dev", icon: "✉️" },
+  { text: "SECURE LINE", url: "tel:+918208812534", icon: "📞" },
+];
+
+function FloatingPlate({ text, url, icon, position, delay }: { text: string, url: string, icon: string, position: [number, number, number], delay: number }) {
+  const meshRef = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      const t = state.clock.getElapsedTime();
+      meshRef.current.position.y = position[1] + Math.sin(t * 1.5 + delay) * 0.4;
+      meshRef.current.rotation.z = Math.sin(t * 0.8 + delay) * 0.05;
+      meshRef.current.rotation.x = Math.sin(t * 1.2 + delay) * 0.05;
+      
+      const targetScale = hovered ? 1.15 : 1.0;
+      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+    }
+  });
+
+  return (
+    <group ref={meshRef} position={position}>
+      <Html transform center distanceFactor={12}>
+        <a 
+          href={url}
+          target={url.startsWith("http") ? "_blank" : "_self"}
+          rel="noreferrer"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+            background: hovered 
+              ? "linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 100, 255, 0.3))"
+              : "linear-gradient(135deg, rgba(15, 15, 20, 0.6), rgba(5, 5, 8, 0.8))",
+            border: hovered 
+              ? "1px solid rgba(0, 240, 255, 0.8)" 
+              : "1px solid rgba(0, 240, 255, 0.2)",
+            boxShadow: hovered 
+              ? "0 0 30px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.2)"
+              : "0 10px 30px rgba(0,0,0,0.5)",
+            backdropFilter: "blur(12px)",
+            borderRadius: "16px",
+            padding: "1.5rem 2rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "200px",
+            color: hovered ? "#fff" : "rgba(255,255,255,0.8)",
+            fontFamily: "'Space Grotesk', sans-serif",
+            textDecoration: "none",
+            transition: "all 0.3s ease",
+            cursor: "pointer",
+            transform: hovered ? "translateZ(20px)" : "translateZ(0)"
+          }}
+        >
+          <div style={{ 
+            fontSize: "2rem", 
+            marginBottom: "0.8rem",
+            filter: hovered ? "drop-shadow(0 0 10px rgba(0, 240, 255, 0.8))" : "none",
+            transition: "all 0.3s ease"
+          }}>
+            {icon}
+          </div>
+          <div style={{ 
+            fontSize: "0.9rem", 
+            letterSpacing: "0.15em", 
+            fontWeight: hovered ? 700 : 500,
+            textShadow: hovered ? "0 0 10px rgba(255,255,255,0.5)" : "none",
+          }}>
+            {text}
+          </div>
+        </a>
+      </Html>
+    </group>
+  );
+}
 
 export default function FooterScreen({ scrollProgress }: { scrollProgress: number }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -11,100 +91,66 @@ export default function FooterScreen({ scrollProgress }: { scrollProgress: numbe
   useFrame((state) => {
     if (!groupRef.current) return;
     const t = state.clock.getElapsedTime();
-    groupRef.current.position.y = Math.sin(t * 0.5) * 0.2;
+    groupRef.current.position.y = Math.sin(t * 0.3) * 0.2;
+    groupRef.current.rotation.y = Math.sin(t * 0.1) * 0.05;
   });
 
-  // Base X for N=2 is 80 (since N*40, so 2*40 = 80)
   const baseX = 80;
-
-  // Render only when close to N=2
   if (scrollProgress < 3.5) return null;
 
   return (
     <group position={[baseX, 0, -2]} ref={groupRef}>
-      <Html transform center distanceFactor={12} position={[0, 0, 0]}>
+      
+      {/* Central Holographic Title */}
+      <Html transform center distanceFactor={15} position={[0, 4, 0]}>
         <div style={{
-          background: "linear-gradient(135deg, rgba(15, 15, 20, 0.8), rgba(5, 5, 8, 0.9))",
-          border: "1px solid rgba(0, 240, 255, 0.3)",
-          boxShadow: "0 0 40px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05)",
-          backdropFilter: "blur(12px)",
-          borderRadius: "24px",
-          padding: "4rem 5rem",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "600px",
-          color: "white",
-          fontFamily: "'Space Grotesk', sans-serif"
+          fontFamily: "'Space Grotesk', sans-serif",
+          pointerEvents: "none"
         }}>
-          {/* Logo / Header */}
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-            marginBottom: "2rem"
+          <h1 style={{ 
+            fontSize: "3.5rem", 
+            fontWeight: 800, 
+            margin: 0, 
+            letterSpacing: "0.3em", 
+            color: "white",
+            textShadow: "0 0 20px rgba(0, 240, 255, 0.5)"
           }}>
-            <div style={{
-              width: "50px", height: "50px",
-              borderRadius: "50%",
-              background: "rgba(0, 240, 255, 0.1)",
-              border: "1px solid rgba(0, 240, 255, 0.5)",
-              display: "flex", alignItems: "center", justifyContent: "center"
-            }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" strokeWidth="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinejoin="round" strokeLinecap="round" />
-              </svg>
-            </div>
-            <h1 style={{ fontSize: "2.5rem", fontWeight: 700, margin: 0, letterSpacing: "0.2em", background: "linear-gradient(to right, #fff, #88ccff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              RJ INDUSTRIES
-            </h1>
-          </div>
-
-          <p style={{ color: "rgba(255,255,255,0.6)", textAlign: "center", fontSize: "1.1rem", marginBottom: "3rem", letterSpacing: "0.05em" }}>
-            Pioneering the future of aerospace, defense, and advanced manufacturing. Let&apos;s build what&apos;s next.
-          </p>
-
-          {/* Links Grid */}
+            RJ INDUSTRIES
+          </h1>
           <div style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1.5rem",
-            width: "100%"
+            fontSize: "1rem",
+            color: "#00f0ff",
+            letterSpacing: "0.5em",
+            marginTop: "1rem",
+            animation: "pulse 2s infinite"
           }}>
-            <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" rel="noreferrer" style={linkStyle}>
-              LINKEDIN
-            </a>
-            <a href="https://www.instagram.com/rj_industries01/" target="_blank" rel="noreferrer" style={linkStyle}>
-              INSTAGRAM
-            </a>
-            <a href="mailto:contact@rjindustries.dev" style={linkStyle}>
-              EMAIL
-            </a>
-            <a href="tel:+918208812534" style={{...linkStyle, background: "rgba(0, 240, 255, 0.1)", borderColor: "rgba(0, 240, 255, 0.5)", color: "#00f0ff"}}>
-              CALL SECURE LINE
-            </a>
-          </div>
-
-          <div style={{ marginTop: "3rem", fontSize: "0.8rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.2em" }}>
-            SYSTEM ONLINE // KINETIC CORE
+            INITIATE CONTACT PROTOCOL
           </div>
         </div>
       </Html>
+
+      {/* Floating Plates */}
+      <FloatingPlate 
+        text={FOOTER_LINKS[0].text} url={FOOTER_LINKS[0].url} icon={FOOTER_LINKS[0].icon}
+        position={[-6, 0, 2]} delay={0} 
+      />
+      <FloatingPlate 
+        text={FOOTER_LINKS[1].text} url={FOOTER_LINKS[1].url} icon={FOOTER_LINKS[1].icon}
+        position={[-2, -1.5, 4]} delay={1.2} 
+      />
+      <FloatingPlate 
+        text={FOOTER_LINKS[2].text} url={FOOTER_LINKS[2].url} icon={FOOTER_LINKS[2].icon}
+        position={[2, 0.5, 3]} delay={2.4} 
+      />
+      <FloatingPlate 
+        text={FOOTER_LINKS[3].text} url={FOOTER_LINKS[3].url} icon={FOOTER_LINKS[3].icon}
+        position={[6, -1, 1]} delay={0.8} 
+      />
+      
     </group>
   );
 }
 
-const linkStyle: React.CSSProperties = {
-  padding: "1.2rem",
-  background: "rgba(255, 255, 255, 0.03)",
-  border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: "12px",
-  color: "white",
-  textDecoration: "none",
-  textAlign: "center",
-  letterSpacing: "0.15em",
-  fontSize: "0.9rem",
-  fontWeight: 500,
-  transition: "all 0.3s ease",
-  cursor: "pointer"
-};
