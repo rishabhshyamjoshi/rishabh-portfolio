@@ -3,7 +3,7 @@
 import { useRef, useMemo, useState, useCallback, useImperativeHandle, forwardRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useGLTF, Float, useScroll } from "@react-three/drei";
+import { useGLTF, Float, useScroll, Html } from "@react-three/drei";
 import { AudioController } from "../utils/AudioController";
 
 interface ThrownObject {
@@ -49,6 +49,7 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
 
     const [gravWaveActive, setGravWaveActive] = useState(false);
     const [waveRadius, setWaveRadius] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
 
     // Using the user's latest uploaded blackhole.glb
     const { scene, animations } = useGLTF("/blackhole.glb");
@@ -174,6 +175,27 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       const camY = Math.sin(scrollOffset * Math.PI) * 4 + parallaxY;
 
       const targetCamPos = new THREE.Vector3(camX, camY, camZ);
+      
+      // Black Hole Pull / Shake Effect
+      if (isHovered) {
+        // Shake intensity
+        const shake = 0.05;
+        targetCamPos.x += (Math.random() - 0.5) * shake;
+        targetCamPos.y += (Math.random() - 0.5) * shake;
+        targetCamPos.z += (Math.random() - 0.5) * shake;
+        
+        // FOV Warp
+        if (state.camera instanceof THREE.PerspectiveCamera) {
+          state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, 65, 0.05);
+          state.camera.updateProjectionMatrix();
+        }
+      } else {
+        if (state.camera instanceof THREE.PerspectiveCamera) {
+          state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, 50, 0.05);
+          state.camera.updateProjectionMatrix();
+        }
+      }
+
       state.camera.position.lerp(targetCamPos, 0.05);
       state.camera.lookAt(0, 0, 0);
 
@@ -280,9 +302,11 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
             }}
             onPointerOver={() => {
               document.body.style.cursor = "crosshair";
+              setIsHovered(true);
             }}
             onPointerOut={() => {
               document.body.style.cursor = "auto";
+              setIsHovered(false);
             }}
           >
             {/* Auto-scaled via Box3 bounding box (User's blackhole.glb) */}
@@ -310,6 +334,35 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
         {/* Objects & Bursts */}
         <ThrownObjectsRenderer objects={objectsRef.current} />
         <BurstRenderer bursts={burstsRef.current} />
+
+        {/* ═══ INTERACTIVE HUD (Spawn Buttons) ═══ */}
+        {scroll && scroll.offset < 0.2 && (
+          <Html center style={{ position: "absolute", bottom: "-40vh", width: "100vw", display: "flex", justifyContent: "center", gap: "20px", pointerEvents: "none" }}>
+            <div style={{ display: "flex", gap: "15px", pointerEvents: "auto", fontFamily: "var(--font-orbitron)" }}>
+              <button 
+                onClick={() => spawnObject("probe")}
+                className="px-4 py-2 bg-black/50 border border-cyan-500/50 text-cyan-400 text-xs tracking-widest hover:bg-cyan-500/20 transition-all rounded"
+                style={{ backdropFilter: "blur(4px)" }}
+              >
+                + LAUNCH PROBE
+              </button>
+              <button 
+                onClick={() => spawnObject("asteroid")}
+                className="px-4 py-2 bg-black/50 border border-orange-500/50 text-orange-400 text-xs tracking-widest hover:bg-orange-500/20 transition-all rounded"
+                style={{ backdropFilter: "blur(4px)" }}
+              >
+                + THROW ASTEROID
+              </button>
+              <button 
+                onClick={() => spawnObject("energy")}
+                className="px-4 py-2 bg-black/50 border border-pink-500/50 text-pink-400 text-xs tracking-widest hover:bg-pink-500/20 transition-all rounded"
+                style={{ backdropFilter: "blur(4px)" }}
+              >
+                + THROW ENERGY
+              </button>
+            </div>
+          </Html>
+        )}
       </group>
     );
   }

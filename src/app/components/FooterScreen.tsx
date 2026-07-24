@@ -29,34 +29,56 @@ function FooterLink({ text, url, position, rotation }: { text: string, url: stri
   });
 
   return (
-    <Text
-      ref={meshRef}
-      position={position}
-      rotation={rotation}
-      fontSize={0.6}
-      letterSpacing={0.2}
-      color={hovered ? "#ffaa66" : "#aaaaaa"}
-      anchorX="center"
-      anchorY="middle"
-      onPointerOver={() => {
-        setHovered(true);
-        document.body.style.cursor = "pointer";
-      }}
-      onPointerOut={() => {
-        setHovered(false);
-        document.body.style.cursor = "auto";
-      }}
-      onClick={() => {
-        if (url.startsWith("http") || url.startsWith("mailto")) {
-          window.open(url, "_blank");
-        } else {
-          console.log("Navigate to", url);
-        }
-      }}
-    >
-      <meshBasicMaterial transparent opacity={hovered ? 1 : 0.7} />
-      {text}
-    </Text>
+    <group position={position} rotation={rotation}>
+      {/* Glass Panel Background */}
+      <mesh position={[0, 0, -0.1]}>
+        <planeGeometry args={[hovered ? 5.5 : 5, 1.2]} />
+        <meshBasicMaterial 
+          color={hovered ? "#00f0ff" : "#111111"} 
+          transparent 
+          opacity={hovered ? 0.2 : 0.4} 
+          side={THREE.DoubleSide} 
+        />
+      </mesh>
+
+      {/* Holographic Border */}
+      <mesh position={[0, 0, -0.09]}>
+        <planeGeometry args={[hovered ? 5.6 : 5.1, 1.3]} />
+        <meshBasicMaterial 
+          color={hovered ? "#00f0ff" : "#333333"} 
+          wireframe
+          transparent 
+          opacity={0.5} 
+        />
+      </mesh>
+
+      <Text
+        ref={meshRef}
+        position={[0, 0, 0]}
+        fontSize={0.5}
+        letterSpacing={0.3}
+        color={hovered ? "#ffffff" : "#00f0ff"}
+        anchorX="center"
+        anchorY="middle"
+        font="/fonts/Orbitron-Bold.ttf" // Make sure Orbitron is loaded or use default
+        onPointerOver={() => {
+          setHovered(true);
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={() => {
+          setHovered(false);
+          document.body.style.cursor = "auto";
+        }}
+        onClick={() => {
+          if (url.startsWith("http") || url.startsWith("mailto") || url.startsWith("tel")) {
+            window.open(url, "_blank");
+          }
+        }}
+      >
+        <meshBasicMaterial transparent opacity={hovered ? 1 : 0.8} />
+        {text}
+      </Text>
+    </group>
   );
 }
 
@@ -78,18 +100,28 @@ export default function FooterScreen({ scrollProgress }: { scrollProgress: numbe
 
   return (
     <group position={[baseX, 0, -2]} ref={groupRef}>
-      {/* Central Large Logo */}
-      <Text
-        position={[0, 1.5, 0]}
-        fontSize={2.5}
-        letterSpacing={0.1}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        <meshBasicMaterial transparent opacity={0.9} />
-        RJ INDUSTRIES
-      </Text>
+      {/* Central Holographic Core (Replaces plain text) */}
+      <group position={[0, 1.5, 0]}>
+        <mesh>
+          <sphereGeometry args={[2, 16, 16]} />
+          <meshBasicMaterial color="#00f0ff" wireframe transparent opacity={0.15} />
+        </mesh>
+        <mesh>
+          <sphereGeometry args={[1.5, 8, 8]} />
+          <meshBasicMaterial color="#00f0ff" wireframe transparent opacity={0.3} />
+        </mesh>
+        <Text
+          position={[0, 0, 0]}
+          fontSize={1.2}
+          letterSpacing={0.2}
+          color="#ffffff"
+          anchorX="center"
+          anchorY="middle"
+        >
+          <meshBasicMaterial transparent opacity={0.9} />
+          COMMS HUB
+        </Text>
+      </group>
 
       {/* Orbiting / Floating Links */}
       {FOOTER_LINKS.map((link, index) => {
