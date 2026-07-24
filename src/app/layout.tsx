@@ -75,14 +75,33 @@ export default function RootLayout({
 }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "Corporation",
     "name": "RJ Industries",
     "url": "https://rjindustries.dev",
     "logo": "https://rjindustries.dev/logo.png",
-    "description": "Innovation beyond limits. Aerospace, Defense, and Advanced Manufacturing by RJ Industries.",
+    "description": "Pioneering aerospace, defense, advanced manufacturing, and AI technologies. Founded by Rishabh Joshi.",
+    "founder": {
+      "@type": "Person",
+      "name": "Rishabh Joshi",
+      "url": "https://www.linkedin.com/in/rishabhshyamjoshi/"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-8208812534",
+      "contactType": "customer service"
+    },
     "sameAs": [
-      "https://github.com/rishabhshyamjoshi",
-      "https://www.linkedin.com/in/rishabhshyamjoshi/"
+      "https://www.linkedin.com/company/rj-industries01/",
+      "https://www.instagram.com/rj_industries01/",
+      "https://github.com/rishabhshyamjoshi"
+    ],
+    "knowsAbout": [
+      "Aerospace Engineering",
+      "Defense Technology",
+      "Generative AI",
+      "Advanced Manufacturing",
+      "Game Development",
+      "K.I.N.E.T.I.C Glasses"
     ]
   };
 
