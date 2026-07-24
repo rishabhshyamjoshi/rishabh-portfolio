@@ -39,10 +39,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
-  },
   openGraph: {
     title: "RJ Industries | Aerospace, Defense, and Advanced Manufacturing",
     description: "RJ Industries is a pioneer in aerospace, defense, and advanced manufacturing. Innovation beyond limits.",
