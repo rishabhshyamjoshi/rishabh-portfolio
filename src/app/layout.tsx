@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   creator: "RJ Industries",
   publisher: "RJ Industries",
   alternates: {
-    canonical: "/",
+    canonical: "https://rjindustries.dev",
   },
   robots: {
     index: true,
