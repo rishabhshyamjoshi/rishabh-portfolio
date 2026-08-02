@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Text, Edges, useTexture } from "@react-three/drei";
+import { Html, Edges, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 
@@ -208,19 +208,21 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
           
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
-            <Text
-              fontSize={0.35}
-              position={[0, 0, 0]}
-              maxWidth={project.scale[0] - 1}
-              lineHeight={1.2}
-              letterSpacing={0.1}
-              textAlign="center"
-              anchorX="center"
-              anchorY="middle"
-            >
-              <meshBasicMaterial ref={titleMaterialRef} />
-              {project.title.toUpperCase()}
-            </Text>
+            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[0, 0, 0]}>
+              <div style={{
+                color: hovered ? '#ffffff' : '#88aacc',
+                fontSize: '18px',
+                fontWeight: 700,
+                letterSpacing: '0.15em',
+                fontFamily: "'Space Grotesk', sans-serif",
+                textAlign: 'center',
+                textShadow: hovered ? '0 0 12px rgba(136,204,255,0.8)' : 'none',
+                transition: 'all 0.3s ease',
+                whiteSpace: 'nowrap'
+              }}>
+                {project.title.toUpperCase()}
+              </div>
+            </Html>
             
             {/* Curved Deco Line */}
             <mesh position={[0, -project.scale[1]/2 + 0.4, 0]}>

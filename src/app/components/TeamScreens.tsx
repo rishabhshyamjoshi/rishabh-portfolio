@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Text, Edges, useTexture } from "@react-three/drei";
+import { Html, Edges, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 
@@ -199,43 +199,47 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
           
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
-            <Text
-              fontSize={0.25}
-              position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]}
-              anchorX="left"
-              anchorY="top"
-              letterSpacing={0.1}
-            >
-              <meshBasicMaterial ref={sub1MaterialRef} />
-              {member.initials}
-            </Text>
-            
-            <Text
-              fontSize={0.35}
-              position={[0, 0, 0]}
-              maxWidth={member.scale[0] - 1}
-              lineHeight={1.2}
-              letterSpacing={0.1}
-              textAlign="center"
-              anchorX="center"
-              anchorY="bottom"
-            >
-              <meshBasicMaterial ref={titleMaterialRef} />
-              {member.name.toUpperCase()}
-            </Text>
+            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]}>
+              <div style={{
+                color: hovered ? '#aaaaaa' : '#664433',
+                fontSize: '12px',
+                fontWeight: 600,
+                letterSpacing: '0.15em',
+                fontFamily: "'Space Grotesk', sans-serif",
+                transition: 'all 0.3s ease'
+              }}>
+                {member.initials}
+              </div>
+            </Html>
 
-            <Text
-              fontSize={0.15}
-              position={[0, -0.3, 0]}
-              maxWidth={member.scale[0] - 1}
-              textAlign="center"
-              anchorX="center"
-              anchorY="top"
-              letterSpacing={0.1}
-            >
-              <meshBasicMaterial color="rgba(255,255,255,0.6)" />
-              {member.role.toUpperCase()}
-            </Text>
+            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[0, 0, 0]}>
+              <div style={{
+                color: hovered ? '#ffffff' : '#cc8866',
+                fontSize: '18px',
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                fontFamily: "'Space Grotesk', sans-serif",
+                textAlign: 'center',
+                textShadow: hovered ? '0 0 12px rgba(255,170,100,0.8)' : 'none',
+                transition: 'all 0.3s ease',
+                whiteSpace: 'nowrap'
+              }}>
+                {member.name.toUpperCase()}
+              </div>
+            </Html>
+
+            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[0, -0.5, 0]}>
+              <div style={{
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: '11px',
+                letterSpacing: '0.1em',
+                fontFamily: "'Space Grotesk', sans-serif",
+                textAlign: 'center',
+                whiteSpace: 'nowrap'
+              }}>
+                {member.role.toUpperCase()}
+              </div>
+            </Html>
 
             {/* Curved Deco Line */}
             <mesh position={[0, -member.scale[1]/2 + 0.4, 0]}>

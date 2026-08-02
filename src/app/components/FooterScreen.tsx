@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import * as THREE from "three";
 
 const FOOTER_LINKS = [
@@ -29,34 +29,29 @@ function FooterLink({ text, url, position, rotation }: { text: string, url: stri
   });
 
   return (
-    <Text
-      ref={meshRef}
-      position={position}
-      rotation={rotation}
-      fontSize={0.6}
-      letterSpacing={0.2}
-      color={hovered ? "#ffaa66" : "#aaaaaa"}
-      anchorX="center"
-      anchorY="middle"
-      onPointerOver={() => {
-        setHovered(true);
-        document.body.style.cursor = "pointer";
+    <Html center distanceFactor={8} position={position} style={{ pointerEvents: 'none' }}>
+      <div style={{
+        color: hovered ? '#ffaa66' : '#888888',
+        fontSize: '18px',
+        fontWeight: 600,
+        letterSpacing: '0.2em',
+        fontFamily: "'Space Grotesk', sans-serif",
+        textShadow: hovered ? '0 0 12px rgba(255,170,100,0.8)' : 'none',
+        transition: 'all 0.3s ease',
+        cursor: 'pointer',
+        whiteSpace: 'nowrap'
       }}
-      onPointerOut={() => {
-        setHovered(false);
-        document.body.style.cursor = "auto";
-      }}
-      onClick={() => {
-        if (url.startsWith("http") || url.startsWith("mailto")) {
-          window.open(url, "_blank");
-        } else {
-          console.log("Navigate to", url);
-        }
-      }}
-    >
-      <meshBasicMaterial transparent opacity={hovered ? 1 : 0.7} />
-      {text}
-    </Text>
+        onMouseEnter={() => { setHovered(true); document.body.style.cursor = 'pointer'; }}
+        onMouseLeave={() => { setHovered(false); document.body.style.cursor = 'auto'; }}
+        onClick={() => {
+          if (url.startsWith('http') || url.startsWith('mailto')) {
+            window.open(url, '_blank');
+          }
+        }}
+      >
+        {text}
+      </div>
+    </Html>
   );
 }
 
@@ -78,18 +73,20 @@ export default function FooterScreen({ scrollProgress }: { scrollProgress: numbe
 
   return (
     <group position={[baseX, 0, -2]} ref={groupRef}>
-      {/* Central Large Logo */}
-      <Text
-        position={[0, 1.5, 0]}
-        fontSize={2.5}
-        letterSpacing={0.1}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        <meshBasicMaterial transparent opacity={0.9} />
-        RJ INDUSTRIES
-      </Text>
+      <Html center distanceFactor={8} position={[0, 1.5, 0]} style={{ pointerEvents: 'none' }}>
+        <div style={{
+          color: '#ffffff',
+          fontSize: '64px',
+          fontWeight: 800,
+          letterSpacing: '0.1em',
+          fontFamily: "'Space Grotesk', sans-serif",
+          textShadow: '0 0 30px rgba(255,255,255,0.3)',
+          opacity: 0.9,
+          whiteSpace: 'nowrap'
+        }}>
+          RJ INDUSTRIES
+        </div>
+      </Html>
 
       {/* Orbiting / Floating Links */}
       {FOOTER_LINKS.map((link, index) => {
