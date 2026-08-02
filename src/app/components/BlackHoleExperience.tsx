@@ -3,7 +3,7 @@
 import { useRef, useMemo, useState, useCallback, useImperativeHandle, forwardRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useGLTF, Float, useScroll, Html } from "@react-three/drei";
+import { useGLTF, Float, useScroll } from "@react-three/drei";
 import { AudioController } from "../utils/AudioController";
 
 interface ThrownObject {
@@ -158,12 +158,8 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       const t = state.clock.getElapsedTime();
 
       // Cinematic Camera Parallax, Zoom & 360 Scroll Orbit
+      const targetZoom = activeModule ? 5 : 12;
       const scrollOffset = scroll ? scroll.offset : 0;
-      
-      // Dive factor: 0 to 1 as we reach the very bottom of the scroll
-      const diveFactor = Math.pow(Math.max(0, (scrollOffset - 0.8) / 0.2), 3);
-      
-      const targetZoom = activeModule ? 5 : (12 - diveFactor * 9); // Zooms from 12 down to 3
       
       // Calculate 360 Orbit based on scroll position (0 to 1 -> 0 to 2PI)
       const orbitAngle = scrollOffset * Math.PI * 2;
@@ -177,24 +173,8 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
       // Slight vertical arc over the black hole during scroll
       const camY = Math.sin(scrollOffset * Math.PI) * 4 + parallaxY;
 
-      // Calculate distance of mouse from center of screen (0 to 1)
-      const distFromCenter = Math.sqrt(state.pointer.x ** 2 + state.pointer.y ** 2);
-      const intensity = Math.max(0, 1 - distFromCenter * 1.5); // high intensity near center
-      
-      // Camera distortion effect near the black hole
-      const shakeX = (Math.random() - 0.5) * 0.1 * intensity;
-      const shakeY = (Math.random() - 0.5) * 0.1 * intensity;
-      
-      const targetCamPos = new THREE.Vector3(camX + shakeX, camY + shakeY, camZ);
+      const targetCamPos = new THREE.Vector3(camX, camY, camZ);
       state.camera.position.lerp(targetCamPos, 0.05);
-      
-      // Slight FOV warp + EXTREME SPAGHETTIFICATION at the bottom
-      const targetFov = 50 + (intensity * 15) + (diveFactor * 90); // FOV shoots up to 140+ to stretch the edges!
-      if (state.camera instanceof THREE.PerspectiveCamera) {
-        state.camera.fov += (targetFov - state.camera.fov) * 0.1;
-        state.camera.updateProjectionMatrix();
-      }
-
       state.camera.lookAt(0, 0, 0);
 
       // Model rotation
@@ -311,24 +291,6 @@ const BlackHoleExperience = forwardRef<BlackHoleControls, BlackHoleExperiencePro
             {/* Intense Fiery Ambient Lights to illuminate the model */}
             <pointLight intensity={3.0} color="#ff8800" distance={8} decay={2} />
             <pointLight intensity={1.5} color="#ff3300" distance={12} decay={2} />
-
-            <Html position={[0, -2.5, 0]} center style={{ pointerEvents: 'none' }}>
-              <div style={{
-                background: "rgba(0, 240, 255, 0.1)",
-                border: "1px solid rgba(0, 240, 255, 0.3)",
-                padding: "8px 16px",
-                borderRadius: "20px",
-                color: "#00f0ff",
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: "0.7rem",
-                letterSpacing: "0.2em",
-                backdropFilter: "blur(4px)",
-                animation: "pulse 2s infinite",
-                whiteSpace: "nowrap"
-              }}>
-                CLICK BLACK HOLE TO DEPLOY PROBE
-              </div>
-            </Html>
           </group>
         </Float>
 

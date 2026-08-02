@@ -2,86 +2,61 @@
 
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
+import { Text } from "@react-three/drei";
 import * as THREE from "three";
 
 const FOOTER_LINKS = [
-  { text: "INSTAGRAM", url: "https://www.instagram.com/rj_industries01/", icon: "📸" },
-  { text: "LINKEDIN", url: "https://www.linkedin.com/company/rj-industries01/", icon: "💼" },
-  { text: "EMAIL", url: "mailto:contact@rjindustries.dev", icon: "✉️" },
-  { text: "SECURE LINE", url: "tel:+918208812534", icon: "📞" },
+  { text: "INSTAGRAM", url: "https://www.instagram.com/rj_industries01/" },
+  { text: "MOBILE", url: "tel:+918208812534" },
+  { text: "EMAIL", url: "mailto:contact@rjindustries.dev" },
+  { text: "LINKEDIN", url: "https://www.linkedin.com/company/rj-industries01/" },
 ];
 
-function FloatingPlate({ text, url, icon, position, delay }: { text: string, url: string, icon: string, position: [number, number, number], delay: number }) {
-  const meshRef = useRef<THREE.Group>(null);
+function FooterLink({ text, url, position, rotation }: { text: string, url: string, position: [number, number, number], rotation: [number, number, number] }) {
   const [hovered, setHovered] = useState(false);
+  const meshRef = useRef<any>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
+      // Subtle float animation
       const t = state.clock.getElapsedTime();
-      meshRef.current.position.y = position[1] + Math.sin(t * 1.5 + delay) * 0.4;
-      meshRef.current.rotation.z = Math.sin(t * 0.8 + delay) * 0.05;
-      meshRef.current.rotation.x = Math.sin(t * 1.2 + delay) * 0.05;
+      meshRef.current.position.y = position[1] + Math.sin(t + position[0]) * 0.2;
       
-      const targetScale = hovered ? 1.15 : 1.0;
+      // Scale on hover
+      const targetScale = hovered ? 1.1 : 1.0;
       meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
     }
   });
 
   return (
-    <group ref={meshRef} position={position}>
-      <Html transform center distanceFactor={12}>
-        <a 
-          href={url}
-          target={url.startsWith("http") ? "_blank" : "_self"}
-          rel="noreferrer"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{
-            background: hovered 
-              ? "linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 100, 255, 0.3))"
-              : "linear-gradient(135deg, rgba(15, 15, 20, 0.6), rgba(5, 5, 8, 0.8))",
-            border: hovered 
-              ? "1px solid rgba(0, 240, 255, 0.8)" 
-              : "1px solid rgba(0, 240, 255, 0.2)",
-            boxShadow: hovered 
-              ? "0 0 30px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.2)"
-              : "0 10px 30px rgba(0,0,0,0.5)",
-            backdropFilter: "blur(12px)",
-            borderRadius: "16px",
-            padding: "1.5rem 2rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "200px",
-            color: hovered ? "#fff" : "rgba(255,255,255,0.8)",
-            fontFamily: "'Space Grotesk', sans-serif",
-            textDecoration: "none",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-            transform: hovered ? "translateZ(20px)" : "translateZ(0)"
-          }}
-        >
-          <div style={{ 
-            fontSize: "2rem", 
-            marginBottom: "0.8rem",
-            filter: hovered ? "drop-shadow(0 0 10px rgba(0, 240, 255, 0.8))" : "none",
-            transition: "all 0.3s ease"
-          }}>
-            {icon}
-          </div>
-          <div style={{ 
-            fontSize: "0.9rem", 
-            letterSpacing: "0.15em", 
-            fontWeight: hovered ? 700 : 500,
-            textShadow: hovered ? "0 0 10px rgba(255,255,255,0.5)" : "none",
-          }}>
-            {text}
-          </div>
-        </a>
-      </Html>
-    </group>
+    <Text
+      ref={meshRef}
+      position={position}
+      rotation={rotation}
+      fontSize={0.6}
+      letterSpacing={0.2}
+      color={hovered ? "#ffaa66" : "#aaaaaa"}
+      anchorX="center"
+      anchorY="middle"
+      onPointerOver={() => {
+        setHovered(true);
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        setHovered(false);
+        document.body.style.cursor = "auto";
+      }}
+      onClick={() => {
+        if (url.startsWith("http") || url.startsWith("mailto")) {
+          window.open(url, "_blank");
+        } else {
+          console.log("Navigate to", url);
+        }
+      }}
+    >
+      <meshBasicMaterial transparent opacity={hovered ? 1 : 0.7} />
+      {text}
+    </Text>
   );
 }
 
@@ -91,66 +66,52 @@ export default function FooterScreen({ scrollProgress }: { scrollProgress: numbe
   useFrame((state) => {
     if (!groupRef.current) return;
     const t = state.clock.getElapsedTime();
-    groupRef.current.position.y = Math.sin(t * 0.3) * 0.2;
-    groupRef.current.rotation.y = Math.sin(t * 0.1) * 0.05;
+    // Gentle rotation of the whole footer structure
+    groupRef.current.rotation.y = Math.sin(t * 0.1) * 0.1;
   });
 
+  // Base X for N=2 is 80 (since N*40, so 2*40 = 80)
   const baseX = 80;
+
+  // Render only when close to N=2
   if (scrollProgress < 3.5) return null;
 
   return (
     <group position={[baseX, 0, -2]} ref={groupRef}>
-      
-      {/* Central Holographic Title */}
-      <Html transform center distanceFactor={15} position={[0, 4, 0]}>
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          fontFamily: "'Space Grotesk', sans-serif",
-          pointerEvents: "none"
-        }}>
-          <h1 style={{ 
-            fontSize: "3.5rem", 
-            fontWeight: 800, 
-            margin: 0, 
-            letterSpacing: "0.3em", 
-            color: "white",
-            textShadow: "0 0 20px rgba(0, 240, 255, 0.5)"
-          }}>
-            RJ INDUSTRIES
-          </h1>
-          <div style={{
-            fontSize: "1rem",
-            color: "#00f0ff",
-            letterSpacing: "0.5em",
-            marginTop: "1rem",
-            animation: "pulse 2s infinite"
-          }}>
-            INITIATE CONTACT PROTOCOL
-          </div>
-        </div>
-      </Html>
+      {/* Central Large Logo */}
+      <Text
+        position={[0, 1.5, 0]}
+        fontSize={2.5}
+        letterSpacing={0.1}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+      >
+        <meshBasicMaterial transparent opacity={0.9} />
+        RJ INDUSTRIES
+      </Text>
 
-      {/* Floating Plates */}
-      <FloatingPlate 
-        text={FOOTER_LINKS[0].text} url={FOOTER_LINKS[0].url} icon={FOOTER_LINKS[0].icon}
-        position={[-6, 0, 2]} delay={0} 
-      />
-      <FloatingPlate 
-        text={FOOTER_LINKS[1].text} url={FOOTER_LINKS[1].url} icon={FOOTER_LINKS[1].icon}
-        position={[-2, -1.5, 4]} delay={1.2} 
-      />
-      <FloatingPlate 
-        text={FOOTER_LINKS[2].text} url={FOOTER_LINKS[2].url} icon={FOOTER_LINKS[2].icon}
-        position={[2, 0.5, 3]} delay={2.4} 
-      />
-      <FloatingPlate 
-        text={FOOTER_LINKS[3].text} url={FOOTER_LINKS[3].url} icon={FOOTER_LINKS[3].icon}
-        position={[6, -1, 1]} delay={0.8} 
-      />
-      
+      {/* Orbiting / Floating Links */}
+      {FOOTER_LINKS.map((link, index) => {
+        const angle = (index / FOOTER_LINKS.length) * Math.PI * 2;
+        const radius = 6;
+        const x = Math.sin(angle) * radius;
+        const z = Math.cos(angle) * radius;
+        const y = -1.5 + Math.sin(angle * 3) * 1.5;
+        
+        // Orient towards center (slightly outward)
+        const rotY = Math.atan2(x, z);
+
+        return (
+          <FooterLink
+            key={link.text}
+            text={link.text}
+            url={link.url}
+            position={[x, y, z]}
+            rotation={[0, rotY, 0]}
+          />
+        );
+      })}
     </group>
   );
 }
-
