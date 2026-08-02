@@ -208,17 +208,16 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
           
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
-            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[0, 0, 0]}>
+            <Html transform center distanceFactor={8} position={[0, 0, 0]} style={{ pointerEvents: 'none' }}>
               <div style={{
-                color: hovered ? '#ffffff' : '#88aacc',
-                fontSize: '18px',
+                color: 'white',
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: '1.4rem',
                 fontWeight: 700,
                 letterSpacing: '0.15em',
-                fontFamily: "'Space Grotesk', sans-serif",
                 textAlign: 'center',
-                textShadow: hovered ? '0 0 12px rgba(136,204,255,0.8)' : 'none',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap'
+                textShadow: '0 0 15px rgba(0,0,0,0.8)',
+                whiteSpace: 'nowrap',
               }}>
                 {project.title.toUpperCase()}
               </div>

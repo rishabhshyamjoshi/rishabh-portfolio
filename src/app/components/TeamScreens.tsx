@@ -199,43 +199,40 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
           
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
-            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]}>
+            <Html transform center distanceFactor={8} position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]} style={{ pointerEvents: 'none' }}>
               <div style={{
-                color: hovered ? '#aaaaaa' : '#664433',
-                fontSize: '12px',
-                fontWeight: 600,
-                letterSpacing: '0.15em',
+                color: 'rgba(255,255,255,0.7)',
                 fontFamily: "'Space Grotesk', sans-serif",
-                transition: 'all 0.3s ease'
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                letterSpacing: '0.1em',
               }}>
                 {member.initials}
               </div>
             </Html>
-
-            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[0, 0, 0]}>
+            
+            <Html transform center distanceFactor={8} position={[0, 0, 0]} style={{ pointerEvents: 'none' }}>
               <div style={{
-                color: hovered ? '#ffffff' : '#cc8866',
-                fontSize: '18px',
+                color: 'white',
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: '1.4rem',
                 fontWeight: 700,
                 letterSpacing: '0.1em',
-                fontFamily: "'Space Grotesk', sans-serif",
                 textAlign: 'center',
-                textShadow: hovered ? '0 0 12px rgba(255,170,100,0.8)' : 'none',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap'
+                textShadow: '0 0 15px rgba(0,0,0,0.8)',
               }}>
                 {member.name.toUpperCase()}
               </div>
             </Html>
 
-            <Html center distanceFactor={10} style={{ pointerEvents: 'none' }} position={[0, -0.5, 0]}>
+            <Html transform center distanceFactor={8} position={[0, -0.3, 0]} style={{ pointerEvents: 'none' }}>
               <div style={{
                 color: 'rgba(255,255,255,0.6)',
-                fontSize: '11px',
-                letterSpacing: '0.1em',
                 fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: '0.75rem',
+                fontWeight: 400,
+                letterSpacing: '0.1em',
                 textAlign: 'center',
-                whiteSpace: 'nowrap'
               }}>
                 {member.role.toUpperCase()}
               </div>

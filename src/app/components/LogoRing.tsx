@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { MeshDistortMaterial, Html } from "@react-three/drei";
+import { MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
 export default function LogoRing() {
@@ -39,16 +39,11 @@ export default function LogoRing() {
         />
       </mesh>
       
-      {/* Inner logo text using Html */}
-      <Html center distanceFactor={8} style={{ pointerEvents: 'none' }} position={[0, -0.1, 0]}>
-        <div style={{
-          color: '#cccccc',
-          fontSize: '60px',
-          fontWeight: 900,
-          fontFamily: "serif",
-          textShadow: '0 0 20px rgba(139, 92, 246, 0.8)'
-        }}>a</div>
-      </Html>
+      {/* Inner logo sphere */}
+      <mesh position={[0, -0.1, 0]}>
+        <sphereGeometry args={[0.4, 32, 32]} />
+        <meshStandardMaterial metalness={0.8} roughness={0.2} color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.3} />
+      </mesh>
       
       {/* Connecting "legs" of the logo shown in screenshot 1 */}
       <mesh position={[-0.5, -2, 0]} rotation={[0, 0, 0.3]}>
