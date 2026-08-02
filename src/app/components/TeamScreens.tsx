@@ -2,7 +2,8 @@
 
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Html, Edges, useTexture } from "@react-three/drei";
+import { Edges, useTexture } from "@react-three/drei";
+import CanvasText from "./CanvasText";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 
@@ -199,44 +200,43 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
           
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
-            <Html transform center distanceFactor={8} position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]} style={{ pointerEvents: 'none' }}>
-              <div style={{
-                color: 'rgba(255,255,255,0.7)',
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                letterSpacing: '0.1em',
-              }}>
-                {member.initials}
-              </div>
-            </Html>
+            <CanvasText
+              fontSize={0.25}
+              position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]}
+              anchorX="left"
+              anchorY="top"
+              letterSpacing={0.1}
+              color="#664433"
+            >
+              {member.initials}
+            </CanvasText>
             
-            <Html transform center distanceFactor={8} position={[0, 0, 0]} style={{ pointerEvents: 'none' }}>
-              <div style={{
-                color: 'white',
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: '1.4rem',
-                fontWeight: 700,
-                letterSpacing: '0.1em',
-                textAlign: 'center',
-                textShadow: '0 0 15px rgba(0,0,0,0.8)',
-              }}>
-                {member.name.toUpperCase()}
-              </div>
-            </Html>
+            <CanvasText
+              fontSize={0.35}
+              position={[0, 0, 0]}
+              maxWidth={member.scale[0] - 1}
+              lineHeight={1.2}
+              letterSpacing={0.1}
+              textAlign="center"
+              anchorX="center"
+              anchorY="bottom"
+              color="#cc8866"
+            >
+              {member.name.toUpperCase()}
+            </CanvasText>
 
-            <Html transform center distanceFactor={8} position={[0, -0.3, 0]} style={{ pointerEvents: 'none' }}>
-              <div style={{
-                color: 'rgba(255,255,255,0.6)',
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: '0.75rem',
-                fontWeight: 400,
-                letterSpacing: '0.1em',
-                textAlign: 'center',
-              }}>
-                {member.role.toUpperCase()}
-              </div>
-            </Html>
+            <CanvasText
+              fontSize={0.15}
+              position={[0, -0.3, 0]}
+              maxWidth={member.scale[0] - 1}
+              textAlign="center"
+              anchorX="center"
+              anchorY="top"
+              letterSpacing={0.1}
+              color="rgba(255,255,255,0.6)"
+            >
+              {member.role.toUpperCase()}
+            </CanvasText>
 
             {/* Curved Deco Line */}
             <mesh position={[0, -member.scale[1]/2 + 0.4, 0]}>

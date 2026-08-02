@@ -2,7 +2,8 @@
 
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Html, Edges, useTexture } from "@react-three/drei";
+import { Edges, useTexture } from "@react-three/drei";
+import CanvasText from "./CanvasText";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 
@@ -208,20 +209,19 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
           
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
-            <Html transform center distanceFactor={8} position={[0, 0, 0]} style={{ pointerEvents: 'none' }}>
-              <div style={{
-                color: 'white',
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: '1.4rem',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                textAlign: 'center',
-                textShadow: '0 0 15px rgba(0,0,0,0.8)',
-                whiteSpace: 'nowrap',
-              }}>
-                {project.title.toUpperCase()}
-              </div>
-            </Html>
+            <CanvasText
+              fontSize={0.35}
+              position={[0, 0, 0]}
+              maxWidth={project.scale[0] - 1}
+              lineHeight={1.2}
+              letterSpacing={0.1}
+              textAlign="center"
+              anchorX="center"
+              anchorY="middle"
+              color="#88aacc"
+            >
+              {project.title.toUpperCase()}
+            </CanvasText>
             
             {/* Curved Deco Line */}
             <mesh position={[0, -project.scale[1]/2 + 0.4, 0]}>

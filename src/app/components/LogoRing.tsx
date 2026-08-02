@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { MeshDistortMaterial } from "@react-three/drei";
+import CanvasText from "./CanvasText";
 import * as THREE from "three";
 
 export default function LogoRing() {
@@ -39,11 +40,17 @@ export default function LogoRing() {
         />
       </mesh>
       
-      {/* Inner logo sphere */}
-      <mesh position={[0, -0.1, 0]}>
-        <sphereGeometry args={[0.4, 32, 32]} />
-        <meshStandardMaterial metalness={0.8} roughness={0.2} color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.3} />
-      </mesh>
+      {/* Inner 'a' logo approximation using Text */}
+      <CanvasText
+        
+        fontSize={1.2}
+        position={[0, -0.1, 0]}
+        color="#cccccc"
+        anchorX="center"
+        anchorY="middle"
+      >
+        a
+      </CanvasText>
       
       {/* Connecting "legs" of the logo shown in screenshot 1 */}
       <mesh position={[-0.5, -2, 0]} rotation={[0, 0, 0.3]}>
