@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import * as THREE from "three";
 
 /**
@@ -80,8 +80,18 @@ function CanvasText({
   const spriteRef = useRef<THREE.Sprite>(null);
   const text = extractText(children);
   const materialRef = extractMaterialRef(children);
+  const [isClient, setIsClient] = useState(false);
 
-  const { texture, aspectRatio, textWidth, textHeight } = useMemo(() => {
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const { texture, textWidth, textHeight } = useMemo(() => {
+    // SSR guard: document is not available on the server
+    if (typeof document === "undefined") {
+      return { texture: null, textWidth: 0, textHeight: 0 };
+    }
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d")!;
     
@@ -126,8 +136,8 @@ function CanvasText({
     const padX = pxSize * 0.5;
     const padY = pxSize * 0.5;
     
-    canvas.width = Math.ceil(widestLine + padX * 2);
-    canvas.height = Math.ceil(totalHeight + padY * 2);
+    canvas.width = Math.max(1, Math.ceil(widestLine + padX * 2));
+    canvas.height = Math.max(1, Math.ceil(totalHeight + padY * 2));
     
     // Re-set font after canvas resize
     ctx.font = `500 ${pxSize}px 'Space Grotesk', 'Inter', 'Segoe UI', sans-serif`;
@@ -156,7 +166,6 @@ function CanvasText({
     
     return {
       texture: tex,
-      aspectRatio: ar,
       textWidth: threeW,
       textHeight: threeH,
     };
@@ -173,6 +182,9 @@ function CanvasText({
       };
     }
   }, [materialRef, color]);
+
+  // Don't render during SSR or before client hydration
+  if (!isClient || !texture) return null;
 
   // Anchor offset
   const offsetX = anchorX === "left" ? textWidth / 2 : anchorX === "right" ? -textWidth / 2 : 0;
