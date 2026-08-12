@@ -9,6 +9,8 @@ import CustomCursor from "../components/CustomCursor";
 import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
+import MobileAcademyView from "../components/MobileAcademyView";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 function LoaderOverlay() {
   const { progress, active } = useProgress();
@@ -154,6 +156,12 @@ export default function AcademyPage() {
     const muted = await AudioController.getInstance().toggleMute();
     setAudioMuted(muted);
   };
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  if (isMobile) {
+    return <MobileAcademyView />;
+  }
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden font-[var(--font-mono)] select-none">

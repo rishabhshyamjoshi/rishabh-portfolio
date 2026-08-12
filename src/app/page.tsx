@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import CustomCursor from "./components/CustomCursor";
 import Preloader from "./components/Preloader";
 import OverlayUI from "./components/OverlayUI";
+import Mobile2DView from "./components/Mobile2DView";
 import { AudioController } from "./utils/AudioController";
+import { useMediaQuery } from "./hooks/useMediaQuery";
 
 // Load scene dynamically to avoid SSR issues with Three.js
 const Scene = dynamic(() => import("./components/Scene"), {
@@ -34,16 +36,23 @@ export default function Home() {
     };
   }, []);
 
-  return (
-    <main style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
-      
-      {!loaded && <Preloader onComplete={handlePreloaderComplete} />}
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
-      {/* R3F WebGL Scene (Always rendered so useProgress can track model loading) */}
-      <Scene />
-      
-      {/* HTML DOM Overlay */}
-      {loaded && <OverlayUI />}
+  return (
+    <main style={{ position: "relative", width: "100vw", height: "100vh", overflow: isMobile ? "auto" : "hidden" }}>
+      {!loaded && !isMobile && <Preloader onComplete={handlePreloaderComplete} />}
+
+      {isMobile ? (
+        <Mobile2DView />
+      ) : (
+        <>
+          {/* R3F WebGL Scene */}
+          <Scene />
+          
+          {/* HTML DOM Overlay */}
+          {loaded && <OverlayUI />}
+        </>
+      )}
     </main>
   );
 }
