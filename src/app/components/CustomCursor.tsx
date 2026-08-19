@@ -35,6 +35,7 @@ export default function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isAudioOn, setIsAudioOn] = useState(false);
   const lockedPos = useRef({ x: 0, y: 0 });
   
   const numPoints = 40;
@@ -43,6 +44,12 @@ export default function CustomCursor() {
   const points = useRef(Array.from({ length: numPoints }, () => ({ x: mouse.current.x, y: mouse.current.y })));
   
   useEffect(() => {
+    setIsAudioOn(!AudioController.getInstance().isMuted);
+    const handleAudioChange = (e: any) => {
+      setIsAudioOn(!e.detail);
+    };
+    window.addEventListener('audioStateChanged', handleAudioChange);
+
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
       lockedPos.current = { x: e.clientX, y: e.clientY };
@@ -52,7 +59,10 @@ export default function CustomCursor() {
       });
     };
     window.addEventListener("contextmenu", handleContextMenu);
-    return () => window.removeEventListener("contextmenu", handleContextMenu);
+    return () => {
+      window.removeEventListener("contextmenu", handleContextMenu);
+      window.removeEventListener('audioStateChanged', handleAudioChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -283,9 +293,13 @@ export default function CustomCursor() {
           borderRadius: "50%",
           transform: `translate(-50%, -50%) scale(${menuOpen ? 1 : 0})`,
           opacity: menuOpen ? 1 : 0,
-          transition: "transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease",
-          background: "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05), transparent 60%)",
-          boxShadow: menuOpen ? "0 0 60px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.08)" : "none",
+          transition: "transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, background 0.4s ease, box-shadow 0.4s ease",
+          background: isAudioOn 
+            ? "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(0, 240, 255, 0.05), transparent 60%)"
+            : "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05), transparent 60%)",
+          boxShadow: menuOpen 
+            ? (isAudioOn ? "0 0 60px rgba(0, 240, 255, 0.15), inset 0 0 40px rgba(255, 255, 255, 0.05)" : "0 0 60px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.08)") 
+            : "none",
           filter: "blur(5px)",
           pointerEvents: "none",
         }} />
@@ -323,13 +337,13 @@ export default function CustomCursor() {
                   // Move outwards, apply spring scale for selected state
                   transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.15 : 1})`,
                   background: isSelected 
-                    ? "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15))" 
+                    ? (isAudioOn ? "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(0, 240, 255, 0.2))" : "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15))") 
                     : "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02))",
                   backdropFilter: "blur(12px)",
                   border: isSelected ? "1px solid rgba(255, 255, 255, 0.6)" : "1px solid rgba(255, 255, 255, 0.15)",
                   color: isSelected ? "#fff" : "rgba(255,255,255,0.7)",
                   boxShadow: isSelected 
-                    ? "0 10px 30px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)" 
+                    ? (isAudioOn ? "0 10px 30px rgba(0, 240, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)" : "0 10px 30px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)") 
                     : "0 4px 15px rgba(0, 0, 0, 0.2)",
                   fontSize: "0.65rem",
                   fontFamily: "var(--font-jakarta), sans-serif", // Modern sans-serif

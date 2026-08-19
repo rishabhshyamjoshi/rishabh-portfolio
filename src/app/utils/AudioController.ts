@@ -98,6 +98,10 @@ export class AudioController {
     
     this.isMuted = !this.isMuted;
     
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('audioStateChanged', { detail: this.isMuted }));
+    }
+    
     const now = this.context.currentTime;
     if (this.isMuted) {
       // Smooth fade out
