@@ -114,11 +114,11 @@ export default function Mobile2DView() {
 
       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
 
-      {/* TEAM SECTION */}
+      {/* AI PROJECTS SECTION */}
       <section className="w-full px-6 py-20">
         <div className="mb-12">
           <h2 className="text-sm tracking-[0.3em] font-mono text-white/50 mb-2">02 //</h2>
-          <h3 className="text-3xl font-light tracking-wider">TEAM</h3>
+          <h3 className="text-3xl font-light tracking-wider">AI PROJECTS</h3>
         </div>
 
         <div className="flex flex-col gap-8">

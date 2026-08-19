@@ -231,20 +231,31 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
 
             {/* High-Tech HUD Corner Brackets */}
             {[-1, 1].map((x) => 
-              [-1, 1].map((y) => (
-                <group key={`corner-${x}-${y}`} position={[x * (project.scale[0]/2 - 0.2), y * (project.scale[1]/2 - 0.2), 0]}>
-                  {/* Horizontal bracket piece */}
-                  <mesh position={[-x * 0.1, 0, 0]}>
-                    <planeGeometry args={[0.2, 0.015]} />
-                    <meshBasicMaterial color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
-                  </mesh>
-                  {/* Vertical bracket piece */}
-                  <mesh position={[0, -y * 0.1, 0]}>
-                    <planeGeometry args={[0.015, 0.2]} />
-                    <meshBasicMaterial color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
-                  </mesh>
-                </group>
-              ))
+              [-1, 1].map((y) => {
+                const logicalX = x * (project.scale[0]/2 - 0.2);
+                const curvedX = Math.sin(logicalX / 8) * 8;
+                const curvedZ = (Math.cos(logicalX / 8) - 1) * 8;
+                const rotY = -(logicalX / 8);
+
+                return (
+                  <group 
+                    key={`corner-${x}-${y}`} 
+                    position={[curvedX, y * (project.scale[1]/2 - 0.2), curvedZ]}
+                    rotation={[0, rotY, 0]}
+                  >
+                    {/* Horizontal bracket piece */}
+                    <mesh position={[-x * 0.1, 0, 0]}>
+                      <planeGeometry args={[0.2, 0.015]} />
+                      <meshBasicMaterial color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
+                    </mesh>
+                    {/* Vertical bracket piece */}
+                    <mesh position={[0, -y * 0.1, 0]}>
+                      <planeGeometry args={[0.015, 0.2]} />
+                      <meshBasicMaterial color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
+                    </mesh>
+                  </group>
+                );
+              })
             )}
           </group>
         </group>

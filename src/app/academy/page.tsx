@@ -80,8 +80,64 @@ function RawBlackHoleModel() {
 // Hollywood Sci-Fi Scroll Camera Rig: Approach -> 360° Orbit -> Opposite Side Deep Space Exit
 function CinematicCameraRig() {
   const scroll = useScroll();
+  const targetDragAngle = useRef(0);
+  const currentDragAngle = useRef(0);
+  const isDragging = useRef(false);
+  const dragStart = useRef(0);
+
+  useEffect(() => {
+    const handlePointerDown = (e: PointerEvent) => {
+      isDragging.current = true;
+      dragStart.current = e.clientX;
+    };
+    const handlePointerMove = (e: PointerEvent) => {
+      if (isDragging.current) {
+        const deltaX = e.clientX - dragStart.current;
+        targetDragAngle.current -= deltaX * 0.003; // slightly more responsive
+        dragStart.current = e.clientX;
+      }
+    };
+    const handlePointerUp = () => {
+      isDragging.current = false;
+    };
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      isDragging.current = true;
+      dragStart.current = e.touches[0].clientX;
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDragging.current) {
+        const deltaX = e.touches[0].clientX - dragStart.current;
+        targetDragAngle.current -= deltaX * 0.003;
+        dragStart.current = e.touches[0].clientX;
+      }
+    };
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, []);
 
   useFrame((state) => {
+    currentDragAngle.current = THREE.MathUtils.lerp(currentDragAngle.current, targetDragAngle.current, 0.05);
+
     if (!scroll) return;
     const offset = scroll.offset; // 0.0 (top) -> 1.0 (bottom)
 
@@ -114,6 +170,9 @@ function CinematicCameraRig() {
       elevation = THREE.MathUtils.lerp(2, -15, easeP); // Deep space exit trajectory
       angle = THREE.MathUtils.lerp(startAngle, targetAngle, easeP);
     }
+
+    // Apply manual drag rotation
+    angle += currentDragAngle.current;
 
     // Add mouse parallax sway for depth
     const parallaxX = state.pointer.x * 1.5;

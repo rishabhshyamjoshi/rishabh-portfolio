@@ -202,7 +202,12 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
             <CanvasText
               fontSize={0.25}
-              position={[-member.scale[0]/2 + 0.3, member.scale[1]/2 - 0.3, 0]}
+              position={[
+                Math.sin((-member.scale[0]/2 + 0.3) / 8) * 8, 
+                member.scale[1]/2 - 0.3, 
+                (Math.cos((-member.scale[0]/2 + 0.3) / 8) - 1) * 8
+              ]}
+              rotation={[0, -(-member.scale[0]/2 + 0.3) / 8, 0]}
               anchorX="left"
               anchorY="top"
               letterSpacing={0.1}
@@ -239,6 +244,8 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
             </CanvasText>
 
             {/* Curved Deco Line */}
+            {/* Split into smaller segments to approximate the curve, or just keep it flat if it's small, 
+                but it spans width-1.5. To make it simple, let's keep it centered (x=0) where z=0 */}
             <mesh position={[0, -member.scale[1]/2 + 0.4, 0]}>
               <planeGeometry args={[member.scale[0] - 1.5, 0.015]} />
               <meshBasicMaterial ref={decoLineRef} color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
@@ -246,20 +253,31 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
 
             {/* High-Tech HUD Corner Brackets */}
             {[-1, 1].map((x) => 
-              [-1, 1].map((y) => (
-                <group key={`corner-${x}-${y}`} position={[x * (member.scale[0]/2 - 0.2), y * (member.scale[1]/2 - 0.2), 0]}>
-                  {/* Horizontal bracket piece */}
-                  <mesh position={[-x * 0.1, 0, 0]}>
-                    <planeGeometry args={[0.2, 0.015]} />
-                    <meshBasicMaterial color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
-                  </mesh>
-                  {/* Vertical bracket piece */}
-                  <mesh position={[0, -y * 0.1, 0]}>
-                    <planeGeometry args={[0.015, 0.2]} />
-                    <meshBasicMaterial color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
-                  </mesh>
-                </group>
-              ))
+              [-1, 1].map((y) => {
+                const logicalX = x * (member.scale[0]/2 - 0.2);
+                const curvedX = Math.sin(logicalX / 8) * 8;
+                const curvedZ = (Math.cos(logicalX / 8) - 1) * 8;
+                const rotY = -(logicalX / 8);
+
+                return (
+                  <group 
+                    key={`corner-${x}-${y}`} 
+                    position={[curvedX, y * (member.scale[1]/2 - 0.2), curvedZ]}
+                    rotation={[0, rotY, 0]}
+                  >
+                    {/* Horizontal bracket piece */}
+                    <mesh position={[-x * 0.1, 0, 0]}>
+                      <planeGeometry args={[0.2, 0.015]} />
+                      <meshBasicMaterial color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
+                    </mesh>
+                    {/* Vertical bracket piece */}
+                    <mesh position={[0, -y * 0.1, 0]}>
+                      <planeGeometry args={[0.015, 0.2]} />
+                      <meshBasicMaterial color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
+                    </mesh>
+                  </group>
+                );
+              })
             )}
           </group>
         </group>

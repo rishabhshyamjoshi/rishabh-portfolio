@@ -16,58 +16,58 @@ export interface TeamData {
 
 export const TEAM: TeamData[] = [
   {
-    id: "RJ-001", name: "Rishabh Joshi", role: "Founder & Lead Educator",
-    bio: "Founder of RJ Industries. AI educator, creative developer, and the architect behind 400K+ students.",
-    skills: ["AI/ML", "UI/UX Design", "Web Dev"],
-    status: "ONLINE", clearance: "OMEGA", color: "#ff2200", initials: "RJ",
-    linkedin: "https://linkedin.com",
+    id: "AI-001", name: "Project Genesis", role: "Generative AI",
+    bio: "Advanced multimodal generative model capable of synthesizing text, image, and audio in real-time.",
+    skills: ["PyTorch", "Transformers", "CUDA"],
+    status: "LIVE", clearance: "OMEGA", color: "#ff2200", initials: "PG",
+    linkedin: "https://github.com",
     angle: 0,
     scale: [4, 3, 1],
-    image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop"
   },
   {
-    id: "AK-002", name: "Arjun Kapoor", role: "Lead Full-Stack Developer",
-    bio: "Full-stack engineer with a passion for blazing-fast web experiences.",
-    skills: ["React", "Next.js", "TypeScript"],
-    status: "ONLINE", clearance: "ALPHA", color: "#ffd700", initials: "AK", linkedin: "",
+    id: "AI-002", name: "Neural Vision", role: "Computer Vision",
+    bio: "Real-time object detection and spatial mapping system for autonomous drone navigation.",
+    skills: ["OpenCV", "TensorFlow", "C++"],
+    status: "BETA", clearance: "ALPHA", color: "#ffd700", initials: "NV", linkedin: "",
     angle: Math.PI / 3,
     scale: [4, 3, 1],
-    image: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop"
   },
   {
-    id: "PS-003", name: "Priya Sharma", role: "Senior UI/UX Designer",
-    bio: "Pixel-perfect Figma wizard. Takes wireframes from rough sketches to production-grade design systems.",
-    skills: ["Figma", "Design Systems", "Prototyping"],
-    status: "ONLINE", clearance: "ALPHA", color: "#7c3aed", initials: "PS", linkedin: "",
+    id: "AI-003", name: "Quantum Mind", role: "Quantum NLP",
+    bio: "Experimental NLP model leveraging quantum circuit simulations for exponential parameter scaling.",
+    skills: ["Qiskit", "Python", "NLP"],
+    status: "ALPHA", clearance: "ALPHA", color: "#7c3aed", initials: "QM", linkedin: "",
     angle: (Math.PI / 3) * 2,
     scale: [4, 3, 1],
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1000&auto=format&fit=crop"
   },
   {
-    id: "RN-004", name: "Rohit Nair", role: "AI Automation Engineer",
-    bio: "Builds autonomous pipelines, n8n workflows, LangChain agents.",
-    skills: ["n8n", "LangChain", "Python"],
-    status: "ONLINE", clearance: "BETA", color: "#10b981", initials: "RN", linkedin: "",
+    id: "AI-004", name: "Auto Agent", role: "Autonomous Agents",
+    bio: "Self-healing distributed agent framework for automated code writing and infrastructure maintenance.",
+    skills: ["LangChain", "Node.js", "Docker"],
+    status: "LIVE", clearance: "BETA", color: "#10b981", initials: "AA", linkedin: "",
     angle: Math.PI,
     scale: [4, 3, 1],
-    image: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop"
   },
   {
-    id: "SM-005", name: "Sneha Mehta", role: "Content & Video Producer",
-    bio: "Scripting to final cut. Turns raw ideas into compelling course content and viral social reels.",
-    skills: ["Premiere Pro", "After Effects", "HeyGen"],
-    status: "BUSY", clearance: "BETA", color: "#ffd700", initials: "SM", linkedin: "",
+    id: "AI-005", name: "Cyber Shield", role: "Predictive Security",
+    bio: "AI-driven threat detection system analyzing network traffic anomalies with 99.9% accuracy.",
+    skills: ["Scikit-Learn", "Go", "AWS"],
+    status: "TESTING", clearance: "BETA", color: "#ffd700", initials: "CS", linkedin: "",
     angle: (Math.PI / 3) * 4,
     scale: [4, 3, 1],
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop"
   },
   {
-    id: "VR-006", name: "Vikram Rao", role: "Growth & Brand Strategist",
-    bio: "LinkedIn growth hacker, newsletter architect, organic reach specialist.",
-    skills: ["LinkedIn", "SEO", "Newsletters"],
-    status: "ONLINE", clearance: "BETA", color: "#ff2200", initials: "VR", linkedin: "",
+    id: "AI-006", name: "Synth Wave", role: "Audio Generation",
+    bio: "Zero-shot text-to-audio model capable of generating studio-quality music and sound effects.",
+    skills: ["JAX", "Python", "WebAudio"],
+    status: "LIVE", clearance: "BETA", color: "#ff2200", initials: "SW", linkedin: "",
     angle: (Math.PI / 3) * 5,
     scale: [4, 3, 1],
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop"
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop"
   },
 ];

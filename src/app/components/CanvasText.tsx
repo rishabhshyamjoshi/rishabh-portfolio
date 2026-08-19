@@ -191,21 +191,22 @@ function CanvasText({
   const offsetY = anchorY === "top" ? -textHeight / 2 : anchorY === "bottom" ? textHeight / 2 : 0;
 
   return (
-    <sprite
-      ref={spriteRef}
+    <mesh
+      ref={spriteRef as any}
       position={[position[0] + offsetX, position[1] + offsetY, position[2]]}
-      scale={[textWidth, textHeight, 1]}
+      rotation={rotation}
       onClick={onClick}
       onPointerOver={onPointerOver}
       onPointerOut={onPointerOut}
     >
-      <spriteMaterial
+      <planeGeometry args={[textWidth, textHeight]} />
+      <meshBasicMaterial
         map={texture}
         transparent
         depthWrite={false}
-        sizeAttenuation
+        side={THREE.DoubleSide}
       />
-    </sprite>
+    </mesh>
   );
 }
 

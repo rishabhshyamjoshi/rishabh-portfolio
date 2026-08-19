@@ -24,6 +24,12 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
   const currentLookAt = useRef(new THREE.Vector3(0, 0, -2));
   const smoothPan = useRef(0);
 
+  // Drag-to-rotate state
+  const isDragging = useRef(false);
+  const dragStart = useRef(0);
+  const targetDragAngle = useRef(0);
+  const currentDragAngle = useRef(0);
+
   useEffect(() => {
     let lastTouchY = 0;
 
@@ -36,16 +42,45 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     
     const handleTouchStart = (e: TouchEvent) => {
       lastTouchY = e.touches[0].clientY;
+      isDragging.current = true;
+      dragStart.current = e.touches[0].clientX;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (activeProject) return;
-      const currentY = e.touches[0].clientY;
-      const deltaY = lastTouchY - currentY;
-      targetScroll.current += deltaY * 0.005; // Slightly faster multiplier for touch dragging
-      if (targetScroll.current > 5) targetScroll.current = 5;
-      if (targetScroll.current < 0) targetScroll.current = 0;
-      lastTouchY = currentY;
+      if (!activeProject) {
+        const currentY = e.touches[0].clientY;
+        const deltaY = lastTouchY - currentY;
+        targetScroll.current += deltaY * 0.005; // Slightly faster multiplier for touch dragging
+        if (targetScroll.current > 5) targetScroll.current = 5;
+        if (targetScroll.current < 0) targetScroll.current = 0;
+        lastTouchY = currentY;
+      }
+      if (isDragging.current) {
+        const deltaX = e.touches[0].clientX - dragStart.current;
+        targetDragAngle.current -= deltaX * 0.002;
+        dragStart.current = e.touches[0].clientX;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+    };
+
+    const handlePointerDown = (e: PointerEvent) => {
+      isDragging.current = true;
+      dragStart.current = e.clientX;
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (isDragging.current) {
+        const deltaX = e.clientX - dragStart.current;
+        targetDragAngle.current -= deltaX * 0.002;
+        dragStart.current = e.clientX;
+      }
+    };
+
+    const handlePointerUp = () => {
+      isDragging.current = false;
     };
 
     const handleNav = (e: any) => {
@@ -55,15 +90,33 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
     window.addEventListener("navTo", handleNav as any);
     
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
       window.removeEventListener("navTo", handleNav as any);
     };
   }, [activeProject]);
+
+  const rotateAround = (cx: number, cz: number, x: number, z: number, angle: number) => {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const nx = (cos * (x - cx)) - (sin * (z - cz)) + cx;
+    const nz = (sin * (x - cx)) + (cos * (z - cz)) + cz;
+    return { x: nx, z: nz };
+  };
 
   useFrame((state) => {
     const rawScrollDelta = targetScroll.current - currentScroll.current;
@@ -71,9 +124,11 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     currentScroll.current += rawScrollDelta * 0.02;
     setScrollProgress(currentScroll.current);
 
+    // Smooth drag angle interpolation
+    currentDragAngle.current = THREE.MathUtils.lerp(currentDragAngle.current, targetDragAngle.current, 0.05);
+
     const aspect = window.innerWidth / window.innerHeight;
     const baseFov = aspect < 1 ? 100 : 75; 
-    // Dynamic FOV warp effect on movement (reduced by ~10%)
     const targetFov = baseFov + (scrollDelta * 54); 
     
     if (camera instanceof THREE.PerspectiveCamera) {
@@ -84,17 +139,12 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
     targetParallax.current.set(pointer.x * 0.4, pointer.y * 0.3);
     currentParallax.current.lerp(targetParallax.current, 0.025);
 
-    // Audio muffle and ambient continuous slow pan
     let muffleIntensity = 0;
     if (activeProject) {
       muffleIntensity = 0.85;
     } else {
-      // Muffling effect while scrolling (reduced 25%)
       muffleIntensity = Math.min(scrollDelta * 7.5, 0.75);
-      
-      // Target pan (reduced 25%)
       const targetPan = Math.max(-0.75, Math.min(0.75, rawScrollDelta * 3.75)); 
-      // Lerp for smooth effect
       smoothPan.current = THREE.MathUtils.lerp(smoothPan.current, targetPan, 0.05);
     }
 
@@ -117,17 +167,22 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       }
 
       const radius = Math.pow(localScrollProgress, 1.5) * 15;
-      const px = baseProjectX + Math.cos(activeProject.angle + t * 0.2) * (radius - 2); 
-      const pz = Math.sin(activeProject.angle + t * 0.2) * (radius - 2) - 2;
+      let px = baseProjectX + Math.cos(activeProject.angle + t * 0.2) * (radius - 2); 
+      let pz = Math.sin(activeProject.angle + t * 0.2) * (radius - 2) - 2;
       const py = Math.sin(t * 1 + (isMars ? parseInt(activeProject.id.split("-")[1]) : activeProject.id)) * 0.5;
 
-      camera.position.lerp(new THREE.Vector3(px, py, pz), 0.05);
-      
       const targetLook = new THREE.Vector3(
         baseProjectX + Math.cos(activeProject.angle + t * 0.2) * radius,
         py,
         Math.sin(activeProject.angle + t * 0.2) * radius - 2
       );
+      
+      // Apply 360 manual rotation
+      const rotatedCam = rotateAround(targetLook.x, targetLook.z, px, pz, currentDragAngle.current);
+      px = rotatedCam.x;
+      pz = rotatedCam.z;
+
+      camera.position.lerp(new THREE.Vector3(px, py, pz), 0.05);
       currentLookAt.current.lerp(targetLook, 0.1); 
       camera.lookAt(currentLookAt.current);
     } else {
@@ -136,19 +191,14 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       let idealZ = 0;
       let idealLookX = 0;
       
-      // Generalized planetary scroll logic
-      // N = planet index (0 = Earth, 1 = Mars, etc.)
-      // scroll range [2N, 2N+1] is orbiting planet N
-      // scroll range [2N+1, 2N+2] is traveling from N to N+1
       const scroll = currentScroll.current;
       const N = Math.floor(scroll / 2);
-      const localScroll = scroll - N * 2; // Always [0, 2)
+      const localScroll = scroll - N * 2; 
       
       const baseProjectX = N * 40;
       const nextProjectX = (N + 1) * 40;
       
       const getOrbitRadius = (planetIndex: number) => {
-        // Earth (0) is small, Mars (1) is massive now, Footer (2) is medium
         if (planetIndex === 0) return 8;
         if (planetIndex === 1) return 18;
         return 12;
@@ -158,20 +208,17 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       const r2 = getOrbitRadius(N + 1);
 
       if (localScroll <= 1) {
-        // Orbiting planet N
         const angle = localScroll * Math.PI * 2;
         idealX = baseProjectX + Math.sin(angle) * r1;
         idealZ = -2 + Math.cos(angle) * r1;
         idealY = (localScroll % 1) * 1.5;
         idealLookX = baseProjectX;
       } else {
-        // Traveling to planet N+1
-        const progress = localScroll - 1; // [0, 1)
+        const progress = localScroll - 1;
         const smoothProgress = progress * progress * (3 - 2 * progress);
         idealX = THREE.MathUtils.lerp(baseProjectX, nextProjectX, smoothProgress);
         
         const baseZ = THREE.MathUtils.lerp(r1, r2, smoothProgress) - 2;
-        // Reduced the zoom-out arc significantly as requested
         const arcAmount = Math.max(5, (r1 + r2) * 0.15);
         idealZ = baseZ + Math.sin(progress * Math.PI) * arcAmount;
         
@@ -181,9 +228,15 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
 
       idealX += currentParallax.current.x;
       idealY += currentParallax.current.y;
+      
+      let targetLook = new THREE.Vector3(idealLookX - currentParallax.current.x, -currentParallax.current.y, -2);
+      
+      // Apply 360 manual rotation
+      const rotatedCam = rotateAround(targetLook.x, targetLook.z, idealX, idealZ, currentDragAngle.current);
+      idealX = rotatedCam.x;
+      idealZ = rotatedCam.z;
 
       const targetPos = new THREE.Vector3(idealX, idealY, idealZ);
-      const targetLook = new THREE.Vector3(idealLookX - currentParallax.current.x, -currentParallax.current.y, -2);
       
       camera.position.lerp(targetPos, 0.04);
       currentLookAt.current.lerp(targetLook, 0.04);
