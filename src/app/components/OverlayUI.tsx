@@ -171,10 +171,11 @@ export default function OverlayUI() {
         style={{
           position: "absolute",
           inset: 0,
-          background: showContact ? "rgba(0,0,0,0.6)" : "transparent",
-          backdropFilter: showContact ? "blur(20px)" : "none",
+          background: showContact ? "rgba(0,0,0,0.3)" : "transparent",
+          backdropFilter: showContact ? "blur(16px)" : "none",
+          WebkitBackdropFilter: showContact ? "blur(16px)" : "none",
           pointerEvents: showContact ? "auto" : "none",
-          transition: "all 0.5s ease",
+          transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -183,29 +184,82 @@ export default function OverlayUI() {
         }}
       >
         <div style={{
-          background: "rgba(15, 15, 20, 0.9)",
+          background: "rgba(255, 255, 255, 0.03)",
           border: "1px solid rgba(255, 255, 255, 0.08)",
-          padding: "3rem",
-          borderRadius: "12px",
+          padding: "2.5rem 3rem",
+          borderRadius: "24px",
           width: "90%",
           maxWidth: "380px",
           transform: showContact ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
-          transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "0 30px 60px rgba(0,0,0,0.5)",
-          textAlign: "center"
+          transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+          textAlign: "center",
+          fontFamily: "'Inter', 'Space Grotesk', sans-serif",
         }}>
-          <h2 style={{ fontSize: "1.2rem", color: "#fff", marginBottom: "0.3rem", letterSpacing: "0.15em", fontWeight: 400 }}>GET IN TOUCH</h2>
-          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.7rem", marginBottom: "2rem", letterSpacing: "0.1em" }}>Let&apos;s build something extraordinary.</p>
           
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
-            <a href="mailto:contact@rjindustries.dev" target="_blank" rel="noopener noreferrer" style={{ padding: "0.8rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", textDecoration: "none", letterSpacing: "0.1em", fontSize: "0.7rem", transition: "all 0.3s", borderRadius: "6px" }} data-hover>EMAIL</a>
-            <a href="tel:+918208812534" style={{ padding: "0.8rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", textDecoration: "none", letterSpacing: "0.1em", fontSize: "0.7rem", transition: "all 0.3s", borderRadius: "6px" }} data-hover>MOBILE</a>
-            <a href="https://www.instagram.com/rj_industries01/" target="_blank" rel="noopener noreferrer" style={{ padding: "0.8rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", textDecoration: "none", letterSpacing: "0.1em", fontSize: "0.7rem", transition: "all 0.3s", borderRadius: "6px" }} data-hover>INSTAGRAM</a>
-            <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" rel="noopener noreferrer" style={{ padding: "0.8rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)", textDecoration: "none", letterSpacing: "0.1em", fontSize: "0.7rem", transition: "all 0.3s", borderRadius: "6px" }} data-hover>LINKEDIN</a>
+          <div style={{ 
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            background: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            marginBottom: "1.5rem"
+          }}>
+            {/* Elegant mail icon */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1.5">
+              <rect x="3" y="5" width="18" height="14" rx="3" />
+              <path d="M3 7l9 6 9-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          <h2 style={{ fontSize: "1.2rem", color: "#fff", marginBottom: "0.5rem", letterSpacing: "-0.02em", fontWeight: 500 }}>Get in Touch</h2>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem", marginBottom: "2rem", letterSpacing: "0.01em", fontWeight: 400 }}>
+            Let&apos;s build something extraordinary.
+          </p>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+            <a href="mailto:contact@rjindustries.dev" target="_blank" rel="noopener noreferrer" 
+               style={{ padding: "0.8rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s ease", borderRadius: "12px" }} 
+               onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+               onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+               data-hover>Email</a>
+            <a href="tel:+918208812534" 
+               style={{ padding: "0.8rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s ease", borderRadius: "12px" }} 
+               onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+               onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+               data-hover>Mobile</a>
+            <a href="https://www.instagram.com/rj_industries01/" target="_blank" rel="noopener noreferrer" 
+               style={{ padding: "0.8rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s ease", borderRadius: "12px" }} 
+               onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+               onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+               data-hover>Instagram</a>
+            <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" rel="noopener noreferrer" 
+               style={{ padding: "0.8rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.8)", textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s ease", borderRadius: "12px" }} 
+               onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+               onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+               data-hover>LinkedIn</a>
           </div>
           
-          <button onClick={() => setShowContact(false)} style={{ marginTop: "1.5rem", background: "none", border: "none", color: "rgba(255,255,255,0.25)", cursor: "pointer", fontSize: "0.6rem", letterSpacing: "0.1em" }} data-hover>
-            CLOSE
+          <button 
+            onClick={() => setShowContact(false)} 
+            style={{ 
+              marginTop: "2rem", 
+              background: "none", 
+              border: "none", 
+              color: "rgba(255,255,255,0.4)", 
+              cursor: "pointer", 
+              fontSize: "0.85rem", 
+              fontWeight: 400,
+              transition: "color 0.2s" 
+            }} 
+            onMouseOver={(e) => e.currentTarget.style.color = "#fff"}
+            onMouseOut={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+            data-hover
+          >
+            Close
           </button>
         </div>
       </div>
