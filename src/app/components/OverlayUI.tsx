@@ -210,15 +210,16 @@ export default function OverlayUI() {
         </div>
       </div>
 
-      {/* ═══ NAVIGATION HINT MODAL ═══ */}
+      {/* ═══ ONBOARDING MODAL ═══ */}
       <div 
         style={{
           position: "absolute",
           inset: 0,
-          background: showRightClickWarning ? "rgba(0,0,0,0.4)" : "transparent",
-          backdropFilter: showRightClickWarning ? "blur(8px)" : "none",
+          background: showRightClickWarning ? "rgba(0,0,0,0.3)" : "transparent",
+          backdropFilter: showRightClickWarning ? "blur(16px)" : "none",
+          WebkitBackdropFilter: showRightClickWarning ? "blur(16px)" : "none",
           pointerEvents: showRightClickWarning ? "auto" : "none",
-          transition: "all 0.5s ease",
+          transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -227,61 +228,65 @@ export default function OverlayUI() {
         }}
       >
         <div style={{
-          background: "linear-gradient(135deg, rgba(15, 15, 20, 0.95), rgba(5, 5, 8, 0.95))",
-          border: "1px solid rgba(0, 240, 255, 0.15)",
-          padding: "3rem",
-          borderRadius: "16px",
-          maxWidth: "420px",
+          background: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          padding: "2.5rem 3rem",
+          borderRadius: "24px",
+          maxWidth: "400px",
           textAlign: "center",
           transform: showRightClickWarning ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
-          transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05)",
-          fontFamily: "'Space Grotesk', sans-serif",
+          transition: "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+          fontFamily: "'Inter', 'Space Grotesk', sans-serif",
         }}>
           
           <div style={{ 
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "48px",
-            height: "48px",
+            width: "56px",
+            height: "56px",
             borderRadius: "50%",
-            background: "rgba(0, 240, 255, 0.1)",
+            background: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
             marginBottom: "1.5rem"
           }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" strokeWidth="2">
-              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" strokeLinecap="round" strokeLinejoin="round" />
+            {/* Elegant minimal mouse icon */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1.5">
+              <rect x="7" y="3" width="10" height="18" rx="5" />
+              <path d="M12 7v4" strokeLinecap="round" />
             </svg>
           </div>
 
-          <h2 style={{ fontSize: "1.4rem", color: "#fff", marginBottom: "1rem", letterSpacing: "0.1em", fontWeight: 500 }}>Navigation Menu</h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", marginBottom: "2.5rem", letterSpacing: "0.02em", lineHeight: 1.6 }}>
-            Right-click anywhere on the screen to access the cosmic navigation matrix and explore the universe.
+          <h2 style={{ fontSize: "1.2rem", color: "#fff", marginBottom: "0.8rem", letterSpacing: "-0.02em", fontWeight: 500 }}>Quick Navigation</h2>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem", marginBottom: "2rem", letterSpacing: "0.01em", lineHeight: 1.5, fontWeight: 400 }}>
+            Right-click anywhere to open the radial menu.<br/>
+            Scroll to travel through the portfolio, and drag to rotate the camera.
           </p>
           <button 
             onClick={() => setShowRightClickWarning(false)} 
             style={{ 
-              padding: "0.8rem 2.5rem", 
-              background: "rgba(0, 240, 255, 0.1)", 
-              border: "1px solid rgba(0, 240, 255, 0.3)", 
-              color: "#00f0ff", 
+              padding: "0.75rem 2.5rem", 
+              background: "#fff", 
+              color: "#000", 
+              border: "none",
               cursor: "pointer", 
-              fontSize: "0.85rem", 
-              letterSpacing: "0.1em",
+              fontSize: "0.9rem", 
               fontWeight: 500,
-              transition: "all 0.3s ease",
-              borderRadius: "8px"
+              transition: "all 0.2s ease",
+              borderRadius: "30px",
+              boxShadow: "0 4px 14px rgba(255,255,255,0.25)"
             }} 
             onMouseOver={(e) => {
-              e.currentTarget.style.background = "rgba(0, 240, 255, 0.2)";
-              e.currentTarget.style.boxShadow = "0 0 15px rgba(0, 240, 255, 0.2)";
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = "0 6px 20px rgba(255,255,255,0.35)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = "rgba(0, 240, 255, 0.1)";
-              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 14px rgba(255,255,255,0.25)";
             }}
           >
-            ENTER UNIVERSE
+            Got it
           </button>
         </div>
       </div>
