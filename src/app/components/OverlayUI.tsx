@@ -173,12 +173,12 @@ export default function OverlayUI() {
               window.dispatchEvent(new CustomEvent("navTo", { detail: 1 }));
             }}
             style={{
-              padding: "0.6rem 2rem",
+              padding: "0.8rem 2.5rem",
               background: "rgba(255, 255, 255, 0.05)",
               border: "1px solid rgba(255, 255, 255, 0.15)",
               color: "#fff",
               borderRadius: "30px",
-              fontSize: "0.65rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.2em",
               cursor: "pointer",
               backdropFilter: "blur(10px)",
