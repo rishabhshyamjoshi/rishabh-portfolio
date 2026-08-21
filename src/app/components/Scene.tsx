@@ -353,9 +353,9 @@ export default function Scene() {
         
         <EffectComposer multisampling={0}>
           <Bloom 
-            luminanceThreshold={0.6} 
+            luminanceThreshold={0.5} 
             luminanceSmoothing={0.9} 
-            intensity={0.5} 
+            intensity={0.6} 
           />
         </EffectComposer>
         

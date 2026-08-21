@@ -11,6 +11,7 @@ export default function OverlayUI() {
   const [showRightClickWarning, setShowRightClickWarning] = useState(true);
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
+  const visRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -43,6 +44,27 @@ export default function OverlayUI() {
     const updateScroll = () => {
       currentScroll.current += (targetScroll.current - currentScroll.current) * 0.08;
       setDisplayScroll(currentScroll.current);
+      
+      // Audio Visualizer Update
+      if (visRef.current) {
+        const audio = AudioController.getInstance();
+        const data = audio.getFrequencyData();
+        const bars = visRef.current.children;
+        if (data && data.length > 0 && !audio.isMuted) {
+          for (let i = 0; i < bars.length; i++) {
+            // Map lower frequencies to the bars
+            const val = data[i * 8] || 0; 
+            (bars[i] as HTMLElement).style.height = `${Math.max(4, val * 0.15)}px`;
+            (bars[i] as HTMLElement).style.opacity = `${0.3 + (val / 255) * 0.7}`;
+          }
+        } else {
+          for (let i = 0; i < bars.length; i++) {
+            (bars[i] as HTMLElement).style.height = '4px';
+            (bars[i] as HTMLElement).style.opacity = '0.3';
+          }
+        }
+      }
+
       frameId = requestAnimationFrame(updateScroll);
     };
     frameId = requestAnimationFrame(updateScroll);
@@ -95,54 +117,128 @@ export default function OverlayUI() {
         {/* Main title */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{
-            fontSize: "clamp(0.6rem, 1.2vw, 0.8rem)",
-            letterSpacing: "0.5em",
-            color: "rgba(255,255,255,0.35)",
-            marginBottom: "1.5rem",
-            fontWeight: 400,
+            fontSize: "clamp(0.65rem, 1.2vw, 0.9rem)",
+            letterSpacing: "0.6em",
+            color: "rgba(255,255,255,0.8)",
+            marginBottom: "0.5rem",
+            fontWeight: 500,
+            animation: "fadeInUp 1s ease 0.2s both",
+            fontFamily: "'Inter', sans-serif"
           }}>
             INNOVATION BEYOND LIMITS
           </div>
-          <Image 
-            src="/logo.png" 
-            alt="RJ Industries Logo" 
-            width={700}
-            height={200}
-            style={{
-              width: "90%",
-              maxWidth: "700px",
-              height: "auto",
-              objectFit: "contain",
-              filter: "drop-shadow(0 0 20px rgba(136,170,255,0.3))",
-              marginTop: "1rem",
-              transform: "translateX(8%)",
-            }}
-          />
+          <div style={{
+            fontSize: "clamp(0.45rem, 0.8vw, 0.6rem)",
+            letterSpacing: "0.4em",
+            color: "rgba(255,255,255,0.4)",
+            marginBottom: "1.5rem",
+            fontWeight: 400,
+            animation: "fadeInUp 1s ease 0.4s both",
+            fontFamily: "'Inter', sans-serif"
+          }}>
+            ADVANCED ENGINEERING SOLUTIONS
+          </div>
+          <div style={{ animation: "fadeInUp 1.5s ease 0.6s both" }}>
+            <Image 
+              src="/logo.png" 
+              alt="RJ Industries Logo" 
+              width={700}
+              height={200}
+              style={{
+                width: "90%",
+                maxWidth: "700px",
+                height: "auto",
+                objectFit: "contain",
+                filter: "drop-shadow(0 0 30px rgba(255,255,255,0.15))",
+                marginTop: "1rem",
+                transform: "translateX(8%)",
+              }}
+            />
+          </div>
         </div>
 
-        {/* Subtle scroll indicator */}
+        {/* Explore Button */}
         <div style={{
           position: "absolute",
-          bottom: "10%",
+          bottom: "12%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "0.8rem",
-          animation: "fadeInUp 1.5s ease 1s both",
+          gap: "1.5rem",
+          animation: "fadeInUp 1.5s ease 1.2s both",
+          pointerEvents: "auto",
         }}>
+          <button 
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("navTo", { detail: 1 }));
+            }}
+            style={{
+              padding: "0.6rem 2rem",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#fff",
+              borderRadius: "30px",
+              fontSize: "0.65rem",
+              letterSpacing: "0.2em",
+              cursor: "pointer",
+              backdropFilter: "blur(10px)",
+              transition: "all 0.3s ease",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+              fontFamily: "'Inter', sans-serif",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            EXPLORE PROJECTS
+          </button>
+        </div>
+
+        {/* Audio Visualizer (Bottom Left) */}
+        <div 
+          style={{
+            position: "absolute",
+            bottom: "2rem",
+            left: "2rem",
+            display: "flex",
+            alignItems: "flex-end",
+            gap: "4px",
+            height: "30px",
+            animation: "fadeInUp 1.5s ease 1.5s both",
+          }}
+        >
           <div style={{
-            fontSize: "0.55rem",
-            letterSpacing: "0.3em",
+            fontSize: "0.5rem",
+            letterSpacing: "0.2em",
             color: "rgba(255,255,255,0.3)",
+            marginRight: "1rem",
+            marginBottom: "2px",
+            fontFamily: "'Inter', sans-serif"
           }}>
-            SWIPE OR SCROLL
+            SYSTEM AUDIO
           </div>
-          <div style={{
-            width: "1px",
-            height: "40px",
-            background: "linear-gradient(to bottom, rgba(255,255,255,0.4), transparent)",
-            animation: "scrollPulse 2s ease infinite",
-          }} />
+          <div ref={visRef} style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "100%" }}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div 
+                key={i} 
+                style={{ 
+                  width: "3px", 
+                  height: "4px", 
+                  background: "#fff", 
+                  opacity: 0.3,
+                  borderRadius: "2px",
+                  transition: "height 0.1s ease" 
+                }} 
+              />
+            ))}
+          </div>
         </div>
       </div>
 
