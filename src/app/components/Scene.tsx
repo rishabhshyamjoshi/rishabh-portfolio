@@ -156,7 +156,7 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
 
     if (activeProject) {
       const isMars = activeProject.name !== undefined;
-      const baseProjectX = isMars ? 40 : 0;
+      const baseProjectX = isMars ? 100 : 0;
       const t = activeProject.animationTime; 
       
       let localScrollProgress = 0;
@@ -195,8 +195,8 @@ function CameraController({ setScrollProgress, activeProject }: { setScrollProgr
       const N = Math.floor(scroll / 2);
       const localScroll = scroll - N * 2; 
       
-      const baseProjectX = N * 40;
-      const nextProjectX = (N + 1) * 40;
+      const baseProjectX = N * 100;
+      const nextProjectX = (N + 1) * 100;
       
       const getOrbitRadius = (planetIndex: number) => {
         if (planetIndex === 0) return 8;
@@ -356,6 +356,15 @@ export default function Scene() {
             luminanceThreshold={0.5} 
             luminanceSmoothing={0.9} 
             intensity={0.6} 
+          />
+          <ChromaticAberration 
+            blendFunction={BlendFunction.NORMAL}
+            offset={new THREE.Vector2(0.0005, 0.0005)} 
+          />
+          <Noise 
+            premultiply 
+            blendFunction={BlendFunction.ADD} 
+            opacity={0.015} 
           />
         </EffectComposer>
         

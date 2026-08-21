@@ -369,7 +369,7 @@ export default function SolarSystem({ scrollProgress }: { scrollProgress: number
   return (
     <group>
       <EarthPlanet scrollProgress={getLocalProgress(0)} position={[0, 0, -2]} />
-      <MarsPlanet scrollProgress={getLocalProgress(1)} position={[40, 0, -2]} />
+      <MarsPlanet scrollProgress={getLocalProgress(1)} position={[100, 0, -2]} />
     </group>
   );
 }

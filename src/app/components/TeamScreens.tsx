@@ -105,13 +105,13 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
     currentTime.current = t;
     
     const localScrollProgress = scrollProgress > 2 ? Math.min(1, scrollProgress - 2) : 0;
-    const radius = Math.pow(localScrollProgress, 1.5) * 22; // Increased to 22 to clear the massive Mars
-    const x = 40 + Math.cos(member.angle + t * 0.2) * radius;
-    const z = Math.sin(member.angle + t * 0.2) * radius - 2; 
+    const radius = Math.pow(localScrollProgress, 1.5) * 22; // Orbit around Mars (X=100, Z=-2)
+    const x = 100 + Math.cos(member.angle + t * 0.2) * radius;
+    const z = -2 + Math.sin(member.angle + t * 0.2) * radius;
     const y = Math.sin(t * 1 + parseInt(member.id.split("-")[1])) * 0.5;
 
-    meshRef.current.position.set(x, y, z);
-    meshRef.current.lookAt(40, 0, -2);
+    meshRef.current.position.lerp(new THREE.Vector3(x, y, z), 0.1);
+    meshRef.current.lookAt(100, 0, -2);
     
     const baseScale = Math.min(localScrollProgress * 2, 1);
     meshRef.current.scale.setScalar(baseScale);
