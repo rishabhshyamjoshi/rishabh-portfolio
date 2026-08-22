@@ -9,6 +9,7 @@ export default function OverlayUI() {
   const [audioMuted, setAudioMuted] = useState(true);
   const [showContact, setShowContact] = useState(false);
   const [showRightClickWarning, setShowRightClickWarning] = useState(true);
+  const [currentTrack, setCurrentTrack] = useState(0);
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
   const visRef = useRef<HTMLDivElement>(null);
@@ -34,11 +35,16 @@ export default function OverlayUI() {
         setAudioMuted(isMuted);
       } catch(err) {}
     };
+
+    const handleTrackChange = (e: any) => {
+      setCurrentTrack(e.detail);
+    };
     
     window.addEventListener("wheel", handleWheel);
     window.addEventListener("navTo", handleNav as any);
     window.addEventListener("toggleContact", handleToggleContact);
     window.addEventListener("toggleAudio", handleToggleAudio);
+    window.addEventListener("audioTrackChanged", handleTrackChange);
     
     let frameId: number;
     const updateScroll = () => {
@@ -74,6 +80,7 @@ export default function OverlayUI() {
       window.removeEventListener("navTo", handleNav as any);
       window.removeEventListener("toggleContact", handleToggleContact);
       window.removeEventListener("toggleAudio", handleToggleAudio);
+      window.removeEventListener("audioTrackChanged", handleTrackChange);
       cancelAnimationFrame(frameId);
     };
   }, []);
@@ -201,43 +208,74 @@ export default function OverlayUI() {
           </button>
         </div>
 
-        {/* Audio Visualizer (Bottom Left) */}
+        {/* Audio Visualizer & Track Switcher (Bottom Left) */}
         <div 
           style={{
             position: "absolute",
             bottom: "2rem",
             left: "2rem",
             display: "flex",
-            alignItems: "flex-end",
-            gap: "4px",
-            height: "30px",
+            flexDirection: "column",
+            gap: "0.8rem",
             animation: "fadeInUp 1.5s ease 1.5s both",
+            pointerEvents: "auto",
           }}
         >
-          <div style={{
-            fontSize: "0.5rem",
-            letterSpacing: "0.2em",
-            color: "rgba(255,255,255,0.3)",
-            marginRight: "1rem",
-            marginBottom: "2px",
-            fontFamily: "'Inter', sans-serif"
-          }}>
-            SYSTEM AUDIO
-          </div>
-          <div ref={visRef} style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "100%" }}>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div 
-                key={i} 
-                style={{ 
-                  width: "3px", 
-                  height: "4px", 
-                  background: "#fff", 
-                  opacity: 0.3,
-                  borderRadius: "2px",
-                  transition: "height 0.1s ease" 
-                }} 
-              />
+          {/* Track Switcher */}
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            {[1, 2, 3].map((trackNum, i) => (
+              <button
+                key={i}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  AudioController.getInstance().switchTrack(i);
+                }}
+                style={{
+                  background: currentTrack === i ? "rgba(255,255,255,0.2)" : "transparent",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  color: currentTrack === i ? "#fff" : "rgba(255,255,255,0.5)",
+                  padding: "4px 10px",
+                  borderRadius: "12px",
+                  fontSize: "0.5rem",
+                  cursor: "pointer",
+                  fontFamily: "'Inter', sans-serif",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => e.currentTarget.style.color = "#fff"}
+                onMouseOut={(e) => e.currentTarget.style.color = currentTrack === i ? "#fff" : "rgba(255,255,255,0.5)"}
+              >
+                BGM {trackNum}
+              </button>
             ))}
+          </div>
+
+          {/* Visualizer */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", height: "30px" }}>
+            <div style={{
+              fontSize: "0.5rem",
+              letterSpacing: "0.2em",
+              color: "rgba(255,255,255,0.3)",
+              marginRight: "1rem",
+              marginBottom: "2px",
+              fontFamily: "'Inter', sans-serif"
+            }}>
+              SYSTEM AUDIO
+            </div>
+            <div ref={visRef} style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "100%", pointerEvents: "none" }}>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  style={{ 
+                    width: "3px", 
+                    height: "4px", 
+                    background: "#fff", 
+                    opacity: 0.3,
+                    borderRadius: "2px",
+                    transition: "height 0.1s ease" 
+                  }} 
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

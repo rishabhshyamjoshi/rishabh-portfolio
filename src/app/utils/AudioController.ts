@@ -11,6 +11,9 @@ export class AudioController {
   
   public isInitialized = false;
   public isMuted = true; // Start muted — user must opt-in
+  
+  public currentTrackIndex = 0;
+  public readonly tracks = ['/ambient.mp3', '/ambient1.mp3', '/ambient2.mp3'];
 
   private constructor() {}
 
@@ -54,7 +57,7 @@ export class AudioController {
       this.gainNode.connect(this.context.destination);
 
       // 3. Fetch and Decode Audio Data
-      const response = await fetch('/ambient.mp3');
+      const response = await fetch(this.tracks[this.currentTrackIndex]);
       const arrayBuffer = await response.arrayBuffer();
       this.audioBuffer = await this.context.decodeAudioData(arrayBuffer);
       
@@ -117,6 +120,45 @@ export class AudioController {
     }
     
     return this.isMuted;
+  }
+
+  public async switchTrack(index: number) {
+    if (index < 0 || index >= this.tracks.length) return;
+    this.currentTrackIndex = index;
+    
+    // Notify UI of track change
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('audioTrackChanged', { detail: this.currentTrackIndex }));
+    }
+
+    if (!this.isInitialized || !this.context) return; // Will load the correct track when initialized
+
+    try {
+      // Fade out current track
+      if (this.gainNode && !this.isMuted) {
+        this.gainNode.gain.setTargetAtTime(0, this.context.currentTime, 0.3);
+      }
+      
+      // Fetch new track
+      const response = await fetch(this.tracks[this.currentTrackIndex]);
+      const arrayBuffer = await response.arrayBuffer();
+      this.audioBuffer = await this.context.decodeAudioData(arrayBuffer);
+      
+      // Restart source with new buffer
+      this.startSource();
+      
+      // Fade back in if not muted
+      if (this.gainNode && !this.isMuted) {
+        // Wait slightly for source to start
+        setTimeout(() => {
+          if (this.gainNode && !this.isMuted && this.context) {
+            this.gainNode.gain.setTargetAtTime(1.0, this.context.currentTime, 0.5);
+          }
+        }, 300);
+      }
+    } catch (e) {
+      console.error("Failed to switch track:", e);
+    }
   }
 
   public getFrequencyData(): Uint8Array {
