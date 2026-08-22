@@ -210,7 +210,7 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
             <CanvasText
-              fontSize={0.35}
+              fontSize={0.85}
               position={[0, 0, 0]}
               maxWidth={project.scale[0] - 1}
               lineHeight={1.2}
