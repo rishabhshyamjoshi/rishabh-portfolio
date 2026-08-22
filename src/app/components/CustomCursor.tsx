@@ -36,6 +36,7 @@ export default function CustomCursor() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isAudioOn, setIsAudioOn] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(0);
   const lockedPos = useRef({ x: 0, y: 0 });
   
   const numPoints = 40;
@@ -45,10 +46,16 @@ export default function CustomCursor() {
   
   useEffect(() => {
     setIsAudioOn(!AudioController.getInstance().isMuted);
+    setCurrentTrack(AudioController.getInstance().currentTrackIndex || 0);
+
     const handleAudioChange = (e: any) => {
       setIsAudioOn(!e.detail);
     };
+    const handleTrackChange = (e: any) => {
+      setCurrentTrack(e.detail);
+    };
     window.addEventListener('audioStateChanged', handleAudioChange);
+    window.addEventListener('audioTrackChanged', handleTrackChange);
 
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -62,6 +69,7 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("contextmenu", handleContextMenu);
       window.removeEventListener('audioStateChanged', handleAudioChange);
+      window.removeEventListener('audioTrackChanged', handleTrackChange);
     };
   }, []);
 
@@ -250,7 +258,9 @@ export default function CustomCursor() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(rafId);
     };
-  }, [hovering, menuOpen]);
+  }, [hovering, menuOpen, currentTrack]);
+
+  const activeColorRGB = currentTrack === 1 ? "255, 120, 0" : "0, 240, 255";
 
   return (
     <>
@@ -295,10 +305,10 @@ export default function CustomCursor() {
           opacity: menuOpen ? 1 : 0,
           transition: "transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, background 0.4s ease, box-shadow 0.4s ease",
           background: isAudioOn 
-            ? "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(0, 240, 255, 0.05), transparent 60%)"
+            ? `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(${activeColorRGB}, 0.05), transparent 60%)`
             : "radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05), transparent 60%)",
           boxShadow: menuOpen 
-            ? (isAudioOn ? "0 0 60px rgba(0, 240, 255, 0.15), inset 0 0 40px rgba(255, 255, 255, 0.05)" : "0 0 60px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.08)") 
+            ? (isAudioOn ? `0 0 60px rgba(${activeColorRGB}, 0.15), inset 0 0 40px rgba(255, 255, 255, 0.05)` : "0 0 60px rgba(255, 255, 255, 0.1), inset 0 0 40px rgba(255, 255, 255, 0.08)") 
             : "none",
           filter: "blur(5px)",
           pointerEvents: "none",
@@ -337,13 +347,13 @@ export default function CustomCursor() {
                   // Move outwards, apply spring scale for selected state
                   transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${isSelected ? 1.15 : 1})`,
                   background: isSelected 
-                    ? (isAudioOn ? "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(0, 240, 255, 0.2))" : "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15))") 
+                    ? (isAudioOn ? `linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(${activeColorRGB}, 0.2))` : "linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15))") 
                     : "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02))",
                   backdropFilter: "blur(12px)",
                   border: isSelected ? "1px solid rgba(255, 255, 255, 0.6)" : "1px solid rgba(255, 255, 255, 0.15)",
                   color: isSelected ? "#fff" : "rgba(255,255,255,0.7)",
                   boxShadow: isSelected 
-                    ? (isAudioOn ? "0 10px 30px rgba(0, 240, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)" : "0 10px 30px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)") 
+                    ? (isAudioOn ? `0 10px 30px rgba(${activeColorRGB}, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)` : "0 10px 30px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)") 
                     : "0 4px 15px rgba(0, 0, 0, 0.2)",
                   fontSize: "0.65rem",
                   fontFamily: "var(--font-jakarta), sans-serif", // Modern sans-serif

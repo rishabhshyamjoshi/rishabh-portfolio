@@ -11,9 +11,13 @@ import { AudioController } from "../utils/AudioController";
 // ════════════════════════════════════════════════════════════════
 
 const colorBase = new THREE.Color(0xcccccc);
-const colorPulse = new THREE.Color(0x88bbff);
 const emissiveBase = new THREE.Color(0x444444);
-const emissivePulse = new THREE.Color(0x6699dd);
+
+const colorPulseBlue = new THREE.Color(0x88bbff);
+const emissivePulseBlue = new THREE.Color(0x6699dd);
+
+const colorPulseOrange = new THREE.Color(0xffaa44);
+const emissivePulseOrange = new THREE.Color(0xdd8833);
 
 function FragmentMesh({ frag, index, scrollProgress }: { frag: any, index: number, scrollProgress: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -67,9 +71,12 @@ function FragmentMesh({ frag, index, scrollProgress }: { frag: any, index: numbe
     }
     meshRef.current.visible = fadeOut > 0.01; // Completely disable rendering when faded
 
-    // Color shifts slightly with beat — intense blue-white glow
-    materialRef.current.color.lerpColors(colorBase, colorPulse, sp * 3);
-    materialRef.current.emissive.lerpColors(emissiveBase, emissivePulse, sp * 4.0);
+    const activeColorPulse = audio.currentTrackIndex === 1 ? colorPulseOrange : colorPulseBlue;
+    const activeEmissivePulse = audio.currentTrackIndex === 1 ? emissivePulseOrange : emissivePulseBlue;
+
+    // Color shifts slightly with beat — intense glow based on track
+    materialRef.current.color.lerpColors(colorBase, activeColorPulse, sp * 3);
+    materialRef.current.emissive.lerpColors(emissiveBase, activeEmissivePulse, sp * 4.0);
     materialRef.current.emissiveIntensity = 0.5 + sp * 0.5; // Subtle intensity spike on beat (0.5x)
     materialRef.current.opacity = (0.5 + sp * 0.5) * fadeOut;
   });
