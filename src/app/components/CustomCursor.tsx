@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
+import { useThemeColors } from "../hooks/useThemeColors";
 import { AudioController } from "./../utils/AudioController";
 
 const handleNav = (detail: number) => {
@@ -36,7 +36,7 @@ export default function CustomCursor() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isAudioOn, setIsAudioOn] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0);
+  const theme = useThemeColors();
   const lockedPos = useRef({ x: 0, y: 0 });
   
   const numPoints = 40;
@@ -46,16 +46,11 @@ export default function CustomCursor() {
   
   useEffect(() => {
     setIsAudioOn(!AudioController.getInstance().isMuted);
-    setCurrentTrack(AudioController.getInstance().currentTrackIndex || 0);
 
     const handleAudioChange = (e: any) => {
       setIsAudioOn(!e.detail);
     };
-    const handleTrackChange = (e: any) => {
-      setCurrentTrack(e.detail);
-    };
     window.addEventListener('audioStateChanged', handleAudioChange);
-    window.addEventListener('audioTrackChanged', handleTrackChange);
 
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -69,7 +64,6 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("contextmenu", handleContextMenu);
       window.removeEventListener('audioStateChanged', handleAudioChange);
-      window.removeEventListener('audioTrackChanged', handleTrackChange);
     };
   }, []);
 
@@ -258,9 +252,9 @@ export default function CustomCursor() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(rafId);
     };
-  }, [hovering, menuOpen, currentTrack]);
+  }, [hovering, menuOpen, theme]);
 
-  const activeColorRGB = currentTrack === 1 ? "255, 120, 0" : "0, 240, 255";
+  const activeColorRGB = theme.rgb;
 
   return (
     <>

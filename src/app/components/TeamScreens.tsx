@@ -3,7 +3,8 @@
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Edges, useTexture } from "@react-three/drei";
-import CanvasText from "./CanvasText";
+import { CanvasText } from "./CanvasText";
+import { useThemeColors } from "../hooks/useThemeColors";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 
@@ -22,6 +23,7 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
   const sub1MaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   
   const [hovered, setHovered] = useState(false);
+  const theme = useThemeColors();
   const currentTime = useRef(0);
   const hoverFactor = useRef(0);
 
@@ -134,17 +136,17 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
     // Material transitions
     if (glassMaterialRef.current && decoLineRef.current) {
       if (hovered) {
-        glassMaterialRef.current.color.setHex(0x4a1b0c);
-        decoLineRef.current.color.setHex(0xffaa66);
-        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.setHex(0xff6633);
+        glassMaterialRef.current.color.set(theme.glass);
+        decoLineRef.current.color.set(theme.primary);
+        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.set(theme.primary);
         if (titleMaterialRef.current) titleMaterialRef.current.color.setHex(0xffffff);
         if (sub1MaterialRef.current) sub1MaterialRef.current.color.setHex(0xaaaaaa);
       } else {
-        glassMaterialRef.current.color.setHex(0x1a0a04);
-        decoLineRef.current.color.setHex(0x663311);
-        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.setHex(0x331100);
-        if (titleMaterialRef.current) titleMaterialRef.current.color.setHex(0xcc8866);
-        if (sub1MaterialRef.current) sub1MaterialRef.current.color.setHex(0x664433);
+        glassMaterialRef.current.color.set(theme.glass);
+        decoLineRef.current.color.set(theme.dark);
+        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.set(theme.dark);
+        if (titleMaterialRef.current) titleMaterialRef.current.color.set(theme.secondary);
+        if (sub1MaterialRef.current) sub1MaterialRef.current.color.set(theme.dark);
       }
     }
   });
@@ -211,7 +213,7 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
               anchorX="left"
               anchorY="top"
               letterSpacing={0.1}
-              color="#664433"
+              color={theme.dark}
             >
               {member.initials}
             </CanvasText>
@@ -225,7 +227,7 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
               textAlign="center"
               anchorX="center"
               anchorY="bottom"
-              color="#cc8866"
+              color={theme.secondary}
             >
               {member.name.toUpperCase()}
             </CanvasText>
@@ -248,7 +250,7 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
                 but it spans width-1.5. To make it simple, let's keep it centered (x=0) where z=0 */}
             <mesh position={[0, -member.scale[1]/2 + 0.4, 0]}>
               <planeGeometry args={[member.scale[0] - 1.5, 0.015]} />
-              <meshBasicMaterial ref={decoLineRef} color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
+              <meshBasicMaterial ref={decoLineRef} color={hovered ? theme.primary : theme.dark} transparent opacity={hovered ? 0.8 : 0.3} />
             </mesh>
 
             {/* High-Tech HUD Corner Brackets */}
@@ -268,12 +270,12 @@ function TeamScreen({ member, scrollProgress, onMemberClick }: { member: TeamDat
                     {/* Horizontal bracket piece */}
                     <mesh position={[-x * 0.1, 0, 0]}>
                       <planeGeometry args={[0.2, 0.015]} />
-                      <meshBasicMaterial color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
+                      <meshBasicMaterial color={hovered ? theme.primary : theme.dark} transparent opacity={hovered ? 0.8 : 0.3} />
                     </mesh>
                     {/* Vertical bracket piece */}
                     <mesh position={[0, -y * 0.1, 0]}>
                       <planeGeometry args={[0.015, 0.2]} />
-                      <meshBasicMaterial color={hovered ? "#ffaa66" : "#663311"} transparent opacity={hovered ? 0.8 : 0.3} />
+                      <meshBasicMaterial color={hovered ? theme.primary : theme.dark} transparent opacity={hovered ? 0.8 : 0.3} />
                     </mesh>
                   </group>
                 );

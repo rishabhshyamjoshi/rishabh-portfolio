@@ -19,6 +19,9 @@ const emissivePulseBlue = new THREE.Color(0x6699dd);
 const colorPulseOrange = new THREE.Color(0xffaa44);
 const emissivePulseOrange = new THREE.Color(0xdd8833);
 
+const colorPulseSilver = new THREE.Color(0xcccccc);
+const emissivePulseSilver = new THREE.Color(0xffffff);
+
 function FragmentMesh({ frag, index, scrollProgress }: { frag: any, index: number, scrollProgress: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
@@ -71,8 +74,8 @@ function FragmentMesh({ frag, index, scrollProgress }: { frag: any, index: numbe
     }
     meshRef.current.visible = fadeOut > 0.01; // Completely disable rendering when faded
 
-    const activeColorPulse = audio.currentTrackIndex === 1 ? colorPulseOrange : colorPulseBlue;
-    const activeEmissivePulse = audio.currentTrackIndex === 1 ? emissivePulseOrange : emissivePulseBlue;
+    const activeColorPulse = audio.currentTrackIndex === 1 ? colorPulseOrange : (audio.currentTrackIndex === 2 ? colorPulseSilver : colorPulseBlue);
+    const activeEmissivePulse = audio.currentTrackIndex === 1 ? emissivePulseOrange : (audio.currentTrackIndex === 2 ? emissivePulseSilver : emissivePulseBlue);
 
     // Color shifts slightly with beat — intense glow based on track
     materialRef.current.color.lerpColors(colorBase, activeColorPulse, sp * 3);

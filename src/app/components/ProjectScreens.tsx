@@ -3,7 +3,8 @@
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Edges, useTexture } from "@react-three/drei";
-import CanvasText from "./CanvasText";
+import { CanvasText } from "./CanvasText";
+import { useThemeColors } from "../hooks/useThemeColors";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 
@@ -21,6 +22,8 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
   const titleMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   
   const [hovered, setHovered] = useState(false);
+  const theme = useThemeColors();
+  
   const currentTime = useRef(0);
   const hoverFactor = useRef(0);
 
@@ -141,18 +144,18 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
     // Material transitions
     if (glassMaterialRef.current && decoLineRef.current) {
       if (hovered) {
-        glassMaterialRef.current.color.setHex(0x1a2b4c);
-        decoLineRef.current.color.setHex(0x88ccff);
-        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.setHex(0x55aaff);
+        glassMaterialRef.current.color.set(theme.glass);
+        decoLineRef.current.color.set(theme.primary);
+        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.set(theme.primary);
         if (titleMaterialRef.current) {
           titleMaterialRef.current.color.setHex(0xffffff);
         }
       } else {
-        glassMaterialRef.current.color.setHex(0x050a14);
-        decoLineRef.current.color.setHex(0x224466);
-        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.setHex(0x112233);
+        glassMaterialRef.current.color.set(theme.glass);
+        decoLineRef.current.color.set(theme.dark);
+        if (edgesRef.current && edgesRef.current.material) edgesRef.current.material.color.set(theme.dark);
         if (titleMaterialRef.current) {
-          titleMaterialRef.current.color.setHex(0x88aacc);
+          titleMaterialRef.current.color.set(theme.secondary);
         }
       }
     }
@@ -218,7 +221,7 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
               textAlign="center"
               anchorX="center"
               anchorY="middle"
-              color="#88aacc"
+              color={theme.secondary}
             >
               {project.title.toUpperCase()}
             </CanvasText>
@@ -226,7 +229,7 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
             {/* Curved Deco Line */}
             <mesh position={[0, -project.scale[1]/2 + 0.4, 0]}>
               <planeGeometry args={[project.scale[0] - 1.5, 0.015]} />
-              <meshBasicMaterial ref={decoLineRef} color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
+              <meshBasicMaterial ref={decoLineRef} color={hovered ? theme.primary : theme.dark} transparent opacity={hovered ? 0.8 : 0.3} />
             </mesh>
 
             {/* High-Tech HUD Corner Brackets */}
@@ -246,12 +249,12 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
                     {/* Horizontal bracket piece */}
                     <mesh position={[-x * 0.1, 0, 0]}>
                       <planeGeometry args={[0.2, 0.015]} />
-                      <meshBasicMaterial color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
+                      <meshBasicMaterial color={hovered ? theme.primary : theme.dark} transparent opacity={hovered ? 0.8 : 0.3} />
                     </mesh>
                     {/* Vertical bracket piece */}
                     <mesh position={[0, -y * 0.1, 0]}>
                       <planeGeometry args={[0.015, 0.2]} />
-                      <meshBasicMaterial color={hovered ? "#88ccff" : "#224466"} transparent opacity={hovered ? 0.8 : 0.3} />
+                      <meshBasicMaterial color={hovered ? theme.primary : theme.dark} transparent opacity={hovered ? 0.8 : 0.3} />
                     </mesh>
                   </group>
                 );

@@ -4,10 +4,13 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+import { useThemeColors } from "../hooks/useThemeColors";
+
 const PARTICLE_COUNT = 400;
 
 export default function Environment() {
   const pointsRef = useRef<THREE.Points>(null);
+  const theme = useThemeColors();
 
   const [positions, sizes, alphas] = useMemo(() => {
     const pos = new Float32Array(PARTICLE_COUNT * 3);
@@ -63,6 +66,7 @@ export default function Environment() {
         blending={THREE.AdditiveBlending}
         uniforms={{
           uTime: { value: 0 },
+          uColor: { value: new THREE.Color(theme.primary) }
         }}
         vertexShader={`
           attribute float aSize;
@@ -76,13 +80,14 @@ export default function Environment() {
           }
         `}
         fragmentShader={`
+          uniform vec3 uColor;
           varying float vAlpha;
           void main() {
             float d = length(gl_PointCoord - vec2(0.5));
             if (d > 0.5) discard;
             float alpha = smoothstep(0.5, 0.0, d) * vAlpha;
-            // Subtle warm white dust
-            gl_FragColor = vec4(0.95, 0.92, 0.88, alpha);
+            // Tint dust based on theme
+            gl_FragColor = vec4(mix(vec3(0.95, 0.92, 0.88), uColor, 0.3), alpha);
           }
         `}
       />
