@@ -3,7 +3,7 @@
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Edges, useTexture } from "@react-three/drei";
-import { CanvasText } from "./CanvasText";
+import CanvasText from "./CanvasText";
 import { useThemeColors } from "../hooks/useThemeColors";
 import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
