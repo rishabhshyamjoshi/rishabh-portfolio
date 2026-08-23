@@ -42,7 +42,7 @@ export default function AudioReactiveStars({ count = 1500 }) {
   const sizes = useMemo(() => {
     const s = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      s[i] = 0.5 + Math.random() * 1.5; // Significantly smaller base size
+      s[i] = 0.1 + Math.random() * 0.4; // Very small, minute shining stars
     }
     return s;
   }, [count]);
@@ -50,7 +50,8 @@ export default function AudioReactiveStars({ count = 1500 }) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uAudioData: { value: 0 },
+      uAudioData: { value: new THREE.Vector3(0, 0, 0) }, // Low, Mid, High
+      uAudioOverall: { value: 0 },
       uColor: { value: new THREE.Color("#00f0ff") },
     }),
     []
@@ -71,19 +72,26 @@ export default function AudioReactiveStars({ count = 1500 }) {
 
     const audio = AudioController.getInstance();
     const data = audio.getFrequencyData();
-    let audioValue = 0;
+    
+    let low = 0, mid = 0, high = 0, overall = 0;
     
     if (data && data.length > 0 && !audio.isMuted) {
-      let sum = 0;
-      const sampleSize = 8;
-      for(let i=0; i<sampleSize; i++) {
-        sum += data[i];
-      }
-      audioValue = (sum / sampleSize) / 255.0; 
+      // Calculate Low, Mid, and High frequency bands
+      for(let i=0; i<8; i++) low += data[i];
+      for(let i=8; i<24; i++) mid += data[i];
+      for(let i=24; i<64; i++) high += data[i];
+      
+      low = (low / 8) / 255.0;
+      mid = (mid / 16) / 255.0;
+      high = (high / 40) / 255.0;
+      overall = (low + mid + high) / 3.0;
     }
     
-    // Slower easing for more elegant pulsing
-    materialRef.current.uniforms.uAudioData.value += (audioValue - materialRef.current.uniforms.uAudioData.value) * 0.1;
+    // Smooth easing
+    const currentAudio = materialRef.current.uniforms.uAudioData.value;
+    currentAudio.lerp(new THREE.Vector3(low, mid, high), 0.2);
+    
+    materialRef.current.uniforms.uAudioOverall.value += (overall - materialRef.current.uniforms.uAudioOverall.value) * 0.1;
   });
 
   return (
@@ -100,29 +108,34 @@ export default function AudioReactiveStars({ count = 1500 }) {
         uniforms={uniforms}
         vertexShader={`
           uniform float uTime;
-          uniform float uAudioData;
+          uniform float uAudioOverall;
           attribute float size;
           varying float vAlpha;
+          varying vec3 vPos;
           
           void main() {
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            vPos = position;
             
             // Faster but subtler twinkle
             float twinkle = sin(uTime * 3.0 + position.x * 0.1) * 0.4 + 0.6;
             
-            // VERY low intensity audio boost (max 30% size increase instead of 100%)
-            float audioBoost = 1.0 + (uAudioData * 0.3);
+            // Modest boost based on overall audio
+            float audioBoost = 1.0 + (uAudioOverall * 1.5);
             
-            gl_PointSize = size * (100.0 / -mvPosition.z) * audioBoost * twinkle;
+            // Scaled up by 200 for proper visibility since base sizes are much smaller
+            gl_PointSize = size * (200.0 / -mvPosition.z) * audioBoost * twinkle;
             gl_Position = projectionMatrix * mvPosition;
             
             // Opacity increases slightly with audio
-            vAlpha = twinkle * (1.0 + (uAudioData * 0.2));
+            vAlpha = twinkle * (0.6 + (uAudioOverall * 0.8));
           }
         `}
         fragmentShader={`
           uniform vec3 uColor;
+          uniform vec3 uAudioData;
           varying float vAlpha;
+          varying vec3 vPos;
           
           void main() {
             float dist = length(gl_PointCoord - vec2(0.5));
@@ -130,9 +143,25 @@ export default function AudioReactiveStars({ count = 1500 }) {
             
             float glow = 1.0 - (dist * 2.0);
             
-            // Make the entire particle the theme color, with just a tiny white core
-            // Use pow(glow, 6.0) so only the absolute center is white
-            vec3 finalColor = mix(uColor, vec3(1.0), pow(glow, 6.0));
+            // Generate a dynamic reactive color using the frequency bands
+            // uAudioData.x = Lows (Bass), y = Mids, z = Highs
+            vec3 reactiveColor = uColor;
+            
+            // Spatial color variation based on position + audio
+            float noiseX = sin(vPos.x * 0.05 + uAudioData.x * 2.0);
+            float noiseY = cos(vPos.y * 0.05 + uAudioData.y * 2.0);
+            float noiseZ = sin(vPos.z * 0.05 + uAudioData.z * 2.0);
+            
+            // Shift RGB channels independently to create vibrant color changes during music
+            reactiveColor.r += noiseX * uAudioData.x;
+            reactiveColor.g += noiseY * uAudioData.y;
+            reactiveColor.b += noiseZ * uAudioData.z;
+            
+            // Ensure color doesn't blow out completely white
+            reactiveColor = clamp(reactiveColor, 0.0, 1.0);
+            
+            // Mix with white core
+            vec3 finalColor = mix(reactiveColor, vec3(1.0), pow(glow, 6.0));
             
             gl_FragColor = vec4(finalColor, vAlpha * pow(glow, 1.2));
           }
