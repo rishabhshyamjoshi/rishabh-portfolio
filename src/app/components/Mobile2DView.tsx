@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { motion, Variants } from "framer-motion";
 import { PROJECTS } from "../data/projects";
 import { TEAM } from "../data/team";
 import { AudioController } from "../utils/AudioController";
@@ -26,152 +27,222 @@ export default function Mobile2DView() {
     } catch(err) {}
   };
 
+  const fadeUpVariant: Variants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  };
+
+  const staggerContainer: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
   return (
-    <div className="bg-black text-white min-h-screen w-full font-sans overflow-x-hidden">
+    <div className="bg-[#020202] text-white min-h-screen w-full font-sans overflow-x-hidden selection:bg-white/20">
       
-      {/* HEADER */}
-      <header className="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-50 mix-blend-difference">
-        <div className="text-xs tracking-[0.2em] font-mono opacity-80">RJ.IND</div>
+      {/* HEADER - Glassmorphism */}
+      <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 backdrop-blur-xl bg-black/20 border-b border-white/5">
+        <div className="text-[10px] tracking-[0.25em] font-medium opacity-90">RJ INDUSTRIES</div>
         <button 
           onClick={handleAudioToggle}
-          className="text-xs tracking-[0.2em] font-mono border border-white/20 rounded-full px-4 py-1.5"
+          className="text-[9px] tracking-[0.2em] font-medium bg-white/10 hover:bg-white/20 transition-colors border border-white/10 rounded-full px-4 py-2 backdrop-blur-md"
         >
           {audioMuted ? "SOUND OFF" : "SOUND ON"}
         </button>
       </header>
 
       {/* HERO SECTION */}
-      <section className="h-screen w-full flex flex-col items-center justify-center relative p-6 snap-start">
-        <div className="text-center w-full max-w-[400px]">
-          <div className="text-[0.6rem] tracking-[0.4em] text-white/40 mb-6 font-mono">
-            INNOVATION BEYOND LIMITS
-          </div>
+      <section className="relative h-[100dvh] w-full flex flex-col items-center justify-center p-6 overflow-hidden">
+        {/* Apple-style background */}
+        <div className="absolute inset-0 w-full h-full">
           <Image 
-            src="/logo.png" 
-            alt="RJ Industries Logo" 
-            width={500}
-            height={150}
-            className="w-full h-auto object-contain filter drop-shadow-[0_0_15px_rgba(136,170,255,0.2)]"
+            src="/hero-bg-mobile.png" 
+            alt="Abstract Background" 
+            fill
+            quality={100}
+            priority
+            className="object-cover opacity-80"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#020202]" />
         </div>
+
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="relative z-10 flex flex-col items-center w-full max-w-[400px] mt-10"
+        >
+          <motion.div variants={fadeUpVariant} className="text-[0.65rem] tracking-[0.4em] text-white/50 mb-8 font-medium">
+            INNOVATION BEYOND LIMITS
+          </motion.div>
+          
+          <motion.div variants={fadeUpVariant} className="w-full relative h-[120px] mb-8">
+            <Image 
+              src="/logo.png" 
+              alt="RJ Industries Logo" 
+              fill
+              className="object-contain filter drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]"
+            />
+          </motion.div>
+          
+          <motion.p variants={fadeUpVariant} className="text-center text-sm text-white/60 leading-relaxed font-light px-4">
+            Pioneering aerospace, defense, and advanced manufacturing with next-generation generative AI technologies.
+          </motion.p>
+        </motion.div>
         
-        <div className="absolute bottom-12 flex flex-col items-center gap-4">
-          <div className="text-[0.55rem] tracking-[0.3em] text-white/30 font-mono">
-            SCROLL TO EXPLORE
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-12 flex flex-col items-center gap-4 z-10"
+        >
+          <div className="text-[0.55rem] tracking-[0.3em] text-white/30 font-medium">
+            DISCOVER
           </div>
           <div className="w-[1px] h-[40px] bg-gradient-to-b from-white/40 to-transparent animate-pulse" />
-        </div>
+        </motion.div>
       </section>
 
       {/* PROJECTS SECTION */}
-      <section className="w-full px-6 py-20 flex flex-col gap-12">
-        <div className="mb-4">
-          <h2 className="text-sm tracking-[0.3em] font-mono text-white/50 mb-2">01 //</h2>
-          <h3 className="text-3xl font-light tracking-wider">PROJECTS</h3>
-        </div>
+      <section className="w-full px-5 py-24 flex flex-col gap-12 relative z-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeUpVariant}
+          className="mb-2"
+        >
+          <h2 className="text-xs tracking-[0.3em] text-white/40 mb-3 font-medium">PORTFOLIO</h2>
+          <h3 className="text-4xl font-semibold tracking-tight">Featured Work.</h3>
+        </motion.div>
 
-        <div className="flex flex-col gap-16">
+        <div className="flex flex-col gap-10">
           {PROJECTS.map((project, idx) => (
-            <a 
+            <motion.a 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUpVariant}
               key={project.id} 
               href={project.externalLink || project.link}
               target={project.externalLink ? "_blank" : "_self"}
-              className="group block relative w-full aspect-[4/5] overflow-hidden rounded-md border border-white/10"
+              className="group block relative w-full aspect-[4/5] overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 shadow-2xl"
             >
               {/* Background Image */}
               <div className="absolute inset-0 w-full h-full">
                 <img 
                   src={project.image} 
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70"
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105 opacity-80"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
               </div>
               
               {/* Content */}
-              <div className="absolute bottom-0 left-0 w-full p-6 flex flex-col justify-end">
-                <div className="text-[0.6rem] tracking-[0.2em] text-[#00f0ff] mb-2 font-mono">
+              <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col justify-end">
+                <div className="text-[0.65rem] tracking-[0.2em] text-white/70 mb-3 font-medium uppercase">
                   {project.shortDesc}
                 </div>
-                <h4 className="text-2xl font-medium tracking-wide mb-3 leading-tight">
+                <h4 className="text-3xl font-semibold tracking-tight mb-4 leading-tight">
                   {project.title}
                 </h4>
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-5">
                   {project.techStack.slice(0, 3).map(tech => (
-                    <span key={tech} className="text-[0.55rem] tracking-wider px-2 py-1 border border-white/20 rounded-full text-white/70 bg-white/5 backdrop-blur-md">
+                    <span key={tech} className="text-[0.6rem] tracking-wide px-3 py-1.5 border border-white/10 rounded-full text-white/90 bg-black/30 backdrop-blur-md">
                       {tech}
                     </span>
                   ))}
                 </div>
-                <p className="text-xs text-white/60 leading-relaxed font-mono line-clamp-2">
+                <p className="text-sm text-white/60 leading-relaxed font-light line-clamp-2">
                   {project.longDesc}
                 </p>
               </div>
-            </a>
+            </motion.a>
           ))}
         </div>
       </section>
 
-      <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
+      {/* TEAM SECTION */}
+      <section className="w-full px-5 py-24 bg-white/[0.02] border-t border-white/5">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeUpVariant}
+          className="mb-12"
+        >
+          <h2 className="text-xs tracking-[0.3em] text-white/40 mb-3 font-medium">THE TEAM</h2>
+          <h3 className="text-4xl font-semibold tracking-tight">Core Operatives.</h3>
+        </motion.div>
 
-      {/* AI PROJECTS SECTION */}
-      <section className="w-full px-6 py-20">
-        <div className="mb-12">
-          <h2 className="text-sm tracking-[0.3em] font-mono text-white/50 mb-2">02 //</h2>
-          <h3 className="text-3xl font-light tracking-wider">AI PROJECTS</h3>
-        </div>
-
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {TEAM.map((member) => (
-            <div key={member.id} className="flex gap-4 items-center border-b border-white/10 pb-8">
-              <div className="w-16 h-16 shrink-0 rounded-full overflow-hidden border border-white/20 relative">
-                <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale" />
-                <div className="absolute inset-0 bg-black/20" />
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeUpVariant}
+              key={member.id} 
+              className="flex gap-5 items-center p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm"
+            >
+              <div className="w-16 h-16 shrink-0 rounded-full overflow-hidden relative">
+                <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent" />
               </div>
               <div className="flex flex-col flex-grow">
-                <div className="flex justify-between items-start mb-1">
-                  <h4 className="text-sm tracking-wide font-medium">{member.name}</h4>
-                  <span className="text-[0.5rem] tracking-widest px-1.5 py-0.5 rounded-sm" style={{ color: member.color, border: `1px solid ${member.color}40`, backgroundColor: `${member.color}10` }}>
-                    {member.clearance}
-                  </span>
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="text-lg font-medium tracking-tight">{member.name}</h4>
                 </div>
-                <div className="text-xs text-white/40 font-mono tracking-wider mb-2">
+                <div className="text-xs text-white/50 tracking-wide mb-3">
                   {member.role}
                 </div>
-                <div className="flex gap-1.5 flex-wrap">
-                  {member.skills.slice(0, 2).map(skill => (
-                    <span key={skill} className="text-[0.5rem] tracking-widest text-white/30 bg-white/5 px-1.5 py-0.5 rounded">
+                <div className="flex gap-2 flex-wrap">
+                  {member.skills.slice(0, 3).map(skill => (
+                    <span key={skill} className="text-[0.6rem] tracking-wide text-white/70 bg-white/5 border border-white/5 px-2 py-1 rounded-full">
                       {skill}
                     </span>
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* CONTACT & FOOTER */}
-      <section className="w-full px-6 py-24 flex flex-col items-center text-center bg-zinc-950">
-        <h2 className="text-[0.7rem] tracking-[0.4em] font-mono text-white/40 mb-8">
-          INITIATE PROTOCOL
-        </h2>
-        
-        <div className="flex flex-col gap-6 w-full max-w-[300px]">
-          <a href="mailto:contact@rjindustries.dev" className="py-4 border border-white/10 bg-white/5 rounded-lg text-xs tracking-[0.2em] font-mono active:bg-white/10 transition-colors">
-            EMAIL SECURE LINE
-          </a>
-          <a href="https://www.linkedin.com/company/rj-industries01/" className="py-4 border border-white/10 bg-white/5 rounded-lg text-xs tracking-[0.2em] font-mono active:bg-white/10 transition-colors">
-            LINKEDIN
-          </a>
-          <a href="https://www.instagram.com/rj_industries01/" className="py-4 border border-white/10 bg-white/5 rounded-lg text-xs tracking-[0.2em] font-mono active:bg-white/10 transition-colors">
-            INSTAGRAM
-          </a>
-        </div>
+      <section className="w-full px-5 py-32 flex flex-col items-center text-center">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUpVariant}
+          className="flex flex-col items-center w-full"
+        >
+          <h2 className="text-sm tracking-[0.3em] font-medium text-white/40 mb-10">
+            INITIATE PROTOCOL
+          </h2>
+          
+          <div className="flex flex-col gap-4 w-full max-w-[320px]">
+            <a href="mailto:contact@rjindustries.dev" className="py-5 border border-white/10 bg-white/5 rounded-2xl text-xs tracking-[0.2em] font-medium active:scale-95 transition-all backdrop-blur-md hover:bg-white/10">
+              EMAIL SECURE LINE
+            </a>
+            <div className="flex gap-4 w-full">
+              <a href="https://www.linkedin.com/company/rj-industries01/" className="flex-1 py-5 border border-white/10 bg-white/5 rounded-2xl text-[10px] tracking-[0.2em] font-medium active:scale-95 transition-all backdrop-blur-md hover:bg-white/10">
+                LINKEDIN
+              </a>
+              <a href="https://www.instagram.com/rj_industries01/" className="flex-1 py-5 border border-white/10 bg-white/5 rounded-2xl text-[10px] tracking-[0.2em] font-medium active:scale-95 transition-all backdrop-blur-md hover:bg-white/10">
+                INSTAGRAM
+              </a>
+            </div>
+          </div>
 
-        <div className="mt-24 text-[0.55rem] tracking-[0.2em] text-white/20 font-mono">
-          © {new Date().getFullYear()} RJ INDUSTRIES. ALL RIGHTS RESERVED.
-        </div>
+          <div className="mt-32 text-[0.6rem] tracking-[0.2em] text-white/30 font-medium">
+            © {new Date().getFullYear()} RJ INDUSTRIES.
+          </div>
+        </motion.div>
       </section>
     </div>
   );
