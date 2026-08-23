@@ -17,14 +17,24 @@ export default function AudioReactiveStars({ count = 1500 }) {
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      // Random spherical distribution, keeping them closer for higher density
+      // Random spherical distribution
       const r = 60 + Math.random() * 100; 
       const theta = 2 * Math.PI * Math.random();
       const phi = Math.acos(2 * Math.random() - 1);
       
-      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
+      let x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
+
+      // Clamp 80% of the stars to the home screen section (X between -40 and 40)
+      // so they don't clutter the project/team sections.
+      if (i < count * 0.8) {
+        x = (Math.random() - 0.5) * 80;
+      }
+      
+      pos[i * 3] = x;
+      pos[i * 3 + 1] = y;
+      pos[i * 3 + 2] = z;
     }
     return pos;
   }, [count]);

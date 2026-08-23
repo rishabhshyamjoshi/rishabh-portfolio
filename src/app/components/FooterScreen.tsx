@@ -72,8 +72,8 @@ export default function FooterScreen({ scrollProgress }: { scrollProgress: numbe
     groupRef.current.rotation.y = Math.sin(t * 0.1) * 0.1;
   });
 
-  // Base X for N=2 is 80 (since N*40, so 2*40 = 80)
-  const baseX = 80;
+  // Base X for N=2 is 200 (since N*100, so 2*100 = 200)
+  const baseX = 200;
 
   // Render only when close to N=2
   if (scrollProgress < 3.5) return null;
