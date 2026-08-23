@@ -340,7 +340,7 @@ export default function Scene() {
         
         <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
         
-        <AudioReactiveStars count={1500} />
+        <AudioReactiveStars count={4000} />
         <Environment />
         
         <Suspense fallback={null}>

@@ -17,7 +17,8 @@ export default function AudioReactiveStars({ count = 1500 }) {
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const r = 80 + Math.random() * 200; // Push further away
+      // Random spherical distribution, keeping them closer for higher density
+      const r = 60 + Math.random() * 100; 
       const theta = 2 * Math.PI * Math.random();
       const phi = Math.acos(2 * Math.random() - 1);
       
