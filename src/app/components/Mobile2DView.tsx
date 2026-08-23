@@ -1,17 +1,27 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { PROJECTS } from "../data/projects";
 import { TEAM } from "../data/team";
 import { AudioController } from "../utils/AudioController";
 
 export default function Mobile2DView() {
   const [audioMuted, setAudioMuted] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  // Hero Parallax
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 150]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
 
   useEffect(() => {
-    // Basic body styling for mobile view
     document.body.style.overflowY = "auto";
     document.body.style.cursor = "auto";
     return () => {
@@ -28,68 +38,58 @@ export default function Mobile2DView() {
   };
 
   const fadeUpVariant: Variants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-  };
-
-  const staggerContainer: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.2, 0.8, 0.2, 1] } }
   };
 
   return (
-    <div className="bg-[#020202] text-white min-h-screen w-full font-sans overflow-x-hidden selection:bg-white/20">
+    <div ref={containerRef} className="bg-[#030303] text-white min-h-screen w-full font-sans overflow-x-hidden selection:bg-white/20 pb-32">
       
-      {/* HEADER - Glassmorphism */}
-      <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 backdrop-blur-xl bg-black/20 border-b border-white/5">
-        <div className="text-[10px] tracking-[0.25em] font-medium opacity-90">RJ INDUSTRIES</div>
-        <button 
-          onClick={handleAudioToggle}
-          className="text-[9px] tracking-[0.2em] font-medium bg-white/10 hover:bg-white/20 transition-colors border border-white/10 rounded-full px-4 py-2 backdrop-blur-md"
-        >
-          {audioMuted ? "SOUND OFF" : "SOUND ON"}
-        </button>
-      </header>
+      {/* Noise Overlay */}
+      <div 
+        className="fixed inset-0 pointer-events-none opacity-[0.03] z-[100]" 
+        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
+      />
 
       {/* HERO SECTION */}
       <section className="relative h-[100dvh] w-full flex flex-col items-center justify-center p-6 overflow-hidden">
-        {/* Apple-style background */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image 
-            src="/hero-bg-mobile.png" 
-            alt="Abstract Background" 
-            fill
-            quality={100}
-            priority
-            className="object-cover opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#020202]" />
-        </div>
-
+        {/* Subtle glowing orb in background */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
+        
         <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="relative z-10 flex flex-col items-center w-full max-w-[400px] mt-10"
+          style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
+          className="relative z-10 flex flex-col items-center w-full mt-10"
         >
-          <motion.div variants={fadeUpVariant} className="text-[0.65rem] tracking-[0.4em] text-white/50 mb-8 font-medium">
-            INNOVATION BEYOND LIMITS
-          </motion.div>
-          
-          <motion.div variants={fadeUpVariant} className="w-full relative h-[120px] mb-8">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="w-[140px] relative h-[40px] mb-12"
+          >
             <Image 
               src="/logo.png" 
               alt="RJ Industries Logo" 
               fill
-              className="object-contain filter drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]"
+              className="object-contain"
             />
           </motion.div>
           
-          <motion.p variants={fadeUpVariant} className="text-center text-sm text-white/60 leading-relaxed font-light px-4">
-            Pioneering aerospace, defense, and advanced manufacturing with next-generation generative AI technologies.
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="text-[0.6rem] tracking-[0.5em] text-white/50 mb-6 font-medium uppercase text-center"
+          >
+            Advanced Engineering
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 1 }}
+            className="text-center text-3xl sm:text-4xl font-light tracking-tight text-white/90 leading-[1.2] px-2 max-w-[320px]"
+          >
+            Innovation beyond the <br /> <span className="font-semibold text-white italic">limits of humanity.</span>
           </motion.p>
         </motion.div>
         
@@ -99,87 +99,89 @@ export default function Mobile2DView() {
           transition={{ delay: 1.5, duration: 1 }}
           className="absolute bottom-12 flex flex-col items-center gap-4 z-10"
         >
-          <div className="text-[0.55rem] tracking-[0.3em] text-white/30 font-medium">
-            DISCOVER
-          </div>
-          <div className="w-[1px] h-[40px] bg-gradient-to-b from-white/40 to-transparent animate-pulse" />
+          <div className="w-[1px] h-[60px] bg-gradient-to-b from-white/30 to-transparent" />
         </motion.div>
       </section>
 
       {/* PROJECTS SECTION */}
-      <section className="w-full px-5 py-24 flex flex-col gap-12 relative z-10">
+      <section className="w-full px-6 pt-12 pb-24 relative z-10">
         <motion.div 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeUpVariant}
-          className="mb-2"
+          className="mb-16 flex items-center gap-4"
         >
-          <h2 className="text-xs tracking-[0.3em] text-white/40 mb-3 font-medium">PORTFOLIO</h2>
-          <h3 className="text-4xl font-semibold tracking-tight">Featured Work.</h3>
+          <div className="h-[1px] bg-white/20 flex-grow" />
+          <h2 className="text-[10px] tracking-[0.3em] text-white/60 font-medium uppercase">Featured Work</h2>
         </motion.div>
 
-        <div className="flex flex-col gap-10">
-          {PROJECTS.map((project, idx) => (
-            <motion.a 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeUpVariant}
-              key={project.id} 
-              href={project.externalLink || project.link}
-              target={project.externalLink ? "_blank" : "_self"}
-              className="group block relative w-full aspect-[4/5] overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 shadow-2xl"
-            >
-              {/* Background Image */}
-              <div className="absolute inset-0 w-full h-full">
-                <Image 
-                  src={project.image} 
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105 opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-              </div>
-              
-              {/* Content */}
-              <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col justify-end">
-                <div className="text-[0.65rem] tracking-[0.2em] text-white/70 mb-3 font-medium uppercase">
-                  {project.shortDesc}
+        <div className="flex flex-col gap-12">
+          {PROJECTS.map((project, idx) => {
+            // Alternate card styles for an asymmetric editorial look
+            const isWide = idx % 3 === 0;
+            const alignRight = idx % 2 !== 0 && !isWide;
+
+            return (
+              <motion.a 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={fadeUpVariant}
+                key={project.id} 
+                href={project.externalLink || project.link}
+                target={project.externalLink ? "_blank" : "_self"}
+                className={`group block relative overflow-hidden bg-[#0A0A0A] border border-white/5 rounded-3xl shadow-2xl transition-all duration-500 hover:border-white/20
+                  ${isWide ? 'w-full aspect-[4/3]' : 'w-[85%] aspect-[3/4]'} 
+                  ${alignRight ? 'ml-auto' : ''}
+                `}
+              >
+                {/* Image with subtle parallax scaling */}
+                <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
+                  <Image 
+                    src={project.image} 
+                    alt={project.title}
+                    fill
+                    className="object-cover opacity-[0.85] grayscale-[20%] transition-all duration-[2s] ease-out group-hover:scale-110 group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500" />
                 </div>
-                <h4 className="text-3xl font-semibold tracking-tight mb-4 leading-tight">
-                  {project.title}
-                </h4>
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {project.techStack.slice(0, 3).map(tech => (
-                    <span key={tech} className="text-[0.6rem] tracking-wide px-3 py-1.5 border border-white/10 rounded-full text-white/90 bg-black/30 backdrop-blur-md">
-                      {tech}
-                    </span>
-                  ))}
+                
+                {/* Content Overlay */}
+                <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                  <div className="self-start px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-[8px] tracking-[0.2em] font-medium text-white/80 uppercase">
+                    {project.shortDesc}
+                  </div>
+                  
+                  <div className="flex flex-col justify-end">
+                    <h4 className="text-2xl font-semibold tracking-tight mb-2 text-white/95 leading-tight group-hover:text-white transition-colors">
+                      {project.title}
+                    </h4>
+                    <p className="text-xs text-white/50 leading-relaxed font-light line-clamp-2 pr-4 transition-all duration-500 group-hover:text-white/70">
+                      {project.longDesc}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-sm text-white/60 leading-relaxed font-light line-clamp-2">
-                  {project.longDesc}
-                </p>
-              </div>
-            </motion.a>
-          ))}
+              </motion.a>
+            )
+          })}
         </div>
       </section>
 
-      {/* TEAM SECTION */}
-      <section className="w-full px-5 py-24 bg-white/[0.02] border-t border-white/5">
+      {/* TEAM SECTION (Horizontal Scroll) */}
+      <section className="w-full pt-12 pb-24 relative overflow-hidden">
         <motion.div 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeUpVariant}
-          className="mb-12"
+          className="px-6 mb-12 flex items-center gap-4"
         >
-          <h2 className="text-xs tracking-[0.3em] text-white/40 mb-3 font-medium">THE TEAM</h2>
-          <h3 className="text-4xl font-semibold tracking-tight">Core Operatives.</h3>
+          <h2 className="text-[10px] tracking-[0.3em] text-white/60 font-medium uppercase">Operatives</h2>
+          <div className="h-[1px] bg-white/20 flex-grow" />
         </motion.div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex overflow-x-auto gap-4 px-6 pb-8 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {TEAM.map((member) => (
             <motion.div 
               initial="hidden"
@@ -187,64 +189,43 @@ export default function Mobile2DView() {
               viewport={{ once: true, margin: "-50px" }}
               variants={fadeUpVariant}
               key={member.id} 
-              className="flex gap-5 items-center p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm"
+              className="flex-shrink-0 w-[260px] snap-center flex flex-col gap-4 p-5 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-sm transition-colors hover:bg-white/[0.04]"
             >
-              <div className="w-16 h-16 shrink-0 rounded-full overflow-hidden relative">
-                <Image src={member.image} alt={member.name} fill className="object-cover grayscale opacity-80" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent" />
+              <div className="w-full aspect-square rounded-2xl overflow-hidden relative border border-white/5">
+                <Image src={member.image} alt={member.name} fill className="object-cover grayscale transition-all duration-700 hover:grayscale-0 hover:scale-105" />
               </div>
-              <div className="flex flex-col flex-grow">
-                <div className="flex justify-between items-center mb-1">
-                  <h4 className="text-lg font-medium tracking-tight">{member.name}</h4>
-                </div>
-                <div className="text-xs text-white/50 tracking-wide mb-3">
+              <div className="flex flex-col">
+                <h4 className="text-lg font-medium tracking-tight mb-1">{member.name}</h4>
+                <div className="text-[10px] uppercase text-white/40 tracking-[0.2em] font-medium mb-3">
                   {member.role}
                 </div>
-                <div className="flex gap-2 flex-wrap">
-                  {member.skills.slice(0, 3).map(skill => (
-                    <span key={skill} className="text-[0.6rem] tracking-wide text-white/70 bg-white/5 border border-white/5 px-2 py-1 rounded-full">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+                <p className="text-xs text-white/50 leading-relaxed font-light line-clamp-3">
+                  {member.bio}
+                </p>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* CONTACT & FOOTER */}
-      <section className="w-full px-5 py-32 flex flex-col items-center text-center">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUpVariant}
-          className="flex flex-col items-center w-full"
+      {/* FLOATING BOTTOM NAV */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-1.5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl w-[90%] max-w-[320px]">
+        <a href="mailto:contact@rjindustries.dev" className="flex-1 py-3 text-center rounded-full text-[9px] tracking-[0.2em] font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+          CONTACT
+        </a>
+        <div className="w-[1px] h-4 bg-white/20" />
+        <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" className="flex-1 py-3 text-center rounded-full text-[9px] tracking-[0.2em] font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+          LINKEDIN
+        </a>
+        <div className="w-[1px] h-4 bg-white/20" />
+        <button 
+          onClick={handleAudioToggle}
+          className="flex-1 py-3 text-center rounded-full text-[9px] tracking-[0.2em] font-medium text-white hover:text-white bg-white/10 hover:bg-white/20 transition-all"
         >
-          <h2 className="text-sm tracking-[0.3em] font-medium text-white/40 mb-10">
-            INITIATE PROTOCOL
-          </h2>
-          
-          <div className="flex flex-col gap-4 w-full max-w-[320px]">
-            <a href="mailto:contact@rjindustries.dev" className="py-5 border border-white/10 bg-white/5 rounded-2xl text-xs tracking-[0.2em] font-medium active:scale-95 transition-all backdrop-blur-md hover:bg-white/10">
-              EMAIL SECURE LINE
-            </a>
-            <div className="flex gap-4 w-full">
-              <a href="https://www.linkedin.com/company/rj-industries01/" className="flex-1 py-5 border border-white/10 bg-white/5 rounded-2xl text-[10px] tracking-[0.2em] font-medium active:scale-95 transition-all backdrop-blur-md hover:bg-white/10">
-                LINKEDIN
-              </a>
-              <a href="https://www.instagram.com/rj_industries01/" className="flex-1 py-5 border border-white/10 bg-white/5 rounded-2xl text-[10px] tracking-[0.2em] font-medium active:scale-95 transition-all backdrop-blur-md hover:bg-white/10">
-                INSTAGRAM
-              </a>
-            </div>
-          </div>
+          {audioMuted ? "SOUND OFF" : "SOUND ON"}
+        </button>
+      </div>
 
-          <div className="mt-32 text-[0.6rem] tracking-[0.2em] text-white/30 font-medium">
-            © {new Date().getFullYear()} RJ INDUSTRIES.
-          </div>
-        </motion.div>
-      </section>
     </div>
   );
 }
