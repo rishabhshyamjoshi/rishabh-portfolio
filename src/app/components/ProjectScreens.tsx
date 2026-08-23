@@ -213,11 +213,11 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
           {/* LAYER 3: Floating UI & Text */}
           <group ref={fgGroupRef} position={[0, 0, 0.05]}>
             <CanvasText
-              fontSize={0.85}
+              fontSize={0.65}
               position={[0, 0, 0]}
-              maxWidth={project.scale[0] - 1}
+              maxWidth={project.scale[0] - 1.2}
               lineHeight={1.2}
-              letterSpacing={0.1}
+              letterSpacing={0.08}
               textAlign="center"
               anchorX="center"
               anchorY="middle"
