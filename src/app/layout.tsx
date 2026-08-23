@@ -82,10 +82,11 @@ export default function RootLayout({
       "name": "RJ Industries",
       "url": "https://rjindustries.dev",
       "logo": "https://rjindustries.dev/logo.png",
-      "description": "Pioneering aerospace, defense, advanced manufacturing, and AI technologies. Founded by Rishabh Shyam Joshi.",
+      "description": "Pioneering aerospace, defense, advanced manufacturing, and AI technologies. Founded by Rishabh Joshi (Rishabh Shyam Joshi).",
       "founder": {
         "@type": "Person",
-        "name": "Rishabh Shyam Joshi",
+        "name": "Rishabh Joshi",
+        "alternateName": ["Rishabh Shyam Joshi", "RSJ", "RJ"],
         "jobTitle": "Founder & CEO",
         "url": "https://www.linkedin.com/in/rishabhshyamjoshi/",
         "sameAs": [
@@ -133,11 +134,11 @@ export default function RootLayout({
         <div className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }}>
           <h1>RJ Industries - Aerospace, Defense, and Advanced Manufacturing</h1>
           <p>
-            Welcome to RJ Industries, founded by Rishabh Shyam Joshi. We are a pioneer in aerospace, defense, advanced manufacturing, and generative AI technologies. 
+            Welcome to RJ Industries, founded by Rishabh Joshi (also known as Rishabh Shyam Joshi). We are a pioneer in aerospace, defense, advanced manufacturing, and generative AI technologies. 
             Our mission is innovation beyond limits, building the future of humanity&apos;s capabilities.
           </p>
           <p>
-            <strong>About the Founder:</strong> Rishabh Shyam Joshi is the Founder and CEO of RJ Industries. He is a software engineer, innovator, and entrepreneur dedicated to advancing cutting-edge technologies including robotics, generative AI, and defense engineering. Rishabh Shyam Joshi leads the development of the K.I.N.E.T.I.C Glasses and the RJ-A1 Chip.
+            <strong>About the Founder:</strong> Rishabh Joshi (Rishabh Shyam Joshi) is the Founder and CEO of RJ Industries. He is a software engineer, innovator, and entrepreneur dedicated to advancing cutting-edge technologies including robotics, generative AI, and defense engineering. He leads the development of the K.I.N.E.T.I.C Glasses and the RJ-A1 Chip.
           </p>
           <h2>Our Core Divisions</h2>
           <ul>
