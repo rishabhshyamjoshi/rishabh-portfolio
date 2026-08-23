@@ -360,6 +360,8 @@ export default function Scene() {
           <ChromaticAberration 
             blendFunction={BlendFunction.NORMAL}
             offset={new THREE.Vector2(0.0005, 0.0005)} 
+            radialModulation={false}
+            modulationOffset={0}
           />
           <Noise 
             premultiply 
