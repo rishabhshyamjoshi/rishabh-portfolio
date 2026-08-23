@@ -61,6 +61,12 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "uZtel35Vrxx63SypdVkrGwgR-amUg0nVDkHHRzorGUg",
+  },
+  other: {
+    "geo.region": "IN-MH",
+    "geo.placename": "Maharashtra, India",
+    "geo.position": "19.0760;72.8777",
+    "ICBM": "19.0760, 72.8777"
   }
 };
 
