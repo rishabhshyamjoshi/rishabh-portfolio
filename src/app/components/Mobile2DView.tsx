@@ -133,10 +133,11 @@ export default function Mobile2DView() {
             >
               {/* Background Image */}
               <div className="absolute inset-0 w-full h-full">
-                <img 
+                <Image 
                   src={project.image} 
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105 opacity-80"
+                  fill
+                  className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105 opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
               </div>
@@ -189,7 +190,7 @@ export default function Mobile2DView() {
               className="flex gap-5 items-center p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm"
             >
               <div className="w-16 h-16 shrink-0 rounded-full overflow-hidden relative">
-                <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale opacity-80" />
+                <Image src={member.image} alt={member.name} fill className="object-cover grayscale opacity-80" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent" />
               </div>
               <div className="flex flex-col flex-grow">
