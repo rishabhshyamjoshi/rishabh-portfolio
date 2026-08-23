@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { AudioController } from "../utils/AudioController";
+import { useThemeColors } from "../hooks/useThemeColors";
 
 export default function OverlayUI() {
   const [displayScroll, setDisplayScroll] = useState(0);
@@ -13,6 +14,7 @@ export default function OverlayUI() {
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
   const visRef = useRef<HTMLDivElement>(null);
+  const theme = useThemeColors();
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -58,15 +60,19 @@ export default function OverlayUI() {
         const bars = visRef.current.children;
         if (data && data.length > 0 && !audio.isMuted) {
           for (let i = 0; i < bars.length; i++) {
-            // Map lower frequencies to the bars
-            const val = data[i * 8] || 0; 
-            (bars[i] as HTMLElement).style.height = `${Math.max(4, val * 0.15)}px`;
-            (bars[i] as HTMLElement).style.opacity = `${0.3 + (val / 255) * 0.7}`;
+            // Finer resolution mapping (16 bars)
+            const val = data[i * 4] || 0; 
+            const height = Math.max(4, val * 0.25);
+            const intensity = val / 255;
+            (bars[i] as HTMLElement).style.height = `${height}px`;
+            (bars[i] as HTMLElement).style.opacity = `${0.4 + intensity * 0.6}`;
+            (bars[i] as HTMLElement).style.filter = `drop-shadow(0 0 ${intensity * 8}px ${(bars[i] as HTMLElement).style.backgroundColor})`;
           }
         } else {
           for (let i = 0; i < bars.length; i++) {
             (bars[i] as HTMLElement).style.height = '4px';
             (bars[i] as HTMLElement).style.opacity = '0.3';
+            (bars[i] as HTMLElement).style.filter = 'none';
           }
         }
       }
@@ -249,29 +255,47 @@ export default function OverlayUI() {
             ))}
           </div>
 
-          {/* Visualizer */}
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", height: "30px" }}>
-            <div style={{
-              fontSize: "0.5rem",
-              letterSpacing: "0.2em",
-              color: "rgba(255,255,255,0.3)",
-              marginRight: "1rem",
-              marginBottom: "2px",
-              fontFamily: "'Inter', sans-serif"
-            }}>
-              SYSTEM AUDIO
-            </div>
-            <div ref={visRef} style={{ display: "flex", alignItems: "flex-end", gap: "3px", height: "100%", pointerEvents: "none" }}>
-              {Array.from({ length: 8 }).map((_, i) => (
+          {/* Visualizer & Audio Toggle */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", height: "30px", pointerEvents: "auto" }}>
+            <button
+              onClick={handleAudioToggle}
+              style={{
+                fontSize: "0.55rem",
+                letterSpacing: "0.2em",
+                color: audioMuted ? "rgba(255,255,255,0.4)" : theme.primary,
+                marginRight: "1rem",
+                marginBottom: "2px",
+                fontFamily: "'Inter', sans-serif",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                transition: "all 0.3s ease",
+                backgroundColor: audioMuted ? "transparent" : `${theme.primary}22`,
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = "#fff";
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = audioMuted ? "rgba(255,255,255,0.4)" : (theme.primary || "#fff");
+                e.currentTarget.style.backgroundColor = audioMuted ? "transparent" : `${theme.primary}22`;
+              }}
+            >
+              SYSTEM AUDIO {audioMuted ? "OFF" : "ON"}
+            </button>
+            <div ref={visRef} style={{ display: "flex", alignItems: "flex-end", gap: "2px", height: "100%", pointerEvents: "none" }}>
+              {Array.from({ length: 16 }).map((_, i) => (
                 <div 
                   key={i} 
                   style={{ 
                     width: "3px", 
                     height: "4px", 
-                    background: "#fff", 
+                    backgroundColor: theme.primary || "#fff", 
                     opacity: 0.3,
                     borderRadius: "2px",
-                    transition: "height 0.1s ease" 
+                    transition: "height 0.08s ease, filter 0.08s ease" 
                   }} 
                 />
               ))}
