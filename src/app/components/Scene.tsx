@@ -13,6 +13,7 @@ import TeamScreens from "./TeamScreens";
 import FooterScreen from "./FooterScreen";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
+import AudioReactiveStars from "./AudioReactiveStars";
 
 function CameraController({ setScrollProgress, activeProject }: { setScrollProgress: (v: number) => void, activeProject: any }) {
   const { camera, pointer } = useThree();
@@ -339,7 +340,7 @@ export default function Scene() {
         
         <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
         
-        <Stars radius={120} depth={60} count={500} factor={3} saturation={0} fade speed={0.5} />
+        <AudioReactiveStars count={1500} />
         <Environment />
         
         <Suspense fallback={null}>
