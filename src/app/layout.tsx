@@ -129,7 +129,7 @@ export default function RootLayout({
           <h1>RJ Industries - Aerospace, Defense, and Advanced Manufacturing</h1>
           <p>
             Welcome to RJ Industries, founded by Rishabh Joshi. We are a pioneer in aerospace, defense, advanced manufacturing, and generative AI technologies. 
-            Our mission is innovation beyond limits, building the future of humanity's capabilities.
+            Our mission is innovation beyond limits, building the future of humanity&apos;s capabilities.
           </p>
           <h2>Our Core Divisions</h2>
           <ul>
