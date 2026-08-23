@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 import { useThemeColors } from "../hooks/useThemeColors";
 
-export default function AudioReactiveStars({ count = 2000 }) {
+export default function AudioReactiveStars({ count = 1500 }) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const theme = useThemeColors();
@@ -17,8 +17,7 @@ export default function AudioReactiveStars({ count = 2000 }) {
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      // Random spherical distribution, pushing them out away from the planets
-      const r = 50 + Math.random() * 150; 
+      const r = 80 + Math.random() * 200; // Push further away
       const theta = 2 * Math.PI * Math.random();
       const phi = Math.acos(2 * Math.random() - 1);
       
@@ -32,7 +31,7 @@ export default function AudioReactiveStars({ count = 2000 }) {
   const sizes = useMemo(() => {
     const s = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      s[i] = 1.0 + Math.random() * 3.0; // Base size
+      s[i] = 0.5 + Math.random() * 1.5; // Significantly smaller base size
     }
     return s;
   }, [count]);
@@ -49,34 +48,31 @@ export default function AudioReactiveStars({ count = 2000 }) {
   useFrame((state, delta) => {
     if (!materialRef.current || !pointsRef.current) return;
     
-    // Slow rotation of the entire starfield
-    pointsRef.current.rotation.y += delta * 0.01;
-    pointsRef.current.rotation.x += delta * 0.005;
+    // Slow rotation
+    pointsRef.current.rotation.y += delta * 0.005;
+    pointsRef.current.rotation.x += delta * 0.002;
 
-    // Time for twinkling
     materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
 
-    // Smooth color interpolation to current theme
     targetColor.set(theme.primary || "#ffffff");
-    materialRef.current.uniforms.uColor.value.lerp(targetColor, delta * 3);
+    // Tone down the brightness of the theme color slightly
+    materialRef.current.uniforms.uColor.value.lerp(targetColor, delta * 2);
 
-    // Audio Reactivity
     const audio = AudioController.getInstance();
     const data = audio.getFrequencyData();
     let audioValue = 0;
     
     if (data && data.length > 0 && !audio.isMuted) {
-      // Calculate average of lower frequencies (bass/kick)
       let sum = 0;
       const sampleSize = 8;
       for(let i=0; i<sampleSize; i++) {
         sum += data[i];
       }
-      audioValue = (sum / sampleSize) / 255.0; // Normalized 0 to 1
+      audioValue = (sum / sampleSize) / 255.0; 
     }
     
-    // Smooth the audio value heavily to avoid jittering
-    materialRef.current.uniforms.uAudioData.value += (audioValue - materialRef.current.uniforms.uAudioData.value) * 0.15;
+    // Slower easing for more elegant pulsing
+    materialRef.current.uniforms.uAudioData.value += (audioValue - materialRef.current.uniforms.uAudioData.value) * 0.1;
   });
 
   return (
@@ -100,17 +96,17 @@ export default function AudioReactiveStars({ count = 2000 }) {
           void main() {
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
             
-            // Audio expands the star size significantly (up to 5x) 
-            // Twinkle using sine
-            float twinkle = sin(uTime * 3.0 + position.x * 0.1) * 0.5 + 0.5;
-            float audioBoost = 1.0 + (uAudioData * 6.0);
+            // Subtler twinkle
+            float twinkle = sin(uTime * 1.5 + position.x * 0.1) * 0.3 + 0.7;
             
-            // Perspective size calculation
-            gl_PointSize = size * (150.0 / -mvPosition.z) * audioBoost * (0.3 + twinkle * 0.7);
+            // Much smaller audio boost for size (max 2x instead of 7x)
+            float audioBoost = 1.0 + (uAudioData * 1.0);
+            
+            gl_PointSize = size * (80.0 / -mvPosition.z) * audioBoost * twinkle;
             gl_Position = projectionMatrix * mvPosition;
             
-            // Fade opacity based on twinkle and audio
-            vAlpha = (twinkle * 0.5 + 0.5) * (1.0 + uAudioData);
+            // Opacity increases slightly with audio
+            vAlpha = twinkle * (1.0 + (uAudioData * 0.5));
           }
         `}
         fragmentShader={`
@@ -118,18 +114,17 @@ export default function AudioReactiveStars({ count = 2000 }) {
           varying float vAlpha;
           
           void main() {
-            // Circular particle
             float dist = length(gl_PointCoord - vec2(0.5));
             if (dist > 0.5) discard;
             
-            // Soft edge glow
+            // Softer glow curve
             float glow = 1.0 - (dist * 2.0);
             
-            // Inner core is white, outer glow is uColor
-            // When audio is high, the white core gets larger
-            vec3 finalColor = mix(uColor, vec3(1.0), pow(glow, 2.5));
+            // Inner core is white, but mixes with color much sooner for subtlety
+            vec3 finalColor = mix(uColor, vec3(1.0), pow(glow, 4.0));
             
-            gl_FragColor = vec4(finalColor, vAlpha * glow * 1.5);
+            // Soften overall intensity
+            gl_FragColor = vec4(finalColor, vAlpha * pow(glow, 1.5) * 0.6);
           }
         `}
       />
