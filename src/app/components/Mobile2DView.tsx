@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, Variants } from "framer-motion";
+import { motion, useScroll, useTransform, Variants, useMotionValueEvent } from "framer-motion";
+import SequencePlayer from "./SequencePlayer";
 import { PROJECTS } from "../data/projects";
 import { TEAM } from "../data/team";
 import { AudioController } from "../utils/AudioController";
 
 export default function Mobile2DView() {
   const [audioMuted, setAudioMuted] = useState(true);
+  const [scrollVal, setScrollVal] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -20,6 +22,12 @@ export default function Mobile2DView() {
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 150]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    // Only update sequence progress if we are in the top portion of the site to save performance
+    // or we can map it so scrolling the full page plays the full sequence.
+    setScrollVal(latest);
+  });
 
   useEffect(() => {
     document.body.style.overflowY = "auto";
@@ -53,26 +61,24 @@ export default function Mobile2DView() {
 
       {/* HERO SECTION */}
       <section className="relative h-[100dvh] w-full flex flex-col items-center justify-center p-6 overflow-hidden">
-        {/* Subtle glowing orb in background */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
+        
+        {/* Scroll-triggered Sequence Frames in Background */}
+        <div className="absolute inset-0 w-full h-full opacity-60 mix-blend-screen pointer-events-none">
+          <SequencePlayer externalProgress={scrollVal} />
+        </div>
+
+        {/* Logo in Background (Large & Faded) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
+          <div className="relative w-[90%] aspect-video max-w-sm">
+             <Image src="/logo.png" alt="RJ Industries Logo Background" fill className="object-contain filter blur-[1px]" />
+          </div>
+        </div>
         
         <motion.div 
           style={{ y: heroY, opacity: heroOpacity, scale: heroScale }}
           className="relative z-10 flex flex-col items-center w-full mt-10"
         >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="w-[140px] relative h-[40px] mb-12"
-          >
-            <Image 
-              src="/logo.png" 
-              alt="RJ Industries Logo" 
-              fill
-              className="object-contain"
-            />
-          </motion.div>
+          {/* Logo removed from foreground as requested */}
           
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}

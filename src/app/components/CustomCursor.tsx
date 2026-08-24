@@ -259,6 +259,7 @@ export default function CustomCursor() {
   return (
     <>
       <canvas
+        className="hidden md:block"
         ref={canvasRef}
         style={{
           pointerEvents: "none", zIndex: 999998, position: "fixed", inset: 0,
@@ -267,6 +268,7 @@ export default function CustomCursor() {
       />
 
       <div
+        className="hidden md:block"
         ref={hudRef}
         style={{
           position: "fixed",

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function SequencePlayer() {
+export default function SequencePlayer({ externalProgress }: { externalProgress?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(0);
@@ -87,7 +87,11 @@ export default function SequencePlayer() {
     let rafId: number;
 
     const animate = () => {
-      targetFrame.current = Math.floor(progressRef.current * (totalFrames - 1));
+      if (externalProgress !== undefined) {
+        targetFrame.current = Math.floor(externalProgress * (totalFrames - 1));
+      } else {
+        targetFrame.current = Math.floor(progressRef.current * (totalFrames - 1));
+      }
       
       // Smooth lerping to target frame
       currentFrame.current += (targetFrame.current - currentFrame.current) * 0.1;
@@ -102,7 +106,7 @@ export default function SequencePlayer() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(rafId);
     };
-  }, [loaded]);
+  }, [loaded, externalProgress]);
 
   const handleWheel = (e: React.WheelEvent) => {
     // 1 scroll tick (deltaY ~ 100) = 5 frames
