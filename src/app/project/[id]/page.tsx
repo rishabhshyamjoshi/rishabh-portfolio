@@ -87,7 +87,7 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.02)_0%,rgba(0,0,0,0.85)_100%)] z-0 pointer-events-none" />
 
       {/* ═══ TOP CORNER HUD ═══ */}
-      <div className="fixed top-8 right-8 z-50 flex flex-col items-end gap-6 pointer-events-none">
+      <div className="fixed top-8 right-8 z-50 hidden md:flex flex-col items-end gap-6 pointer-events-none">
         <div className="pointer-events-auto">
           <WorkContactCapsule />
         </div>
@@ -102,13 +102,13 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
         </div>
       </div>
 
-      <div className="fixed top-12 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+      <div className="hidden md:flex fixed top-12 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
         <p className="text-[0.6rem] tracking-[0.2em] text-white/40 uppercase bg-black/40 px-4 py-1 border border-white/10 rounded-full backdrop-blur-sm">
           {project.id === 1 ? "VIDEO SEQUENCE: ACTIVE" : "SCROLL TO CLOSE CONNECTION"}
         </p>
       </div>
 
-      <div className="fixed bottom-8 right-8 z-50 pointer-events-none flex flex-col items-end text-right opacity-40 text-[0.45rem] tracking-[0.3em] leading-relaxed text-[#00f0ff]">
+      <div className="hidden md:flex fixed bottom-8 right-8 z-50 pointer-events-none flex-col items-end text-right opacity-40 text-[0.45rem] tracking-[0.3em] leading-relaxed text-[#00f0ff]">
         <p>COORDS: 34.0522° N, 118.2437° W</p>
         <p>UPLINK: RJ-COMM-NET</p>
         <p>ENCRYPTION: QUANTUM-256</p>
@@ -135,12 +135,25 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
         )}
       </div>
 
-      {/* Dark Overlay for Text Readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#02050a]/90 via-[#02050a]/40 to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-l from-[#02050a]/90 via-[#02050a]/10 to-transparent z-10 pointer-events-none" />
+      {/* Dark Overlay for Text Readability on Mobile vs Desktop */}
+      <div className="absolute inset-0 bg-[#02050a]/80 md:bg-transparent z-10 pointer-events-none" />
+      <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#02050a]/90 via-[#02050a]/40 to-transparent z-10 pointer-events-none" />
+      <div className="hidden md:block absolute inset-0 bg-gradient-to-l from-[#02050a]/90 via-[#02050a]/10 to-transparent z-10 pointer-events-none" />
 
-      {/* ═══ LEFT SIDEBAR (Project Info) ═══ */}
-      <div className="fixed top-1/2 -translate-y-1/2 left-12 z-50 w-80 space-y-8">
+      {/* ═══ MOBILE + DESKTOP CONTENT WRAPPER ═══ */}
+      <div className="relative z-50 w-full h-full flex flex-col md:block overflow-y-auto md:overflow-visible px-6 py-20 md:p-0">
+        
+        {/* MOBILE HEADER */}
+        <div className="md:hidden flex justify-between items-center w-full mb-12">
+           <div className="text-[0.55rem] tracking-[0.2em] text-[#00f0ff]/60 border border-[#00f0ff]/20 bg-[#00f0ff]/5 px-3 py-1 rounded-sm flex gap-2">
+              <span className="animate-pulse block w-2 h-2 bg-[#00f0ff] rounded-full self-center" />
+              LIVE LINK {glitch}
+            </div>
+            <Link href="/" className="text-[10px] tracking-[0.2em] uppercase font-bold border border-white/20 px-3 py-1.5 rounded-full text-white/50">&times; CLOSE</Link>
+        </div>
+
+        {/* ═══ LEFT SIDEBAR (Project Info) ═══ */}
+        <div className="relative md:fixed md:top-1/2 md:-translate-y-1/2 md:left-12 w-full md:w-80 space-y-8 mb-16 md:mb-0">
         <div>
           <div className="flex items-center gap-4 mb-4">
             <span className="text-[#00f0ff] text-[0.6rem] tracking-[0.3em] font-bold">PROJECT.{project.id.toString().padStart(3, '0')}</span>
@@ -179,10 +192,9 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* ═══ RIGHT SIDEBAR (Technical Specs) ═══ */}
-      <div className="fixed top-1/2 -translate-y-1/2 right-12 z-50 w-72 space-y-8 pointer-events-none">
+        {/* ═══ RIGHT SIDEBAR (Technical Specs) ═══ */}
+        <div className="relative md:fixed md:top-1/2 md:-translate-y-1/2 md:right-12 w-full md:w-72 space-y-8 md:pointer-events-none pb-24 md:pb-0">
         <div className="border border-[#00f0ff]/20 bg-black/40 backdrop-blur-md p-6 rounded-sm">
           <div className="flex items-center gap-3 mb-8">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" strokeWidth="2">
@@ -220,7 +232,6 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
           </div>
         </div>
       </div>
-
     </div>
   );
 }
