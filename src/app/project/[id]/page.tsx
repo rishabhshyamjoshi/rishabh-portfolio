@@ -232,6 +232,8 @@ export default function ProjectCaseStudy({ params }: { params: { id: string } })
           </div>
         </div>
       </div>
+      </div>
+      </div>
     </div>
   );
 }
