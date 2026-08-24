@@ -13,7 +13,7 @@ export default function OverlayUI() {
   const [currentTrack, setCurrentTrack] = useState(0);
   const targetScroll = useRef(0);
   const currentScroll = useRef(0);
-  const visRef = useRef<HTMLDivElement>(null);
+  const visRef = useRef<HTMLCanvasElement>(null);
   const theme = useThemeColors();
 
   useEffect(() => {
@@ -57,23 +57,50 @@ export default function OverlayUI() {
       if (visRef.current) {
         const audio = AudioController.getInstance();
         const data = audio.getFrequencyData();
-        const bars = visRef.current.children;
-        if (data && data.length > 0 && !audio.isMuted) {
-          for (let i = 0; i < bars.length; i++) {
-            // Finer resolution mapping (16 bars)
-            const val = data[i * 4] || 0; 
-            const height = Math.max(4, val * 0.25);
-            const intensity = val / 255;
-            (bars[i] as HTMLElement).style.height = `${height}px`;
-            (bars[i] as HTMLElement).style.opacity = `${0.4 + intensity * 0.6}`;
-            (bars[i] as HTMLElement).style.filter = `drop-shadow(0 0 ${intensity * 8}px ${(bars[i] as HTMLElement).style.backgroundColor})`;
+        const canvas = visRef.current as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          let intensity = 0;
+          if (data && data.length > 0 && !audio.isMuted) {
+             let sum = 0;
+             for(let i = 0; i < 32; i++) sum += data[i];
+             intensity = sum / (32 * 255);
           }
-        } else {
-          for (let i = 0; i < bars.length; i++) {
-            (bars[i] as HTMLElement).style.height = '4px';
-            (bars[i] as HTMLElement).style.opacity = '0.3';
-            (bars[i] as HTMLElement).style.filter = 'none';
+
+          const t = Date.now() * 0.002;
+          const midY = canvas.height / 2;
+          const w = canvas.width;
+          
+          // Draw 3 overlapping waves for a liquid fluid effect
+          for (let layer = 0; layer < 3; layer++) {
+            ctx.beginPath();
+            ctx.moveTo(0, midY);
+            
+            const amplitude = (1 + intensity * 12) * (1 - layer * 0.2);
+            const frequency = 0.05 + layer * 0.02;
+            const speed = t * (1 + layer * 0.3);
+            
+            for (let x = 0; x <= w; x += 2) {
+               // Taper the edges so the wave blends smoothly into a flat line at the ends
+               const edgeTaper = Math.sin((x / w) * Math.PI); 
+               const y = midY + Math.sin(x * frequency + speed) * Math.cos(x * 0.01 - speed * 0.5) * amplitude * edgeTaper;
+               ctx.lineTo(x, y);
+            }
+            
+            ctx.strokeStyle = theme.primary || "#00f0ff";
+            ctx.lineWidth = 1.5 - layer * 0.4;
+            ctx.globalAlpha = 0.8 - layer * 0.25;
+            if (layer === 0) {
+              ctx.shadowColor = theme.primary || "#00f0ff";
+              ctx.shadowBlur = intensity > 0.05 ? 10 : 3;
+            } else {
+              ctx.shadowBlur = 0;
+            }
+            ctx.stroke();
           }
+          ctx.globalAlpha = 1.0;
         }
       }
 
@@ -285,21 +312,12 @@ export default function OverlayUI() {
             >
               SYSTEM AUDIO {audioMuted ? "OFF" : "ON"}
             </button>
-            <div ref={visRef} style={{ display: "flex", alignItems: "flex-end", gap: "2px", height: "100%", pointerEvents: "none" }}>
-              {Array.from({ length: 16 }).map((_, i) => (
-                <div 
-                  key={i} 
-                  style={{ 
-                    width: "3px", 
-                    height: "4px", 
-                    backgroundColor: theme.primary || "#fff", 
-                    opacity: 0.3,
-                    borderRadius: "2px",
-                    transition: "height 0.08s ease, filter 0.08s ease" 
-                  }} 
-                />
-              ))}
-            </div>
+            <canvas 
+              ref={visRef} 
+              width={140} 
+              height={30} 
+              style={{ pointerEvents: "none", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.2))" }} 
+            />
           </div>
         </div>
       </div>
