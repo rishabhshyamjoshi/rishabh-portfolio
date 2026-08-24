@@ -247,6 +247,7 @@ export default function OverlayUI() {
             position: "absolute",
             bottom: "2rem",
             left: "2rem",
+            right: "2rem",
             display: "flex",
             flexDirection: "column",
             gap: "0.8rem",
@@ -283,20 +284,20 @@ export default function OverlayUI() {
           </div>
 
           {/* Visualizer & Audio Toggle */}
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", height: "30px", pointerEvents: "auto" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", height: "30px", pointerEvents: "auto", width: "100%" }}>
             <button
               onClick={handleAudioToggle}
               style={{
-                fontSize: "0.55rem",
-                letterSpacing: "0.2em",
+                fontSize: "0.65rem",
+                letterSpacing: "0.25em",
                 color: audioMuted ? "rgba(255,255,255,0.4)" : theme.primary,
                 marginRight: "1rem",
                 marginBottom: "2px",
                 fontFamily: "'Inter', sans-serif",
                 background: "none",
-                border: "none",
+                border: "1px solid rgba(255,255,255,0.1)",
                 cursor: "pointer",
-                padding: "4px 8px",
+                padding: "6px 12px",
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
                 backgroundColor: audioMuted ? "transparent" : `${theme.primary}22`,
@@ -314,9 +315,9 @@ export default function OverlayUI() {
             </button>
             <canvas 
               ref={visRef} 
-              width={140} 
+              width={1000} 
               height={30} 
-              style={{ pointerEvents: "none", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.2))" }} 
+              style={{ pointerEvents: "none", flex: 1, width: "100%", height: "30px", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.2))" }} 
             />
           </div>
         </div>
