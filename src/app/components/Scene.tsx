@@ -340,7 +340,7 @@ export default function Scene() {
         
         <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
         
-        <AudioReactiveStars count={1200} />
+        <AudioReactiveStars count={2500} />
         <Environment />
         
         <Suspense fallback={null}>
@@ -352,7 +352,24 @@ export default function Scene() {
         <FooterScreen scrollProgress={scrollProgress} />
         <MovementFX scrollProgress={scrollProgress} />
         
-        {/* Post-processing removed for maximum performance */}
+        <EffectComposer multisampling={0}>
+          <Bloom 
+            luminanceThreshold={0.5} 
+            luminanceSmoothing={0.9} 
+            intensity={0.6} 
+          />
+          <ChromaticAberration 
+            blendFunction={BlendFunction.NORMAL}
+            offset={new THREE.Vector2(0.0005, 0.0005)} 
+            radialModulation={false}
+            modulationOffset={0}
+          />
+          <Noise 
+            premultiply 
+            blendFunction={BlendFunction.ADD} 
+            opacity={0.015} 
+          />
+        </EffectComposer>
         
       </Canvas>
       

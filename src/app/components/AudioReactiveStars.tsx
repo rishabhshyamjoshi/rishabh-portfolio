@@ -123,11 +123,8 @@ export default function AudioReactiveStars({ count = 1500 }) {
             // Modest boost based on overall audio
             float audioBoost = 1.0 + (uAudioOverall * 1.5);
             
-            // Prevent extreme size explosion when passing through stars by clamping the minimum distance
-            float distance = max(-mvPosition.z, 25.0);
-            
             // Scaled up by 200 for proper visibility since base sizes are much smaller
-            gl_PointSize = size * (200.0 / distance) * audioBoost * twinkle;
+            gl_PointSize = size * (200.0 / -mvPosition.z) * audioBoost * twinkle;
             gl_Position = projectionMatrix * mvPosition;
             
             // Opacity increases slightly with audio
