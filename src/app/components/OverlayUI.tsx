@@ -110,7 +110,7 @@ export default function OverlayUI() {
             ctx.globalAlpha = 0.8 - layer * 0.25;
             if (layer === 0) {
               ctx.shadowColor = theme.primary || "#00f0ff";
-              ctx.shadowBlur = intensity > 0.05 ? 10 : 3;
+              ctx.shadowBlur = smoothedIntensity > 0.05 ? 10 : 3;
             } else {
               ctx.shadowBlur = 0;
             }
