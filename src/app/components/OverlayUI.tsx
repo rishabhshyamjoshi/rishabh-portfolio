@@ -49,6 +49,9 @@ export default function OverlayUI() {
     window.addEventListener("audioTrackChanged", handleTrackChange);
     
     let frameId: number;
+    let smoothedIntensity = 0;
+    let phaseOffset = 0;
+
     const updateScroll = () => {
       currentScroll.current += (targetScroll.current - currentScroll.current) * 0.08;
       setDisplayScroll(currentScroll.current);
@@ -62,20 +65,26 @@ export default function OverlayUI() {
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           
-          let intensity = 0;
+          let targetIntensity = 0;
           if (data && data.length > 0 && !audio.isMuted) {
              let sum = 0;
              // Focus on the lower 16 bands (bass & low-mids) for reactivity
              for(let i = 0; i < 16; i++) sum += data[i];
-             intensity = sum / (16 * 255);
-             
-             // Keep the color strictly tied to the BGM theme color, no rainbow hue shifts
-             canvas.style.filter = `drop-shadow(0 0 ${4 + intensity * 8}px ${theme.primary || "#00f0ff"})`;
+             targetIntensity = sum / (16 * 255);
+          }
+          
+          // Smooth the intensity (lerp) so the wave doesn't jump jaggedly
+          smoothedIntensity += (targetIntensity - smoothedIntensity) * 0.15;
+          
+          if (targetIntensity > 0) {
+             canvas.style.filter = `drop-shadow(0 0 ${4 + smoothedIntensity * 8}px ${theme.primary || "#00f0ff"})`;
           } else {
              canvas.style.filter = `drop-shadow(0 0 4px ${theme.primary || "#00f0ff"}40)`;
           }
 
-          const t = Date.now() * 0.002;
+          // Accumulate phase instead of multiplying absolute time to prevent stuttering
+          phaseOffset += 0.03 + (smoothedIntensity * 0.08);
+
           const midY = canvas.height / 2;
           const w = canvas.width;
           
@@ -85,9 +94,9 @@ export default function OverlayUI() {
             ctx.moveTo(0, midY);
             
             // Smoother amplitude multiplier so it doesn't jump too aggressively
-            const amplitude = (2 + intensity * 18) * (1 - layer * 0.2);
+            const amplitude = (2 + smoothedIntensity * 15) * (1 - layer * 0.2);
             const frequency = 0.05 + layer * 0.02;
-            const speed = t * (1 + layer * 0.3 + intensity * 0.8); // Gentle speed modulation
+            const speed = phaseOffset * (1 + layer * 0.2); // Gentle speed modulation
             
             for (let x = 0; x <= w; x += 2) {
                // Taper the edges so the wave blends smoothly into a flat line at the ends
