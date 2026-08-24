@@ -65,8 +65,16 @@ export default function OverlayUI() {
           let intensity = 0;
           if (data && data.length > 0 && !audio.isMuted) {
              let sum = 0;
-             for(let i = 0; i < 32; i++) sum += data[i];
-             intensity = sum / (32 * 255);
+             // Focus on the lower 16 bands (bass & low-mids) for punchier reactivity
+             for(let i = 0; i < 16; i++) sum += data[i];
+             intensity = sum / (16 * 255);
+             
+             // Dynamic color shifting: intense hits shift the hue and boost brightness
+             const hueShift = intensity * 150; // up to 150deg shift on heavy bass
+             const brightness = 1.0 + (intensity * 2.5); // up to 3.5x brightness
+             canvas.style.filter = `drop-shadow(0 0 ${4 + intensity * 15}px ${theme.primary || "#00f0ff"}) hue-rotate(${hueShift}deg) brightness(${brightness})`;
+          } else {
+             canvas.style.filter = `drop-shadow(0 0 4px ${theme.primary || "#00f0ff"}40) hue-rotate(0deg) brightness(1)`;
           }
 
           const t = Date.now() * 0.002;
@@ -78,9 +86,10 @@ export default function OverlayUI() {
             ctx.beginPath();
             ctx.moveTo(0, midY);
             
-            const amplitude = (1 + intensity * 12) * (1 - layer * 0.2);
+            // Dramatically increased amplitude multiplier for more aggressive waves
+            const amplitude = (2 + Math.pow(intensity, 1.5) * 35) * (1 - layer * 0.2);
             const frequency = 0.05 + layer * 0.02;
-            const speed = t * (1 + layer * 0.3);
+            const speed = t * (1 + layer * 0.3 + intensity * 2); // Waves move faster on beat
             
             for (let x = 0; x <= w; x += 2) {
                // Taper the edges so the wave blends smoothly into a flat line at the ends
@@ -247,7 +256,6 @@ export default function OverlayUI() {
             position: "absolute",
             bottom: "2rem",
             left: "2rem",
-            right: "2rem",
             display: "flex",
             flexDirection: "column",
             gap: "0.8rem",
@@ -284,20 +292,20 @@ export default function OverlayUI() {
           </div>
 
           {/* Visualizer & Audio Toggle */}
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", height: "30px", pointerEvents: "auto", width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", height: "30px", pointerEvents: "auto" }}>
             <button
               onClick={handleAudioToggle}
               style={{
-                fontSize: "0.65rem",
-                letterSpacing: "0.25em",
+                fontSize: "0.55rem",
+                letterSpacing: "0.2em",
                 color: audioMuted ? "rgba(255,255,255,0.4)" : theme.primary,
                 marginRight: "1rem",
                 marginBottom: "2px",
                 fontFamily: "'Inter', sans-serif",
                 background: "none",
-                border: "1px solid rgba(255,255,255,0.1)",
+                border: "none",
                 cursor: "pointer",
-                padding: "6px 12px",
+                padding: "4px 8px",
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
                 backgroundColor: audioMuted ? "transparent" : `${theme.primary}22`,
@@ -315,9 +323,9 @@ export default function OverlayUI() {
             </button>
             <canvas 
               ref={visRef} 
-              width={1000} 
+              width={140} 
               height={30} 
-              style={{ pointerEvents: "none", flex: 1, width: "100%", height: "30px", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.2))" }} 
+              style={{ pointerEvents: "none", filter: "drop-shadow(0 0 4px rgba(0,240,255,0.2))" }} 
             />
           </div>
         </div>
