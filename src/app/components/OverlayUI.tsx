@@ -15,6 +15,11 @@ export default function OverlayUI() {
   const currentScroll = useRef(0);
   const visRef = useRef<HTMLCanvasElement>(null);
   const theme = useThemeColors();
+  const themeRef = useRef(theme);
+  
+  useEffect(() => {
+    themeRef.current = theme;
+  }, [theme]);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -76,10 +81,12 @@ export default function OverlayUI() {
           // Smooth the intensity (lerp) so the wave doesn't jump jaggedly
           smoothedIntensity += (targetIntensity - smoothedIntensity) * 0.15;
           
+          const activeTheme = themeRef.current.primary || "#00f0ff";
+          
           if (targetIntensity > 0) {
-             canvas.style.filter = `drop-shadow(0 0 ${4 + smoothedIntensity * 8}px ${theme.primary || "#00f0ff"})`;
+             canvas.style.filter = `drop-shadow(0 0 ${4 + smoothedIntensity * 8}px ${activeTheme})`;
           } else {
-             canvas.style.filter = `drop-shadow(0 0 4px ${theme.primary || "#00f0ff"}40)`;
+             canvas.style.filter = `drop-shadow(0 0 4px ${activeTheme}40)`;
           }
 
           // Accumulate phase instead of multiplying absolute time to prevent stuttering
@@ -105,11 +112,11 @@ export default function OverlayUI() {
                ctx.lineTo(x, y);
             }
             
-            ctx.strokeStyle = theme.primary || "#00f0ff";
+            ctx.strokeStyle = themeRef.current.primary || "#00f0ff";
             ctx.lineWidth = 1.5 - layer * 0.4;
             ctx.globalAlpha = 0.8 - layer * 0.25;
             if (layer === 0) {
-              ctx.shadowColor = theme.primary || "#00f0ff";
+              ctx.shadowColor = themeRef.current.primary || "#00f0ff";
               ctx.shadowBlur = smoothedIntensity > 0.05 ? 10 : 3;
             } else {
               ctx.shadowBlur = 0;
