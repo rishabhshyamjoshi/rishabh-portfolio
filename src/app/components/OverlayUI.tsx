@@ -65,16 +65,14 @@ export default function OverlayUI() {
           let intensity = 0;
           if (data && data.length > 0 && !audio.isMuted) {
              let sum = 0;
-             // Focus on the lower 16 bands (bass & low-mids) for punchier reactivity
+             // Focus on the lower 16 bands (bass & low-mids) for reactivity
              for(let i = 0; i < 16; i++) sum += data[i];
              intensity = sum / (16 * 255);
              
-             // Dynamic color shifting: intense hits shift the hue and boost brightness
-             const hueShift = intensity * 150; // up to 150deg shift on heavy bass
-             const brightness = 1.0 + (intensity * 2.5); // up to 3.5x brightness
-             canvas.style.filter = `drop-shadow(0 0 ${4 + intensity * 15}px ${theme.primary || "#00f0ff"}) hue-rotate(${hueShift}deg) brightness(${brightness})`;
+             // Keep the color strictly tied to the BGM theme color, no rainbow hue shifts
+             canvas.style.filter = `drop-shadow(0 0 ${4 + intensity * 8}px ${theme.primary || "#00f0ff"})`;
           } else {
-             canvas.style.filter = `drop-shadow(0 0 4px ${theme.primary || "#00f0ff"}40) hue-rotate(0deg) brightness(1)`;
+             canvas.style.filter = `drop-shadow(0 0 4px ${theme.primary || "#00f0ff"}40)`;
           }
 
           const t = Date.now() * 0.002;
@@ -86,10 +84,10 @@ export default function OverlayUI() {
             ctx.beginPath();
             ctx.moveTo(0, midY);
             
-            // Dramatically increased amplitude multiplier for more aggressive waves
-            const amplitude = (2 + Math.pow(intensity, 1.5) * 35) * (1 - layer * 0.2);
+            // Smoother amplitude multiplier so it doesn't jump too aggressively
+            const amplitude = (2 + intensity * 18) * (1 - layer * 0.2);
             const frequency = 0.05 + layer * 0.02;
-            const speed = t * (1 + layer * 0.3 + intensity * 2); // Waves move faster on beat
+            const speed = t * (1 + layer * 0.3 + intensity * 0.8); // Gentle speed modulation
             
             for (let x = 0; x <= w; x += 2) {
                // Taper the edges so the wave blends smoothly into a flat line at the ends
