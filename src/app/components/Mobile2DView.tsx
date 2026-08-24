@@ -17,10 +17,7 @@ export default function Mobile2DView() {
   const containerRef = useRef<HTMLDivElement>(null);
   const teamScrollRef = useRef<HTMLDivElement>(null);
   
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const { scrollYProgress } = useScroll();
 
   // Hero Parallax
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 150]);
