@@ -97,7 +97,7 @@ export default function Mobile2DView() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-[0.55rem] tracking-[0.5em] text-white/50 mb-8 font-medium uppercase text-center"
+            className="text-[0.65rem] tracking-widest text-white/50 mb-8 font-medium uppercase text-center"
           >
             Advanced Engineering
           </motion.h1>
@@ -133,8 +133,8 @@ export default function Mobile2DView() {
           variants={fadeUpVariant}
           className="mb-12 flex items-center gap-4"
         >
-          <div className="h-[1px] bg-white/10 flex-grow" />
-          <h2 className="text-[9px] tracking-[0.4em] text-white/50 font-medium uppercase">Featured Work</h2>
+          <div className="h-[1px] bg-white/20 flex-grow" />
+          <h2 className="text-[10px] tracking-widest text-white/60 font-semibold uppercase">Featured Work</h2>
         </motion.div>
 
         <div className="flex flex-col gap-3">
@@ -149,18 +149,18 @@ export default function Mobile2DView() {
             >
               <Link 
                 href={`/project/${project.id}`}
-                className="group w-full flex items-center justify-between p-5 bg-[#080808]/80 border border-white/5 rounded-2xl backdrop-blur-md transition-all active:scale-[0.98] active:bg-white/5 shadow-2xl"
+                className="group w-full flex items-center justify-between p-5 bg-black border border-white/20 rounded-none transition-all active:bg-white/10"
               >
                 <div className="flex flex-col gap-1">
-                  <span className="text-[8px] text-white/40 tracking-[0.3em] uppercase font-bold">
+                  <span className="text-[9px] text-white/50 tracking-wider uppercase font-bold">
                     {project.shortDesc}
                   </span>
-                  <span className="text-sm font-medium tracking-wide text-white/90">
+                  <span className="text-sm font-semibold tracking-wide text-white">
                     {project.title}
                   </span>
                 </div>
-                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02]">
-                  <span className="text-[10px] text-white/50">&rarr;</span>
+                <div className="w-8 h-8 border border-white/20 flex items-center justify-center bg-transparent group-active:bg-white/10 transition-colors">
+                  <span className="text-[10px] text-white/80">&rarr;</span>
                 </div>
               </Link>
             </motion.div>
@@ -177,8 +177,8 @@ export default function Mobile2DView() {
           variants={fadeUpVariant}
           className="px-6 mb-12 flex items-center gap-4"
         >
-          <h2 className="text-[9px] tracking-[0.4em] text-white/50 font-medium uppercase">Operatives</h2>
-          <div className="h-[1px] bg-white/10 flex-grow" />
+          <h2 className="text-[10px] tracking-widest text-white/60 font-semibold uppercase">Operatives</h2>
+          <div className="h-[1px] bg-white/20 flex-grow" />
         </motion.div>
 
         <div 
@@ -195,11 +195,11 @@ export default function Mobile2DView() {
                 viewport={{ once: true, margin: "-50px" }}
                 variants={fadeUpVariant}
                 key={member.id} 
-                className={`flex-shrink-0 w-[260px] snap-center flex flex-col gap-5 p-6 rounded-3xl border backdrop-blur-xl transition-all duration-500
-                  ${isActive ? 'bg-white/[0.05] border-white/10' : 'bg-black/40 border-white/5'}
+                className={`flex-shrink-0 w-[260px] snap-center flex flex-col gap-5 p-5 border transition-all duration-500 rounded-none
+                  ${isActive ? 'bg-black border-white/20' : 'bg-transparent border-white/5'}
                 `}
               >
-                <div className="w-full aspect-square rounded-2xl overflow-hidden relative border border-white/5 bg-[#050505]">
+                <div className="w-full aspect-square overflow-hidden relative border border-white/10 bg-[#050505]">
                   <Image 
                     src={member.image} 
                     alt={member.name} 
@@ -209,10 +209,10 @@ export default function Mobile2DView() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className={`text-lg tracking-tight mb-1 transition-colors ${isActive ? 'font-semibold text-white' : 'font-medium text-white/70'}`}>
+                  <h4 className={`text-lg tracking-tight mb-1 transition-colors ${isActive ? 'font-bold text-white' : 'font-semibold text-white/70'}`}>
                     {member.name}
                   </h4>
-                  <div className="text-[9px] uppercase tracking-[0.3em] font-medium mb-3 text-[#00f0ff]">
+                  <div className="text-[9px] uppercase tracking-widest font-bold mb-3 text-white/50">
                     {member.role}
                   </div>
                   <p className={`text-[0.65rem] leading-relaxed font-light line-clamp-3 transition-colors ${isActive ? 'text-white/70' : 'text-white/40'}`}>
@@ -236,18 +236,18 @@ export default function Mobile2DView() {
       </section>
 
       {/* FLOATING BOTTOM NAV */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-1.5 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl w-[90%] max-w-[320px]">
-        <a href="mailto:contact@rjindustries.dev" className="flex-1 py-3 text-center rounded-full text-[9px] tracking-[0.2em] font-medium text-white/60 hover:text-white transition-all active:bg-white/10">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-1 bg-black border border-white/20 w-[90%] max-w-[320px]">
+        <a href="mailto:contact@rjindustries.dev" className="flex-1 py-3 text-center text-[10px] tracking-wider font-semibold text-white/60 hover:text-white transition-all active:bg-white/10">
           CONTACT
         </a>
-        <div className="w-[1px] h-4 bg-white/10" />
-        <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" className="flex-1 py-3 text-center rounded-full text-[9px] tracking-[0.2em] font-medium text-white/60 hover:text-white transition-all active:bg-white/10">
+        <div className="w-[1px] h-4 bg-white/20" />
+        <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" className="flex-1 py-3 text-center text-[10px] tracking-wider font-semibold text-white/60 hover:text-white transition-all active:bg-white/10">
           LINKEDIN
         </a>
-        <div className="w-[1px] h-4 bg-white/10" />
+        <div className="w-[1px] h-4 bg-white/20" />
         <button 
           onClick={handleAudioToggle}
-          className="flex-1 py-3 text-center rounded-full text-[9px] tracking-[0.2em] font-bold text-[#00f0ff] hover:text-white bg-[#00f0ff]/10 transition-all active:bg-white/10"
+          className="flex-1 py-3 text-center text-[10px] tracking-wider font-bold text-white hover:text-white bg-white/5 transition-all active:bg-white/20"
         >
           {audioMuted ? "SOUND OFF" : "SOUND ON"}
         </button>

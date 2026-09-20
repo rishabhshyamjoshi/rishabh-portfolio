@@ -327,8 +327,8 @@ export default function Scene() {
     <div style={{ position: "fixed", inset: 0, zIndex: 0, background: "#020202" }}>
       <Canvas
         camera={{ position: [0, 0, 100], fov: 60 }}
-        gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
-        dpr={[1, 1]}
+        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        dpr={[1, 2]}
       >
         <color attach="background" args={["#050505"]} />
         {/* NO fog — it was eating Mars at distance 40! */}
@@ -352,17 +352,11 @@ export default function Scene() {
         <FooterScreen scrollProgress={scrollProgress} />
         <MovementFX scrollProgress={scrollProgress} />
         
-        <EffectComposer multisampling={0}>
+        <EffectComposer multisampling={4}>
           <Bloom 
-            luminanceThreshold={0.5} 
+            luminanceThreshold={0.6} 
             luminanceSmoothing={0.9} 
-            intensity={0.6} 
-          />
-          <ChromaticAberration 
-            blendFunction={BlendFunction.NORMAL}
-            offset={new THREE.Vector2(0.0005, 0.0005)} 
-            radialModulation={false}
-            modulationOffset={0}
+            intensity={0.3} 
           />
           <Noise 
             premultiply 
