@@ -6,7 +6,9 @@ import * as THREE from "three";
 import { AudioController } from "../utils/AudioController";
 import { useThemeColors } from "../hooks/useThemeColors";
 
-export default function AudioReactiveStars({ count = 1500 }) {
+import type { MutableRefObject } from "react";
+
+export default function AudioReactiveStars({ count = 1500, scrollSpeedRef }: { count?: number, scrollSpeedRef?: MutableRefObject<number> }) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const theme = useThemeColors();
@@ -18,7 +20,7 @@ export default function AudioReactiveStars({ count = 1500 }) {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       // Random spherical distribution
-      const r = 60 + Math.random() * 100; 
+      const r = 60 + Math.random() * 30; 
       const theta = 2 * Math.PI * Math.random();
       const phi = Math.acos(2 * Math.random() - 1);
       
@@ -26,9 +28,8 @@ export default function AudioReactiveStars({ count = 1500 }) {
       const y = r * Math.sin(phi) * Math.sin(theta);
       const z = r * Math.cos(phi);
 
-      // Clamp 80% of the stars to the home screen section (X between -40 and 40)
-      // so they don't clutter the project/team sections.
-      if (i < count * 0.8) {
+      // Only 8% of stars are in the deep spherical background (was 20%)
+      if (i < count * 0.92) {
         x = (Math.random() - 0.5) * 80;
       }
       
@@ -53,6 +54,7 @@ export default function AudioReactiveStars({ count = 1500 }) {
       uAudioData: { value: new THREE.Vector3(0, 0, 0) }, // Low, Mid, High
       uAudioOverall: { value: 0 },
       uColor: { value: new THREE.Color("#00f0ff") },
+      uScrollSpeed: { value: 0 }, // 0 = idle, 1 = fast scroll
     }),
     []
   );
@@ -92,6 +94,11 @@ export default function AudioReactiveStars({ count = 1500 }) {
     currentAudio.lerp(new THREE.Vector3(low, mid, high), 0.2);
     
     materialRef.current.uniforms.uAudioOverall.value += (overall - materialRef.current.uniforms.uAudioOverall.value) * 0.1;
+    
+    // Smoothly push scroll speed into shader (clamped 0-1) — read from ref, no re-render
+    const rawSpeed = scrollSpeedRef ? scrollSpeedRef.current : 0;
+    const targetScrollSpeed = Math.min(rawSpeed * 10, 1.0);
+    materialRef.current.uniforms.uScrollSpeed.value += (targetScrollSpeed - materialRef.current.uniforms.uScrollSpeed.value) * 0.1;
   });
 
   return (
@@ -109,6 +116,7 @@ export default function AudioReactiveStars({ count = 1500 }) {
         vertexShader={`
           uniform float uTime;
           uniform float uAudioOverall;
+          uniform float uScrollSpeed;
           attribute float size;
           varying float vAlpha;
           varying vec3 vPos;
@@ -120,18 +128,19 @@ export default function AudioReactiveStars({ count = 1500 }) {
             // Faster but subtler twinkle
             float twinkle = sin(uTime * 3.0 + position.x * 0.1) * 0.4 + 0.6;
             
-            // Modest boost based on overall audio
-            float audioBoost = 1.0 + (uAudioOverall * 1.5);
+            // Modest boost based on overall audio — reduce 60% when scrolling (was 30%)
+            float glowMultiplier = 1.0 - (uScrollSpeed * 0.6);
+            float audioBoost = (1.0 + (uAudioOverall * 1.65)) * glowMultiplier;
             
             // Prevent extreme size explosion when passing through stars by clamping the minimum distance
             float distance = max(-mvPosition.z, 25.0);
             
             // Scaled up by 200 for proper visibility since base sizes are much smaller
-            gl_PointSize = size * (200.0 / distance) * audioBoost * twinkle;
+            gl_PointSize = size * (220.0 / distance) * audioBoost * twinkle;
             gl_Position = projectionMatrix * mvPosition;
             
-            // Opacity increases slightly with audio
-            vAlpha = twinkle * (0.6 + (uAudioOverall * 0.8));
+            // Opacity also reduced 30% when scrolling
+            vAlpha = twinkle * (0.66 + (uAudioOverall * 0.8)) * glowMultiplier;
           }
         `}
         fragmentShader={`

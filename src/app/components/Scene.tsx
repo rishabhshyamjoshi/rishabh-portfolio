@@ -14,6 +14,7 @@ import FooterScreen from "./FooterScreen";
 import ProjectDetailModal from "./ProjectDetailModal";
 import { AudioController } from "../utils/AudioController";
 import AudioReactiveStars from "./AudioReactiveStars";
+import VideoModal from "./VideoModal";
 
 function CameraController({ setScrollProgress, activeProject }: { setScrollProgress: (v: number) => void, activeProject: any }) {
   const { camera, pointer } = useThree();
@@ -318,6 +319,16 @@ function MovementFX({ scrollProgress }: { scrollProgress: number }) {
 export default function Scene() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeProject, setActiveProject] = useState<any>(null);
+  const prevScrollProgress = useRef(0);
+  const smoothScrollSpeed = useRef(0);
+
+  // Track scroll speed — using a ref so it NEVER triggers a React re-render
+  const handleScrollProgress = (v: number) => {
+    const delta = Math.abs(v - prevScrollProgress.current);
+    prevScrollProgress.current = v;
+    smoothScrollSpeed.current += (delta - smoothScrollSpeed.current) * 0.15;
+    setScrollProgress(v);
+  };
 
   const handleReturn = () => {
     setActiveProject(null);
@@ -328,7 +339,7 @@ export default function Scene() {
       <Canvas
         camera={{ position: [0, 0, 100], fov: 60 }}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
       >
         <color attach="background" args={["#050505"]} />
         {/* NO fog — it was eating Mars at distance 40! */}
@@ -338,9 +349,9 @@ export default function Scene() {
         <directionalLight position={[-10, 5, -10]} intensity={1.2} color="#ffccaa" />
         <directionalLight position={[0, -10, 5]} intensity={0.8} color="#6688cc" />
         
-        <CameraController setScrollProgress={setScrollProgress} activeProject={activeProject} />
+        <CameraController setScrollProgress={handleScrollProgress} activeProject={activeProject} />
         
-        <AudioReactiveStars count={2500} />
+        <AudioReactiveStars count={1300} scrollSpeedRef={smoothScrollSpeed} />
         <Environment />
         
         <Suspense fallback={null}>
@@ -352,11 +363,11 @@ export default function Scene() {
         <FooterScreen scrollProgress={scrollProgress} />
         <MovementFX scrollProgress={scrollProgress} />
         
-        <EffectComposer multisampling={4}>
+        <EffectComposer multisampling={0}>
           <Bloom 
             luminanceThreshold={0.6} 
             luminanceSmoothing={0.9} 
-            intensity={0.3} 
+            intensity={0.33} 
           />
           <Noise 
             premultiply 
@@ -369,32 +380,44 @@ export default function Scene() {
       
       {activeProject && (
         <>
-          <ProjectDetailModal item={activeProject} onClose={handleReturn} />
-          <button
-            onClick={handleReturn}
-            style={{
-              position: "absolute",
-              bottom: "3rem",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 100,
-              padding: "0.8rem 2rem",
-              background: "rgba(0,0,0,0.6)",
-              color: "#fff",
-              border: "1px solid rgba(255,255,255,0.2)",
-              fontFamily: "'Space Mono', monospace",
-              cursor: "pointer",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              backdropFilter: "blur(10px)",
-              borderRadius: "4px",
-              fontSize: "0.7rem",
-              transition: "all 0.3s ease"
-            }}
-            data-hover
-          >
-            ← BACK
-          </button>
+          {activeProject.title ? (
+            <VideoModal 
+              onClose={handleReturn} 
+              url={activeProject.link} 
+              title={activeProject.title} 
+              subtitle={activeProject.shortDesc} 
+              videoSrc={`/${activeProject.id}.mp4`} 
+            />
+          ) : (
+            <>
+              <ProjectDetailModal item={activeProject} onClose={handleReturn} />
+              <button
+                onClick={handleReturn}
+                style={{
+                  position: "absolute",
+                  bottom: "3rem",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 100,
+                  padding: "0.8rem 2rem",
+                  background: "rgba(0,0,0,0.6)",
+                  color: "#fff",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  fontFamily: "'Space Mono', monospace",
+                  cursor: "pointer",
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "4px",
+                  fontSize: "0.7rem",
+                  transition: "all 0.3s ease"
+                }}
+                data-hover
+              >
+                ← BACK
+              </button>
+            </>
+          )}
         </>
       )}
     </div>

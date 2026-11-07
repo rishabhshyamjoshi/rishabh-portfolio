@@ -19,12 +19,12 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://rjindustries.dev'),
-  title: "RJ Industries | Aerospace, Defense, and Advanced Manufacturing",
-  description: "RJ Industries is a pioneer in aerospace, defense, and advanced manufacturing. Innovation beyond limits. We build the future.",
-  keywords: ["rjindustries", "RJ Industries", "aerospace", "defense", "advanced manufacturing", "Rishabh Joshi", "space tech", "innovation"],
-  authors: [{ name: "RJ Industries" }],
-  creator: "RJ Industries",
-  publisher: "RJ Industries",
+  title: "rjindustries.dev | Aerospace, Defense, and Advanced Manufacturing",
+  description: "rjindustries.dev — pioneering aerospace, defense, PCB manufacturing, and web development. Innovation beyond limits. We build the future.",
+  keywords: ["rjindustries", "rjindustries.dev", "RJ Industries", "aerospace", "defense", "PCB manufacturing", "web development", "advanced manufacturing", "Rishabh Joshi", "space tech", "innovation"],
+  authors: [{ name: "rjindustries.dev" }],
+  creator: "rjindustries.dev",
+  publisher: "rjindustries.dev",
   alternates: {
     canonical: "https://rjindustries.dev",
   },
@@ -40,10 +40,10 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "RJ Industries | Aerospace, Defense, and Advanced Manufacturing",
-    description: "RJ Industries is a pioneer in aerospace, defense, and advanced manufacturing. Innovation beyond limits.",
+    title: "rjindustries.dev | Aerospace, Defense, and Advanced Manufacturing",
+    description: "rjindustries.dev — pioneering aerospace, defense, PCB manufacturing, and web development. Innovation beyond limits.",
     url: "https://rjindustries.dev",
-    siteName: "RJ Industries",
+    siteName: "rjindustries.dev",
     images: [{
       url: "/og-image.png",
       width: 1200,
@@ -55,8 +55,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "RJ Industries | Aerospace, Defense, and Advanced Manufacturing",
-    description: "RJ Industries is a pioneer in aerospace, defense, and advanced manufacturing. Innovation beyond limits.",
+    title: "rjindustries.dev | Aerospace, Defense, and Advanced Manufacturing",
+    description: "rjindustries.dev — pioneering aerospace, defense, PCB manufacturing, and web development. Innovation beyond limits.",
     images: ["/og-image.png"],
   },
   verification: {
@@ -107,6 +107,8 @@ export default function RootLayout({
       "knowsAbout": [
         "Aerospace Engineering",
         "Defense Technology",
+        "PCB Manufacturing",
+        "Web Development",
         "Generative AI",
         "Advanced Manufacturing",
         "Game Development",
@@ -132,26 +134,39 @@ export default function RootLayout({
       </head>
       <body className="bg-black text-white overflow-hidden">
         <div className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }}>
-          <h1>RJ Industries - Aerospace, Defense, and Advanced Manufacturing</h1>
+          <h1>RJ Industries - Aerospace, Defense, PCB Manufacturing, and Web Development</h1>
           <p>
-            Welcome to RJ Industries, founded by Rishabh Joshi (also known as Rishabh Shyam Joshi). We are a pioneer in aerospace, defense, advanced manufacturing, and generative AI technologies. 
+            Welcome to RJ Industries, founded by Rishabh Joshi (also known as Rishabh Shyam Joshi). We are a pioneer in aerospace, defense, PCB manufacturing, advanced manufacturing, web development, and generative AI technologies. 
             Our mission is innovation beyond limits, building the future of humanity&apos;s capabilities.
           </p>
           <p>
-            <strong>About the Founder:</strong> Rishabh Joshi (Rishabh Shyam Joshi) is the Founder and CEO of RJ Industries. He is a software engineer, innovator, and entrepreneur dedicated to advancing cutting-edge technologies including robotics, generative AI, and defense engineering. He leads the development of the K.I.N.E.T.I.C Glasses and the RJ-A1 Chip.
+            <strong>About the Founder:</strong> Rishabh Joshi (Rishabh Shyam Joshi) is the Founder and CEO of RJ Industries. He is a software engineer, innovator, and entrepreneur dedicated to advancing cutting-edge technologies including robotics, generative AI, PCB design, web development, and defense engineering. He leads the development of the K.I.N.E.T.I.C Glasses and the RJ-A1 Chip.
           </p>
           <h2>Our Core Divisions</h2>
           <ul>
             <li>Aerospace Engineering - Next generation spacecraft and aviation systems.</li>
             <li>Defense Technology - Advanced tactical systems and threat mitigation.</li>
+            <li>PCB Manufacturing - High-precision printed circuit board fabrication and assembly.</li>
+            <li>Web Development - Cutting-edge software, 3D web experiences, and scalable digital architectures.</li>
             <li>Advanced Manufacturing - Precision engineering and industrial automation.</li>
             <li>Consumer AI - Featuring the K.I.N.E.T.I.C Glasses powered by the proprietary RJ-A1 Chip, delivering high-performance, private, offline-capable AI models directly to your visual field.</li>
           </ul>
+          <nav>
+            <h2>Site Navigation</h2>
+            <ul>
+              <li><a href="/">Home / Terminal</a></li>
+              <li><a href="/project/1">Projects</a></li>
+              <li><a href="/academy">Academy</a></li>
+              <li><a href="/product">Products</a></li>
+              <li><a href="/team">Team & AI Agents</a></li>
+            </ul>
+          </nav>
           <h2>Featured Projects</h2>
           <ul>
-            <li>K.I.N.E.T.I.C Glasses: Consumer AR / AI Division.</li>
-            <li>NAM EAS Portfolio: Professional Portfolio Website built with React, WebGL, and Three.js.</li>
-            <li>RENDERING DAYLIGHT: Web-Based Graphics Experiment exploring real-time rendering and light scattering.</li>
+            <li><a href="/project/1">K.I.N.E.T.I.C Glasses</a>: Consumer AR / AI Division.</li>
+            <li><a href="https://www.mumukshugame.com">MUMUKSHU GAME</a>: Cosmic Action Adventure Universe built with Unreal Engine 5.</li>
+            <li><a href="/team">QUANTUM ENCRYPTION</a>: Unhackable Data Arrays using state-of-the-art quantum key distribution.</li>
+            <li><a href="https://rishabhshyamjoshi.github.io/Rendering-daylight/">RENDERING DAYLIGHT</a>: Web-Based Graphics Experiment exploring real-time rendering and light scattering.</li>
           </ul>
         </div>
         <CustomCursor />

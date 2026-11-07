@@ -5,7 +5,9 @@ node_modules/
 
 # Next.js
 /.next/
+.next_locked_by_onedrive/
 /out/
+scratch/
 
 # Production
 /build

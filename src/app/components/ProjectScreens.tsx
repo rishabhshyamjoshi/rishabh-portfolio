@@ -3,6 +3,7 @@
 import { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Edges, useTexture } from "@react-three/drei";
+import { useRouter } from "next/navigation";
 import CanvasText from "./CanvasText";
 import { useThemeColors } from "../hooks/useThemeColors";
 import * as THREE from "three";
@@ -15,6 +16,11 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
   const scaleRef = useRef<THREE.Group>(null);
   const bgGroupRef = useRef<THREE.Group>(null);
   const fgGroupRef = useRef<THREE.Group>(null);
+  const contentGroupRef = useRef<THREE.Group>(null);
+  
+  const { camera } = useThree();
+  const cardNormal = useMemo(() => new THREE.Vector3(), []);
+  const camToCard = useMemo(() => new THREE.Vector3(), []);
   
   const glassMaterialRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const decoLineRef = useRef<THREE.MeshBasicMaterial>(null);
@@ -23,9 +29,11 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
   
   const [hovered, setHovered] = useState(false);
   const theme = useThemeColors();
+  const router = useRouter();
   
   const currentTime = useRef(0);
   const hoverFactor = useRef(0);
+  const scaleVec = useRef(new THREE.Vector3(1, 1, 1));
 
   const texture = useTexture(project.image);
 
@@ -97,7 +105,7 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
       `,
       transparent: true,
       depthWrite: false,
-      side: THREE.DoubleSide,
+      side: THREE.FrontSide,
     });
   }, [texture]);
 
@@ -129,7 +137,8 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
     // Parallax logic
     hoverFactor.current = THREE.MathUtils.lerp(hoverFactor.current, hovered ? 1 : 0, 0.1);
     const targetScale = hovered ? 1.05 : 1.0;
-    scaleRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.15);
+    scaleVec.current.setScalar(targetScale);
+    scaleRef.current.scale.lerp(scaleVec.current, 0.15);
 
     if (bgGroupRef.current) {
       bgGroupRef.current.position.z = THREE.MathUtils.lerp(bgGroupRef.current.position.z, hovered ? -0.8 : -0.05, 0.1);
@@ -158,6 +167,15 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
           titleMaterialRef.current.color.set(theme.secondary);
         }
       }
+    }
+    // === BACK-FACE CULLING: Hide entire card when camera is behind it ===
+    if (scaleRef.current && meshRef.current) {
+      // Get the card's world-space forward normal (local Z axis = [0, 0, 1])
+      meshRef.current.getWorldDirection(cardNormal);
+      // Get vector from card to camera
+      camToCard.subVectors(camera.position, meshRef.current.position);
+      // If dot product is negative, camera is behind the card
+      scaleRef.current.visible = camToCard.dot(cardNormal) > 0;
     }
   });
 
@@ -202,6 +220,7 @@ function Screen({ project, scrollProgress, onProjectClick }: { project: ProjectD
               envMapIntensity={3}
               clearcoat={1}
               clearcoatRoughness={0.05}
+              side={THREE.FrontSide}
             />
             <Edges 
               ref={edgesRef}

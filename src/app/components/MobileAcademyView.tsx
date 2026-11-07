@@ -5,21 +5,18 @@ import Link from "next/link";
 import { AudioController } from "../utils/AudioController";
 
 export default function MobileAcademyView() {
-  const [audioMuted, setAudioMuted] = useState(true);
-
   useEffect(() => {
     document.body.style.overflowY = "auto";
+    try {
+      const audio = AudioController.getInstance();
+      if (audio.isInitialized && !audio.isMuted) {
+        audio.toggleMute();
+      }
+    } catch (e) {}
     return () => {
       document.body.style.overflowY = "hidden";
     };
   }, []);
-
-  const toggleAudio = async () => {
-    try {
-      const muted = await AudioController.getInstance().toggleMute();
-      setAudioMuted(muted);
-    } catch (e) {}
-  };
 
   return (
     <div className="bg-[#030303] text-white min-h-screen w-full font-sans overflow-x-hidden relative flex flex-col items-center justify-center p-6 text-center">
@@ -40,13 +37,9 @@ export default function MobileAcademyView() {
         >
           &larr; CORE
         </Link>
-        <button
-          onClick={toggleAudio}
-          className="text-[9px] tracking-[0.2em] font-medium text-white/70 hover:text-white transition-all flex items-center gap-2"
-        >
-          <span className={`w-1.5 h-1.5 rounded-full ${audioMuted ? "bg-white/20" : "bg-white animate-pulse"}`} />
-          {audioMuted ? "SOUND OFF" : "SOUND ON"}
-        </button>
+        <span className="text-[8px] tracking-[0.25em] font-medium text-white/40 uppercase">
+          ACADEMY
+        </span>
       </header>
 
       {/* CONTENT */}

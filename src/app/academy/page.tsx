@@ -149,8 +149,8 @@ function CinematicCameraRig() {
       // Phase 1: Deep Space Approach (Front Side) — Camera zooms in from 65 to 15
       const p = offset / 0.3;
       const easeP = Math.pow(p, 0.8);
-      radius = THREE.MathUtils.lerp(65, 15, easeP);
-      elevation = THREE.MathUtils.lerp(20, 2, easeP);
+      radius = THREE.MathUtils.lerp(14, 15, easeP);
+      elevation = THREE.MathUtils.lerp(0, 2, easeP);
       angle = THREE.MathUtils.lerp(0, Math.PI * 0.4, easeP);
     } else if (offset < 0.7) {
       // Phase 2: Close-up 360° Orbital Tour around Singularity
@@ -178,43 +178,53 @@ function CinematicCameraRig() {
     const parallaxX = state.pointer.x * 1.5;
     const parallaxY = state.pointer.y * 1.5;
 
-    const camX = Math.sin(angle) * radius + parallaxX;
-    const camZ = Math.cos(angle) * radius;
-    const camY = elevation + parallaxY;
+    // ═══ GRAVITATIONAL TURBULENCE & INWARD DRAW SHAKE ═══
+    // Intensity rises as the camera stays near the black hole event horizon
+    const proximity = Math.max(0, Math.min(1, (22 - radius) / 9)); // 0 when far, 1 when close
+    const time = state.clock.getElapsedTime();
+
+    // High-frequency shudder / turbulent gravitational shake
+    const shakeIntensity = 0.045 * proximity;
+    const shakeX = (Math.sin(time * 38.0) * 0.7 + Math.sin(time * 79.0) * 0.3) * shakeIntensity;
+    const shakeY = (Math.cos(time * 43.0) * 0.7 + Math.sin(time * 67.0) * 0.3) * (shakeIntensity * 0.85);
+    const shakeZ = (Math.sin(time * 31.0) * 0.7 + Math.cos(time * 59.0) * 0.3) * shakeIntensity;
+
+    // Inward gravitational pull tugging toward singularity
+    const inwardPull = 0.4 * proximity;
+    const effectiveRadius = Math.max(12.5, radius - inwardPull);
+
+    const camX = Math.sin(angle) * effectiveRadius + parallaxX + shakeX;
+    const camZ = Math.cos(angle) * effectiveRadius + shakeZ;
+    const camY = elevation + parallaxY + shakeY;
 
     const targetCamPos = new THREE.Vector3(camX, camY, camZ);
 
     state.camera.position.lerp(targetCamPos, 0.08);
-    state.camera.lookAt(0, 0, 0);
 
-    // Modulate audio depth/filter based on scroll proximity (deeper when close, fading when far)
-    try {
-      const proximityFactor = 1 - Math.min(1, Math.abs(radius - 15) / 50);
-      AudioController.getInstance().applyMovementEffect(proximityFactor);
-    } catch (e) {}
+    // Singularity center with micro-tremor
+    state.camera.lookAt(shakeX * 0.25, shakeY * 0.25, shakeZ * 0.25);
+
+    // Revert FOV to stable cinematic perspective (no extreme distortion)
+    const cam = state.camera as THREE.PerspectiveCamera;
+    if (Math.abs(cam.fov - 45) > 0.1) {
+      cam.fov = THREE.MathUtils.lerp(cam.fov, 45, 0.1);
+      cam.updateProjectionMatrix();
+    }
   });
 
   return null;
 }
 
 export default function AcademyPage() {
-  const [audioMuted, setAudioMuted] = useState(true);
-
+  // Ensure audio from core is silenced while in Academy
   useEffect(() => {
-    const initAudio = async () => {
-      try {
-        const audio = AudioController.getInstance();
-        await audio.init();
-        setAudioMuted(audio.isMuted);
-      } catch (e) {}
-    };
-    initAudio();
+    try {
+      const audio = AudioController.getInstance();
+      if (audio.isInitialized && !audio.isMuted) {
+        audio.toggleMute();
+      }
+    } catch (e) {}
   }, []);
-
-  const toggleAudio = async () => {
-    const muted = await AudioController.getInstance().toggleMute();
-    setAudioMuted(muted);
-  };
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -237,13 +247,6 @@ export default function AcademyPage() {
         </Link>
         <div className="flex items-center gap-6 text-[0.55rem] tracking-[0.3em] text-white/60">
           <span>EVENT HORIZON // 360° TOUR</span>
-          <button
-            onClick={toggleAudio}
-            className="flex items-center gap-2 border border-cyan-500/40 px-3 py-1 rounded-full text-cyan-400 hover:bg-cyan-500/20 transition-all duration-300"
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${audioMuted ? "bg-red-500" : "bg-cyan-400 animate-pulse"}`} />
-            AUDIO: {audioMuted ? "MUTED" : "ACTIVE"}
-          </button>
         </div>
       </div>
 
@@ -259,7 +262,7 @@ export default function AcademyPage() {
       {/* ═══ 3D CANVAS FULLSCREEN ═══ */}
       <div className="absolute inset-0 z-0">
         <Canvas
-          camera={{ position: [0, 30, 90], fov: 45 }}
+          camera={{ position: [0, 0, 15], fov: 45 }}
           gl={{ antialias: true }}
         >
           {/* Deep Space Background Stars */}
