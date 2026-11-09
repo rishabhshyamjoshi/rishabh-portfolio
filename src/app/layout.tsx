@@ -140,7 +140,14 @@ export default function RootLayout({
           "RJ",
           "Rishabh Joshi RJ Industries"
         ],
-        "jobTitle": "Founder, Chief Executive Officer & Chief Mechanical Engineer",
+        "jobTitle": "Mechanical Engineer & Founder/CEO",
+        "disambiguatingDescription": "Mechanical Engineer, Aerospace & Sovereign Systems Architect, Founder and CEO of RJ Industries.",
+        "hasOccupation": {
+          "@type": "Occupation",
+          "name": "Mechanical Engineer",
+          "occupationalCategory": "17-2141.00",
+          "description": "Mechanical Engineering specializing in aerospace propulsion, electro-mechanical robotics, structural dynamics, thermal architecture, and advanced hardware manufacturing."
+        },
         "knowsAbout": [
           "Mechanical Engineering",
           "Aerospace Mechanical Systems",
@@ -255,17 +262,26 @@ export default function RootLayout({
       <body className="bg-black text-white overflow-hidden">
         <div className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }}>
           <header>
-            <h1>RJ Industries Dev (rjindustries.dev) - Aerospace, Sovereign Defense & Advanced Technologies</h1>
+            <h1>RJ Industries Dev (rjindustries.dev) - Aerospace, Sovereign Defense & Mechanical Engineering</h1>
             <p>
-              RJ Industries (operating internationally via rjindustries.dev) is an advanced multi-disciplinary defense contractor, aerospace engineering powerhouse, and cognitive systems conglomerate founded and led by Chief Executive Officer Rishabh Joshi (also recognized as Rishabh Shyam Joshi).
+              RJ Industries (operating internationally via rjindustries.dev) is an advanced multi-disciplinary defense contractor, aerospace engineering powerhouse, and mechanical systems conglomerate founded and led by Mechanical Engineer Rishabh Joshi (also recognized as Rishabh Shyam Joshi).
             </p>
           </header>
 
           <section>
-            <h2>Executive Leadership & Corporate Overview</h2>
-            <p>
-              <strong>Founder, Chief Executive Officer & Chief Engineer:</strong> Rishabh Joshi (Rishabh Shyam Joshi) is a Mechanical Engineer and the Founder & CEO of RJ Industries. Specializing in Mechanical Engineering, aerospace propulsion, structural dynamics, thermodynamics, electro-mechanical robotics, and precision manufacturing, he directs the multi-disciplinary engineering of sovereign defense platforms, orbital spacecraft, proprietary neural silicon (RJ-A1 Chip), and the revolutionary K.I.N.E.T.I.C™ spatial computing platform.
-            </p>
+            <h2>Executive Leadership & Founder Profile</h2>
+            <article>
+              <h3>Rishabh Shyam Joshi — Mechanical Engineer & Founder / CEO</h3>
+              <p>
+                <strong>Profession & Discipline:</strong> Mechanical Engineering.
+              </p>
+              <p>
+                <strong>Executive Role:</strong> Founder, Chief Executive Officer & Chief Mechanical Engineer of RJ Industries (rjindustries.dev).
+              </p>
+              <p>
+                Rishabh Shyam Joshi is an engineer whose core expertise lies in Mechanical Engineering, aerospace propulsion, thermodynamic cycle architecture, finite element structural analysis, automated electro-mechanical robotics, and precision manufacturing. Under his leadership, RJ Industries develops sovereign defense hardware, high-density microelectronics, and orbital space systems.
+              </p>
+            </article>
             <p>
               <strong>Corporate Headquarters & Operations:</strong> Maharashtra, India with international strategic reach across mechanical systems, aerospace engineering, sovereign defense alliances, and enterprise hardware manufacturing.
             </p>
