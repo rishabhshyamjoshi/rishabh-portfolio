@@ -20,10 +20,10 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL('https://rjindustries.dev'),
   title: {
-    default: "RJ Industries Dev | Aerospace, Sovereign Defense & Advanced Technologies (rjindustries.dev)",
+    default: "RJ Industries Dev | Aerospace, Sovereign Defense & Mechanical Engineering (rjindustries.dev)",
     template: "%s | RJ Industries (rjindustries.dev)"
   },
-  description: "RJ Industries (rjindustries.dev) is a next-generation aerospace engineering, sovereign defense technology, and cognitive computing conglomerate. Pioneering orbital spacecraft architectures, tactical defense platforms, high-density microelectronics fabrication, quantum encryption arrays, and the K.I.N.E.T.I.C™ neural interface powered by the proprietary RJ-A1 processor. Founded and led by Rishabh Joshi.",
+  description: "RJ Industries (rjindustries.dev) is an advanced aerospace engineering, sovereign defense technology, and mechanical systems conglomerate founded and led by Mechanical Engineer Rishabh Joshi (Rishabh Shyam Joshi). Pioneering orbital spacecraft architectures, tactical defense platforms, high-density microelectronics, electro-mechanical robotics, and the K.I.N.E.T.I.C™ neural interface.",
   keywords: [
     "rj industries dev",
     "rjindustries.dev",
@@ -33,7 +33,10 @@ export const metadata: Metadata = {
     "rjindustries",
     "Rishabh Joshi",
     "Rishabh Shyam Joshi",
-    "Rishabh Joshi RJ Industries",
+    "Rishabh Shyam Joshi Mechanical Engineering",
+    "Rishabh Joshi Mechanical Engineer",
+    "mechanical engineering",
+    "defense mechanical engineering",
     "aerospace engineering",
     "defense technology",
     "sovereign defense systems",
@@ -43,16 +46,17 @@ export const metadata: Metadata = {
     "advanced manufacturing",
     "precision microelectronics",
     "high-density PCB fabrication",
+    "electro-mechanical systems",
+    "robotics and kinematics",
     "K.I.N.E.T.I.C Glasses",
     "RJ-A1 Chip",
     "RJ-A1 neural processor",
     "quantum encryption arrays",
     "autonomous cyber-physical systems",
-    "deep tech conglomerate",
-    "military aerospace tech"
+    "deep tech conglomerate"
   ],
-  authors: [{ name: "RJ Industries Dev", url: "https://rjindustries.dev" }, { name: "Rishabh Joshi", url: "https://www.linkedin.com/in/rishabhshyamjoshi/" }],
-  creator: "Rishabh Joshi (Rishabh Shyam Joshi)",
+  authors: [{ name: "RJ Industries Dev", url: "https://rjindustries.dev" }, { name: "Rishabh Shyam Joshi (Mechanical Engineering)", url: "https://www.linkedin.com/in/rishabhshyamjoshi/" }],
+  creator: "Rishabh Joshi (Rishabh Shyam Joshi - Mechanical Engineer)",
   publisher: "RJ Industries Dev",
   alternates: {
     canonical: "https://rjindustries.dev",
@@ -128,8 +132,27 @@ export default function RootLayout({
         "@type": "Person",
         "@id": "https://rjindustries.dev/#founder",
         "name": "Rishabh Joshi",
-        "alternateName": ["Rishabh Shyam Joshi", "RSJ", "RJ", "Rishabh Joshi RJ Industries"],
-        "jobTitle": "Founder, Chief Executive Officer & Chief Architect",
+        "alternateName": [
+          "Rishabh Shyam Joshi",
+          "Rishabh Shyam Joshi Mechanical Engineering",
+          "Rishabh Joshi Mechanical Engineer",
+          "RSJ",
+          "RJ",
+          "Rishabh Joshi RJ Industries"
+        ],
+        "jobTitle": "Founder, Chief Executive Officer & Chief Mechanical Engineer",
+        "knowsAbout": [
+          "Mechanical Engineering",
+          "Aerospace Mechanical Systems",
+          "Electro-Mechanical Robotics",
+          "Structural Dynamics & Finite Element Analysis",
+          "Thermodynamics & Heat Exchanger Architecture",
+          "Precision Machining & Advanced Manufacturing",
+          "Orbital Propulsion & Ballistics",
+          "Sovereign Tactical Defense Hardware",
+          "Optical & Spatial Computing Enclosures",
+          "Electronic Hardware Packaging & Multilayer PCB Fabrication"
+        ],
         "url": "https://www.linkedin.com/in/rishabhshyamjoshi/",
         "sameAs": [
           "https://github.com/rishabhshyamjoshi",
@@ -156,7 +179,9 @@ export default function RootLayout({
         "https://x.com/rishabhshyamjoshi"
       ],
       "knowsAbout": [
+        "Mechanical Engineering",
         "Aerospace Systems Engineering",
+        "Electro-Mechanical Systems & Robotics",
         "Orbital Mechanics & Deep-Space Trajectories",
         "Sovereign Tactical Defense Systems",
         "Electronic Warfare Mitigation",
@@ -239,10 +264,10 @@ export default function RootLayout({
           <section>
             <h2>Executive Leadership & Corporate Overview</h2>
             <p>
-              <strong>Chief Executive Officer & Chief Architect:</strong> Rishabh Joshi (Rishabh Shyam Joshi). Under his visionary leadership, RJ Industries engineers sovereign defense technologies, orbital spaceflight vehicles, proprietary neural silicon (RJ-A1 Chip), military-grade multilayer PCB architectures, and the breakthrough K.I.N.E.T.I.C™ spatial computing platform.
+              <strong>Founder, Chief Executive Officer & Chief Engineer:</strong> Rishabh Joshi (Rishabh Shyam Joshi) is a Mechanical Engineer and the Founder & CEO of RJ Industries. Specializing in Mechanical Engineering, aerospace propulsion, structural dynamics, thermodynamics, electro-mechanical robotics, and precision manufacturing, he directs the multi-disciplinary engineering of sovereign defense platforms, orbital spacecraft, proprietary neural silicon (RJ-A1 Chip), and the revolutionary K.I.N.E.T.I.C™ spatial computing platform.
             </p>
             <p>
-              <strong>Corporate Headquarters & Operations:</strong> Maharashtra, India with international strategic reach across aerospace, sovereign defense alliances, and enterprise hardware manufacturing.
+              <strong>Corporate Headquarters & Operations:</strong> Maharashtra, India with international strategic reach across mechanical systems, aerospace engineering, sovereign defense alliances, and enterprise hardware manufacturing.
             </p>
           </section>
 
@@ -273,9 +298,9 @@ export default function RootLayout({
               </p>
             </article>
             <article>
-              <h3>5. Digital Architectures & Cyber-Physical Systems Division</h3>
+              <h3>5. Electro-Mechanical Systems & Robotics Division</h3>
               <p>
-                Massively scalable 3D spatial simulation environments, defense-grade cloud command consoles, and real-time GPU-accelerated graphic telemetry.
+                High-precision mechanical engineering, robotic actuators, automated kinematic simulation, structural mechanics, and GPU-accelerated telemetry systems.
               </p>
             </article>
           </section>

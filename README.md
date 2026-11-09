@@ -1,6 +1,6 @@
-# RJ Industries — Rishabh Joshi Portfolio
+# RJ Industries — Rishabh Shyam Joshi (Mechanical Engineering & Advanced Technologies)
 
-> Tony Stark meets AI Education. Built with Next.js 14 · Framer Motion · Tailwind CSS.
+> Sovereign Defense Systems, Aerospace Propulsion & Mechanical Engineering. Built with Next.js 14 · Three.js · Tailwind CSS.
 
 ---
 
