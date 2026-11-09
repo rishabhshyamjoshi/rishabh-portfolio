@@ -383,7 +383,7 @@ export default function Scene() {
           {activeProject.title ? (
             <VideoModal 
               onClose={handleReturn} 
-              url={activeProject.link} 
+              url={activeProject.externalLink || activeProject.link} 
               title={activeProject.title} 
               subtitle={activeProject.shortDesc} 
               videoSrc={`/${activeProject.id}.mp4`} 

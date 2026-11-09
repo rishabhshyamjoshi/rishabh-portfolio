@@ -25,15 +25,15 @@ export const PROJECTS: ProjectData[] = [
   },
   {
     id: 2,
-    title: "NAM EAS PORTFOLIO",
-    shortDesc: "Professional Portfolio Website",
-    longDesc: "A complete portfolio website engineered for performance and immersive user experience. Discover the work and capabilities of NAM EAS.",
-    techStack: ["React", "WebGL", "Three.js"],
-    angle: Math.PI / 3, // 60 degrees
+    title: "KRIPA DESIGN STUDIO",
+    shortDesc: "Interior & Architectural Studio",
+    longDesc: "A complete digital showcase engineered for Kripa Design Studio. Demonstrating bespoke interior spaces, architectural aesthetics, and refined contemporary design portfolios.",
+    techStack: ["Next.js", "React", "Three.js", "Tailwind CSS"],
+    angle: (Math.PI * 2) / 7,
     scale: [5, 3, 1],
-    link: "https://rj01.netlify.app",
-    externalLink: "https://rj01.netlify.app",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop", 
+    link: "https://kripa-delta.vercel.app/",
+    externalLink: "https://kripa-delta.vercel.app/",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop", 
   },
   {
     id: 3,
@@ -41,7 +41,7 @@ export const PROJECTS: ProjectData[] = [
     shortDesc: "Web-Based Graphics Experiment",
     longDesc: "An interactive graphics engine exploring real-time rendering, light scattering, and complex shading techniques directly in the browser.",
     techStack: ["WebGL", "GLSL", "Shaders"],
-    angle: (Math.PI * 2) / 3, // 120 degrees
+    angle: (Math.PI * 4) / 7,
     scale: [3, 2, 1],
     link: "https://rishabhshyamjoshi.github.io/Rendering-daylight/",
     externalLink: "https://rishabhshyamjoshi.github.io/Rendering-daylight/",
@@ -49,14 +49,15 @@ export const PROJECTS: ProjectData[] = [
   },
   {
     id: 4,
-    title: "CREATIVE DEVELOPMENT",
-    shortDesc: "Next-Gen UI/UX Engineering",
-    longDesc: "The internal design and engineering division of RJ Industries. We blend story, art, and cutting-edge web technologies to create immersive, award-winning digital experiences.",
-    techStack: ["GLSL Shaders", "React Three Fiber", "Zustand"],
-    angle: Math.PI, // 180 degrees
+    title: "EATSIFY",
+    shortDesc: "Culinary Ordering & Discovery Platform",
+    longDesc: "A next-generation digital food ordering and dining discovery platform. Engineered for seamless menu navigation, rapid checkout workflows, and modern gastronomy discovery.",
+    techStack: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+    angle: (Math.PI * 6) / 7,
     scale: [4, 3, 1],
-    link: "/project/4",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop", // Abstract liquid
+    link: "https://eatsify.vercel.app/",
+    externalLink: "https://eatsify.vercel.app/",
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop",
   },
   {
     id: 5,
@@ -64,11 +65,11 @@ export const PROJECTS: ProjectData[] = [
     shortDesc: "Cosmic Action Adventure Universe",
     longDesc: "An immersive gaming experience blending rich narrative lore, high-octane combat mechanics, and stunning visual worldbuilding. Discover the universe and play at www.mumukshugame.com.",
     techStack: ["Unreal Engine 5", "C++", "3D Shaders", "Game Physics"],
-    angle: (Math.PI * 4) / 3, // 240 degrees
+    angle: (Math.PI * 8) / 7,
     scale: [5, 3, 1],
     link: "https://www.mumukshugame.com",
     externalLink: "https://www.mumukshugame.com",
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop", // Futuristic gaming setup
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop",
   },
   {
     id: 6,
@@ -76,9 +77,21 @@ export const PROJECTS: ProjectData[] = [
     shortDesc: "Unhackable Data Arrays",
     longDesc: "State-of-the-art quantum key distribution network. Protecting RJ Industries' intellectual property and providing government-grade security for our defense contractors.",
     techStack: ["Quantum Mechanics", "Rust", "Cryptography"],
-    angle: (Math.PI * 5) / 3, // 300 degrees
+    angle: (Math.PI * 10) / 7,
     scale: [4, 3, 1],
     link: "/team",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop", // Matrix/Code
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop",
+  },
+  {
+    id: 7,
+    title: "RJ INDUSTRIES",
+    shortDesc: "Sovereign Systems & Defense Portal",
+    longDesc: "The official flagship portal of RJ Industries (rjindustries.dev). Architecting sovereign defense platforms, orbital aerospace vehicles, mechanical systems, and neural hardware.",
+    techStack: ["Next.js", "Three.js", "WebGL", "GLSL Shaders"],
+    angle: (Math.PI * 12) / 7,
+    scale: [5, 3, 1],
+    link: "https://rjindustries.dev",
+    externalLink: "https://rjindustries.dev",
+    image: "/og-image.png",
   }
 ];

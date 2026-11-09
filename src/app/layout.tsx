@@ -335,9 +335,12 @@ export default function RootLayout({
           <section>
             <h2>Featured Flagship Deployments</h2>
             <ul>
+              <li><strong>RJ INDUSTRIES:</strong> Flagship sovereign defense, aerospace engineering, and mechanical systems portal (<a href="https://rjindustries.dev">rjindustries.dev</a>).</li>
               <li><strong>K.I.N.E.T.I.C™ Spatial Computing Glasses:</strong> The pinnacle of wearable neural hardware powered by the RJ-A1 Chip.</li>
+              <li><strong>KRIPA DESIGN STUDIO:</strong> Architectural & interior design digital presence (<a href="https://kripa-delta.vercel.app/">kripa-delta.vercel.app</a>).</li>
+              <li><strong>EATSIFY:</strong> Next-generation culinary ordering and discovery platform (<a href="https://eatsify.vercel.app/">eatsify.vercel.app</a>).</li>
+              <li><strong>MUMUKSHU COSMIC UNIVERSE:</strong> State-of-the-art interactive cosmic simulation powered by high-fidelity graphics computing (<a href="https://www.mumukshugame.com">mumukshugame.com</a>).</li>
               <li><strong>QUANTUM ENCRYPTION ARRAYS:</strong> Unhackable sovereign data transmission leveraging quantum state superposition.</li>
-              <li><strong>MUMUKSHU COSMIC UNIVERSE:</strong> State-of-the-art interactive cosmic simulation powered by high-fidelity graphics computing.</li>
               <li><strong>RENDERING DAYLIGHT:</strong> Next-generation real-time photon scattering and atmospheric ray-tracing research.</li>
             </ul>
           </section>
