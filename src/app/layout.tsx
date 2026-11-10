@@ -180,6 +180,7 @@ export default function RootLayout({
         "availableLanguage": ["English", "Hindi"]
       },
       "sameAs": [
+        "https://www.crunchbase.com/organization/rj-industries-dev",
         "https://www.linkedin.com/company/rj-industries01/",
         "https://www.instagram.com/rj_industries01/",
         "https://github.com/rishabhshyamjoshi",
@@ -322,13 +323,14 @@ export default function RootLayout({
           </section>
 
           <nav>
-            <h2>Official Navigation Directory</h2>
+            <h2>Official Navigation & Verification Directory</h2>
             <ul>
               <li><a href="/">Terminal & Global Command Center (Home)</a></li>
               <li><a href="/project/1">Active Projects & Defense Prototypes</a></li>
               <li><a href="/product">Sovereign Products & Hardware Deployments</a></li>
               <li><a href="/academy">Singularity Academy & Astrophysics Research</a></li>
               <li><a href="/team">Executive Directorate, Engineers & Autonomous Agents</a></li>
+              <li><a href="https://www.crunchbase.com/organization/rj-industries-dev" target="_blank" rel="noopener noreferrer">Verified Crunchbase Profile: RJ Industries Dev</a></li>
             </ul>
           </nav>
 
