@@ -33,7 +33,7 @@ export const PROJECTS: ProjectData[] = [
     scale: [5, 3, 1],
     link: "https://kripa-delta.vercel.app/",
     externalLink: "https://kripa-delta.vercel.app/",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ export const PROJECTS: ProjectData[] = [
     scale: [3, 2, 1],
     link: "https://rishabhshyamjoshi.github.io/Rendering-daylight/",
     externalLink: "https://rishabhshyamjoshi.github.io/Rendering-daylight/",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop", 
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop",
   },
   {
     id: 4,
