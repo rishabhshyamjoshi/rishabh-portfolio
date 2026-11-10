@@ -1,33 +1,19 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, Variants, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import SequencePlayer from "./SequencePlayer";
+import { motion, AnimatePresence } from "framer-motion";
 import { PROJECTS, ProjectData } from "../data/projects";
 import { TEAM } from "../data/team";
 import { AudioController } from "../utils/AudioController";
 
 export default function Mobile2DView() {
+  const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [audioMuted, setAudioMuted] = useState(true);
-  const [scrollVal, setScrollVal] = useState(0);
-  const [activeTeamIndex, setActiveTeamIndex] = useState(0);
-  const [expandedProjectId, setExpandedProjectId] = useState<number | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
-  
-  const containerRef = useRef<HTMLDivElement>(null);
-  const teamScrollRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll();
-
-  // Hero Parallax
-  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, 90]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.1]);
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setScrollVal(latest);
-  });
+  const [expandedSpecId, setExpandedSpecId] = useState<number | null>(null);
 
   useEffect(() => {
     document.body.style.overflowY = "auto";
@@ -38,460 +24,416 @@ export default function Mobile2DView() {
     };
   }, []);
 
-  // Handle Team Scroll Snapping active state
-  useEffect(() => {
-    const scrollContainer = teamScrollRef.current;
-    if (!scrollContainer) return;
-
-    const handleScroll = () => {
-      const scrollLeft = scrollContainer.scrollLeft;
-      const cardWidth = 270 + 16;
-      const centerIndex = Math.round(scrollLeft / cardWidth);
-      setActiveTeamIndex(Math.min(TEAM.length - 1, Math.max(0, centerIndex)));
-    };
-
-    scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const handleAudioToggle = async () => {
     try {
       const isMuted = await AudioController.getInstance().toggleMute();
       setAudioMuted(isMuted);
-    } catch(err) {}
-  };
-
-  const toggleProjectSpecs = (id: number) => {
-    setExpandedProjectId((prev) => (prev === id ? null : id));
+    } catch (e) {}
   };
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("contact@rjindustries.dev");
     setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2200);
+    setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const fadeUpVariant: Variants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
-  };
+  const categories = ["ALL", "HARDWARE", "SOFTWARE & WEB", "DEFENSE & 3D"];
+
+  const filteredProjects = PROJECTS.filter((p) => {
+    if (activeCategory === "ALL") return true;
+    if (activeCategory === "HARDWARE") return p.id === 1;
+    if (activeCategory === "SOFTWARE & WEB") return p.id === 2 || p.id === 4 || p.id === 7;
+    if (activeCategory === "DEFENSE & 3D") return p.id === 3 || p.id === 5 || p.id === 6;
+    return true;
+  });
 
   return (
-    <div ref={containerRef} className="bg-[#030306] text-white min-h-screen w-full font-sans overflow-x-hidden selection:bg-cyan-500/30 pb-36">
+    <div className="bg-[#070709] text-white min-h-screen w-full font-sans antialiased overflow-x-hidden selection:bg-cyan-500/30 pb-36">
       
-      {/* ═══ NOISE & CYBER GRID OVERLAYS ═══ */}
-      <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.035] z-[100]" 
-        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.7%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}
-      />
-      <div 
-        className="fixed inset-0 pointer-events-none opacity-20 z-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px]" 
-      />
+      {/* ═══ 1. PROPER STICKY TOP NAVBAR (Armor Style) ═══ */}
+      <header className="sticky top-0 z-50 w-full bg-[#0a0a0d]/90 backdrop-blur-md border-b border-white/10 px-4 py-3 flex items-center justify-between">
+        
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="relative w-7 h-7">
+            <Image src="/logo.png" alt="RJ Industries" fill className="object-contain" priority />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs font-black tracking-[0.2em] uppercase font-[var(--font-orbitron)] text-white">
+              RJ INDUSTRIES
+            </span>
+            <span className="text-[7.5px] font-mono tracking-widest text-emerald-400 font-bold -mt-0.5">
+              ● VERIFIED ENTITY
+            </span>
+          </div>
+        </Link>
 
-      {/* Background Frame Sequence Player */}
-      <div className="fixed inset-0 w-full h-full opacity-25 mix-blend-screen pointer-events-none z-0">
-        <SequencePlayer externalProgress={scrollVal} />
-      </div>
-
-      {/* ═══ 1. ARMOR-STYLE FLOATING HUD TOP BAR ═══ */}
-      <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[420px]">
-        <div className="flex items-center justify-between px-4 py-2.5 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
-          
-          {/* Logo & Operational Status */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="relative w-5 h-5">
-              <Image src="/logo.png" alt="RJ Industries" fill className="object-contain" priority />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-black tracking-[0.18em] uppercase text-white font-[var(--font-orbitron)]">
-                RJ INDUS<span className="text-cyan-400">.</span>
-              </span>
-              <div className="flex items-center gap-1.5 -mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]" />
-                <span className="text-[7.5px] tracking-widest text-emerald-400/90 font-mono uppercase font-bold">ONLINE</span>
-              </div>
-            </div>
+        {/* Right Action Buttons */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/academy"
+            className="px-2.5 py-1 text-[9px] font-mono font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-500/30 rounded-full flex items-center gap-1"
+          >
+            <span>◎</span> 360° TOUR
           </Link>
 
-          {/* Quick Shortcuts */}
-          <div className="flex items-center gap-2">
-            <Link 
-              href="/academy" 
-              className="px-2.5 py-1 text-[9px] font-mono tracking-wider font-semibold text-white/80 bg-white/5 border border-white/10 rounded-full hover:bg-white/15 transition-all flex items-center gap-1"
-            >
-              <span className="text-cyan-400">◎</span> 360° TOUR
-            </Link>
-            
-            <button
-              onClick={handleAudioToggle}
-              className={`px-2.5 py-1 text-[8.5px] font-mono tracking-wider font-bold rounded-full border transition-all flex items-center gap-1.5
-                ${audioMuted 
-                  ? 'bg-white/5 border-white/10 text-white/50' 
-                  : 'bg-cyan-500/15 border-cyan-400/50 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.3)]'}
-              `}
-              aria-label="Toggle Audio"
-            >
-              <span className={`w-1.5 h-1.5 rounded-full ${audioMuted ? 'bg-white/30' : 'bg-cyan-400 animate-ping'}`} />
-              {audioMuted ? "MUTE" : "AUDIO ON"}
-            </button>
-          </div>
-
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="w-8 h-8 flex flex-col items-center justify-center gap-1 bg-white/5 border border-white/15 rounded-lg active:bg-white/15 transition-colors"
+            aria-label="Toggle Menu"
+          >
+            <span className={`w-4 h-[1.5px] bg-white transition-transform ${menuOpen ? 'rotate-45 translate-y-[3.5px]' : ''}`} />
+            <span className={`w-4 h-[1.5px] bg-white transition-transform ${menuOpen ? '-rotate-45 -translate-y-[2px]' : ''}`} />
+          </button>
         </div>
+
       </header>
 
-      {/* ═══ 2. HIGH-OCTANE HERO SECTION (Armor Style Hardware Showcase) ═══ */}
-      <section className="relative min-h-[100dvh] pt-28 pb-16 px-6 flex flex-col justify-between overflow-hidden z-10">
-        
-        {/* Glow ambient background sphere */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[340px] h-[340px] bg-gradient-to-b from-cyan-500/15 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* Slide-out Menu Drawer */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="sticky top-[53px] z-40 w-full bg-[#0d0d12] border-b border-white/15 px-5 py-6 flex flex-col gap-4 shadow-2xl"
+          >
+            <div className="flex flex-col gap-3 font-[var(--font-orbitron)] text-sm tracking-wider">
+              <a href="#flagship" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
+                // 01. FLAGSHIP HARDWARE
+              </a>
+              <a href="#divisions" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
+                // 02. STRATEGIC DIVISIONS
+              </a>
+              <a href="#deployments" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
+                // 03. ACTIVE SYSTEMS ({PROJECTS.length})
+              </a>
+              <a href="#founder" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
+                // 04. LEADERSHIP & FOUNDER
+              </a>
+              <Link href="/academy" className="text-cyan-400 py-1">
+                // 05. 360° SINGULARITY ACADEMY &rarr;
+              </Link>
+            </div>
 
-        <motion.div 
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="flex flex-col items-center text-center w-full relative z-10"
-        >
-          {/* Micro HUD Tag */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] border border-white/10 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-[8.5px] tracking-[0.25em] font-mono text-cyan-300/90 uppercase font-semibold">
-              PRE-SEED FUNDED // SOVEREIGN ARCHITECTURE
+            <div className="h-[1px] bg-white/10 my-1" />
+
+            <div className="grid grid-cols-2 gap-2 text-[9px] font-mono text-white/60">
+              <a href="https://www.crunchbase.com/organization/rj-industries-dev" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded border border-white/10 text-center">
+                CRUNCHBASE ↗
+              </a>
+              <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded border border-white/10 text-center">
+                LINKEDIN ↗
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ 2. FLAGSHIP HERO PRODUCT DROP (Armor Banner Style) ═══ */}
+      <section id="flagship" className="relative w-full pt-8 pb-10 px-4 flex flex-col items-center overflow-hidden">
+        
+        {/* Soft Radial Backlight */}
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-md bg-gradient-to-b from-[#11141c] to-[#0a0c12] border border-white/15 rounded-3xl p-6 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+          
+          {/* Top Product Tag */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="px-2.5 py-0.5 text-[8.5px] font-mono font-bold tracking-widest text-cyan-300 bg-cyan-400/10 border border-cyan-400/30 rounded-full uppercase">
+              FLAGSHIP DROP // 2026
+            </span>
+            <span className="text-[9px] font-mono font-bold text-white/40">
+              VERSION H1
             </span>
           </div>
 
-          {/* Main Display Headline */}
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white uppercase font-[var(--font-orbitron)] leading-[1.05] mb-4">
-            SOVEREIGN <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-white/70">
-              ENGINEERING.
+          {/* Product Headline */}
+          <h1 className="text-3xl font-black font-[var(--font-orbitron)] text-white tracking-wide uppercase leading-tight mb-2">
+            K.I.N.E.T.I.C™ <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-100">
+              VISION ONE
             </span>
           </h1>
 
-          <p className="text-xs sm:text-sm text-white/60 font-light tracking-wide max-w-[330px] leading-relaxed mb-8">
-            Next-generation aerospace platforms, defense robotics, and large-scale software systems engineered by Mechanical Engineers.
+          <p className="text-xs text-white/70 leading-relaxed font-light mb-6">
+            Private, sovereign spatial computing hardware equipped with the proprietary RJ-A1 neural silicon. 100% air-gapped, zero-cloud AI.
           </p>
 
-          {/* Armor-style Hardware Showcase Card: K.I.N.E.T.I.C Glasses */}
-          <div className="w-full max-w-[360px] bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/15 p-5 relative overflow-hidden backdrop-blur-md rounded-2xl shadow-2xl">
-            
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[8.5px] font-mono text-cyan-400 font-bold tracking-widest uppercase">
-                FLAGSHIP HARDWARE // PROJ_01
-              </span>
-              <span className="px-2 py-0.5 text-[8px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full font-bold">
-                ACTIVE
-              </span>
+          {/* Clean Hardware Visual */}
+          <div className="relative w-full aspect-[16/10] mb-6 flex items-center justify-center">
+            <div className="absolute inset-0 bg-radial-gradient from-cyan-500/15 to-transparent blur-xl" />
+            <Image
+              src="/rj-glasses.png"
+              alt="K.I.N.E.T.I.C Glasses"
+              fill
+              className="object-contain filter drop-shadow-[0_15px_30px_rgba(0,240,255,0.3)]"
+              priority
+            />
+          </div>
+
+          {/* Armor 4-Feature Spec Grid */}
+          <div className="grid grid-cols-2 gap-2 mb-6">
+            <div className="p-3 bg-black/60 border border-white/10 rounded-xl">
+              <span className="block text-[7.5px] font-mono text-white/40 uppercase">PROCESSOR</span>
+              <span className="text-[10px] font-mono font-bold text-cyan-300">RJ-A1 NEURAL SILICON</span>
             </div>
-
-            <div className="relative w-full aspect-[16/9] mb-4 flex items-center justify-center">
-              <div className="absolute inset-0 bg-radial-gradient from-cyan-500/20 to-transparent blur-xl" />
-              <Image 
-                src="/rj-glasses.png" 
-                alt="K.I.N.E.T.I.C Glasses" 
-                fill 
-                className="object-contain filter drop-shadow-[0_15px_25px_rgba(0,240,255,0.25)]" 
-                priority 
-              />
+            <div className="p-3 bg-black/60 border border-white/10 rounded-xl">
+              <span className="block text-[7.5px] font-mono text-white/40 uppercase">PRIVACY</span>
+              <span className="text-[10px] font-mono font-bold text-emerald-400">100% AIR-GAPPED</span>
             </div>
-
-            <h3 className="text-lg font-bold tracking-wider font-[var(--font-orbitron)] text-white mb-1 text-left">
-              K.I.N.E.T.I.C™ GLASSES
-            </h3>
-            <p className="text-[10.5px] text-white/60 font-light text-left leading-relaxed mb-4">
-              Wearable spatial AI powered by the proprietary RJ-A1 neural silicon. 100% offline, air-gapped field intelligence.
-            </p>
-
-            {/* Hardware Spec Chips */}
-            <div className="grid grid-cols-2 gap-1.5 mb-5 text-left">
-              <div className="px-2.5 py-1.5 bg-black/60 border border-white/10 rounded-lg">
-                <span className="block text-[7px] font-mono text-white/40 uppercase">CHIPSET</span>
-                <span className="text-[9px] font-mono font-bold text-cyan-300">RJ-A1 NEURAL</span>
-              </div>
-              <div className="px-2.5 py-1.5 bg-black/60 border border-white/10 rounded-lg">
-                <span className="block text-[7px] font-mono text-white/40 uppercase">SECURITY</span>
-                <span className="text-[9px] font-mono font-bold text-emerald-300">100% AIR-GAPPED</span>
-              </div>
-              <div className="px-2.5 py-1.5 bg-black/60 border border-white/10 rounded-lg">
-                <span className="block text-[7px] font-mono text-white/40 uppercase">OPTICS</span>
-                <span className="text-[9px] font-mono font-bold text-white">DUAL MICRO-OLED</span>
-              </div>
-              <div className="px-2.5 py-1.5 bg-black/60 border border-white/10 rounded-lg">
-                <span className="block text-[7px] font-mono text-white/40 uppercase">CHASSIS</span>
-                <span className="text-[9px] font-mono font-bold text-white">GRADE 5 TITANIUM</span>
-              </div>
+            <div className="p-3 bg-black/60 border border-white/10 rounded-xl">
+              <span className="block text-[7.5px] font-mono text-white/40 uppercase">OPTICS</span>
+              <span className="text-[10px] font-mono font-bold text-white">DUAL MICRO-OLED</span>
             </div>
+            <div className="p-3 bg-black/60 border border-white/10 rounded-xl">
+              <span className="block text-[7.5px] font-mono text-white/40 uppercase">CHASSIS</span>
+              <span className="text-[10px] font-mono font-bold text-white">GRADE 5 TITANIUM</span>
+            </div>
+          </div>
 
-            {/* Quick Action Button */}
-            <Link 
-              href="/project/1" 
-              className="w-full py-2.5 bg-white text-black font-bold text-[10px] font-mono tracking-widest uppercase rounded-lg flex items-center justify-center gap-2 hover:bg-cyan-300 transition-all active:scale-[0.98]"
+          {/* Primary Action Button */}
+          <div className="flex flex-col gap-2">
+            <Link
+              href="/project/1"
+              className="w-full py-3.5 bg-cyan-400 text-black font-black text-xs font-mono tracking-widest uppercase rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95 transition-all"
             >
               <span>INSPECT CASE STUDY</span>
               <span>&rarr;</span>
             </Link>
 
+            <Link
+              href="/academy"
+              className="w-full py-3 bg-white/5 border border-white/15 text-white/90 font-bold text-[10px] font-mono tracking-wider uppercase rounded-xl flex items-center justify-center gap-1.5 hover:bg-white/10 transition-all"
+            >
+              <span>◎ OPERATE 360° BLACK HOLE ORBIT</span>
+            </Link>
           </div>
-        </motion.div>
 
-        {/* Scroll Indicator */}
-        <div className="w-full flex flex-col items-center gap-2 mt-8 z-10">
-          <span className="text-[8px] font-mono tracking-[0.3em] text-white/40 uppercase font-bold">
-            SCROLL TO EXPLORE DEPLOYMENTS
-          </span>
-          <div className="w-4 h-7 border border-white/20 rounded-full flex justify-center p-1">
-            <motion.div 
-              animate={{ y: [0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="w-1 h-1.5 bg-cyan-400 rounded-full shadow-[0_0_5px_#22d3ee]" 
-            />
-          </div>
         </div>
 
       </section>
 
-      {/* ═══ 3. HIGH-TECH TELEMETRY TICKER ═══ */}
-      <div className="w-full py-3 bg-black/90 border-y border-white/10 overflow-hidden relative z-10 backdrop-blur-md">
-        <div className="flex whitespace-nowrap animate-[marquee_24s_linear_infinite] gap-8 text-[9px] font-mono tracking-[0.25em] text-white/70 uppercase">
-          <span>// SOVEREIGN DEFENSE</span>
-          <span className="text-cyan-400">●</span>
-          <span>AEROSPACE PROPULSION</span>
-          <span className="text-cyan-400">●</span>
-          <span>MECHANICAL SYSTEMS & CAD</span>
-          <span className="text-cyan-400">●</span>
-          <span>RJ-A1 NEURAL SILICON</span>
-          <span className="text-cyan-400">●</span>
-          <span>LARGE-SCALE WEB SYSTEMS</span>
-          <span className="text-cyan-400">●</span>
-          <span>QUANTUM ENCRYPTION ARRAYS</span>
-          <span className="text-cyan-400">●</span>
-          <span>PRE-SEED $100K CAPITAL</span>
+      {/* ═══ 3. VERIFIED CREDENTIALS & METRICS BAR ═══ */}
+      <section className="w-full px-4 py-4">
+        <div className="w-full max-w-md mx-auto grid grid-cols-3 gap-2 p-3 bg-white/[0.02] border border-white/10 rounded-2xl text-center">
+          <div>
+            <span className="block text-base font-black font-[var(--font-orbitron)] text-white">$100K</span>
+            <span className="text-[8px] font-mono text-white/40 uppercase font-bold">PRE-SEED CAPITAL</span>
+          </div>
+          <div className="border-x border-white/10">
+            <span className="block text-base font-black font-[var(--font-orbitron)] text-cyan-300">07</span>
+            <span className="text-[8px] font-mono text-white/40 uppercase font-bold">ACTIVE SYSTEMS</span>
+          </div>
+          <div>
+            <span className="block text-base font-black font-[var(--font-orbitron)] text-emerald-400">MECH ENG</span>
+            <span className="text-[8px] font-mono text-white/40 uppercase font-bold">LEADERSHIP</span>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* ═══ 4. CORE STRATEGIC DIVISIONS (Bento Grid) ═══ */}
-      <section className="w-full px-5 py-16 relative z-10">
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={fadeUpVariant}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-[9px] font-mono text-cyan-400 tracking-widest uppercase font-bold">
+      {/* ═══ 4. CORE STRATEGIC DIVISIONS ═══ */}
+      <section id="divisions" className="w-full px-4 py-10 max-w-md mx-auto">
+        
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <span className="text-[8.5px] font-mono text-cyan-400 tracking-widest uppercase font-bold block mb-0.5">
               [CAPABILITY MATRIX]
             </span>
-            <div className="h-[1px] bg-white/15 flex-grow" />
+            <h2 className="text-xl font-black font-[var(--font-orbitron)] text-white tracking-wide uppercase">
+              CORE DIVISIONS
+            </h2>
           </div>
-          <h2 className="text-2xl font-black font-[var(--font-orbitron)] tracking-tight text-white uppercase">
-            STRATEGIC DIVISIONS
-          </h2>
-        </motion.div>
+          <span className="text-[8.5px] font-mono text-white/40 uppercase">04 PILLARS</span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           {[
             {
               id: "01",
-              title: "AEROSPACE & ORBITAL",
-              desc: "Orbital launch trajectories, deep-space telemetry, and autonomous entry vehicles.",
-              tag: "PROPULSION",
-              accent: "text-cyan-400"
+              title: "AEROSPACE",
+              sub: "Orbital propulsion & spacecraft telemetry",
+              border: "border-cyan-500/30",
+              tag: "PROPULSION"
             },
             {
               id: "02",
-              title: "SOVEREIGN DEFENSE",
-              desc: "Tactical defense platforms, electronic warfare counter-systems, and quantum key distribution.",
-              tag: "TACTICAL",
-              accent: "text-amber-400"
+              title: "DEFENSE",
+              sub: "Sovereign tactical hardware & QKD encryption",
+              border: "border-amber-500/30",
+              tag: "TACTICAL"
             },
             {
               id: "03",
-              title: "MECHANICAL & ROBOTICS",
-              desc: "Electro-mechanical actuators, high-density PCB packaging, and precision CAD/FEA simulation.",
-              tag: "KINEMATICS",
-              accent: "text-emerald-400"
+              title: "MECHANICAL",
+              sub: "Robotic actuators, CAD/CAM & FEA mechanics",
+              border: "border-emerald-500/30",
+              tag: "KINEMATICS"
             },
             {
               id: "04",
-              title: "ENTERPRISE SOFTWARE",
-              desc: "High-concurrency web platforms, real-time 3D graphics computing, and scalable cloud architectures.",
-              tag: "SYSTEMS",
-              accent: "text-blue-400"
+              title: "ENTERPRISE",
+              sub: "Large-scale web platforms & 3D WebGL",
+              border: "border-blue-500/30",
+              tag: "SOFTWARE"
             }
           ].map((div) => (
-            <motion.div
+            <div
               key={div.id}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-40px" }}
-              variants={fadeUpVariant}
-              className="p-4 bg-white/[0.03] border border-white/10 rounded-xl relative overflow-hidden backdrop-blur-sm"
+              className={`p-3.5 bg-[#0d0f17] border ${div.border} rounded-2xl flex flex-col justify-between`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-mono text-white/30 font-bold">{div.id} //</span>
-                <span className={`text-[8px] font-mono font-bold tracking-widest uppercase px-2 py-0.5 bg-white/5 border border-white/10 rounded ${div.accent}`}>
-                  {div.tag}
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[9px] font-mono text-white/40 font-bold">{div.id}</span>
+                  <span className="text-[7.5px] font-mono font-bold text-white/80 bg-white/5 px-1.5 py-0.5 rounded">
+                    {div.tag}
+                  </span>
+                </div>
+                <h3 className="text-xs font-bold font-[var(--font-orbitron)] tracking-wider text-white mb-1">
+                  {div.title}
+                </h3>
+                <p className="text-[9.5px] text-white/60 leading-relaxed font-light">
+                  {div.sub}
+                </p>
               </div>
-              <h3 className="text-sm font-bold font-[var(--font-orbitron)] tracking-wider text-white mb-1.5">
-                {div.title}
-              </h3>
-              <p className="text-[10.5px] text-white/60 leading-relaxed font-light">
-                {div.desc}
-              </p>
-            </motion.div>
+            </div>
           ))}
         </div>
+
       </section>
 
-      {/* ═══ 5. HARDWARE & SYSTEMS DEPLOYMENTS (Armor-Style Product Cards) ═══ */}
-      <section className="w-full px-5 py-12 relative z-10">
+      {/* ═══ 5. DEPLOYED SYSTEMS ROSTER (Armor Category & Product Cards) ═══ */}
+      <section id="deployments" className="w-full px-4 py-8 max-w-md mx-auto">
         
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={fadeUpVariant}
-          className="mb-8 flex items-center justify-between"
-        >
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-[9px] font-mono text-cyan-400 tracking-widest uppercase font-bold">
-                ACTIVE ROSTER // 07 SYSTEMS
-              </span>
-            </div>
-            <h2 className="text-2xl font-black font-[var(--font-orbitron)] tracking-tight text-white uppercase">
-              DEPLOYED WORK
-            </h2>
-          </div>
-          <span className="text-[9px] font-mono text-white/40 tracking-wider">
-            [TAP FOR SPECS]
+        <div className="mb-4">
+          <span className="text-[8.5px] font-mono text-cyan-400 tracking-widest uppercase font-bold block mb-0.5">
+            [PROVEN DEPLOYMENTS]
           </span>
-        </motion.div>
+          <h2 className="text-xl font-black font-[var(--font-orbitron)] text-white tracking-wide uppercase">
+            ACTIVE SYSTEMS
+          </h2>
+        </div>
 
-        {/* The 7 Projects in High-Octane Armor Cards */}
-        <div className="flex flex-col gap-5">
-          {PROJECTS.map((project: ProjectData, idx) => {
-            const isExpanded = expandedProjectId === project.id;
+        {/* Category Filter Pills (Armor Style) */}
+        <div className="flex gap-1.5 overflow-x-auto hide-scrollbar pb-3 mb-4" style={{ scrollbarWidth: 'none' }}>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-3 py-1.5 rounded-full text-[9px] font-mono font-bold tracking-wider uppercase whitespace-nowrap transition-all border
+                ${activeCategory === cat 
+                  ? 'bg-white text-black border-white shadow-[0_0_10px_rgba(255,255,255,0.4)]' 
+                  : 'bg-white/5 text-white/60 border-white/10 hover:text-white'}
+              `}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Project Cards */}
+        <div className="flex flex-col gap-4">
+          {filteredProjects.map((project: ProjectData) => {
+            const isExpanded = expandedSpecId === project.id;
             const targetUrl = project.externalLink || project.link;
 
             return (
-              <motion.div
+              <div
                 key={project.id}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-40px" }}
-                variants={fadeUpVariant}
-                className="w-full bg-[#07090e] border border-white/15 rounded-2xl overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex flex-col"
+                className="w-full bg-[#0c0e14] border border-white/15 rounded-2xl overflow-hidden shadow-lg flex flex-col"
               >
                 
-                {/* Top Card Meta Header */}
-                <div className="px-4 py-3 bg-white/[0.03] border-b border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-mono font-bold text-white/40">
-                      0{idx + 1}
-                    </span>
-                    <div className="w-[1px] h-3 bg-white/20" />
-                    <span className="text-[9px] font-mono font-bold tracking-wider text-cyan-400 uppercase">
-                      {project.shortDesc}
-                    </span>
-                  </div>
+                {/* Card Header */}
+                <div className="px-4 py-2.5 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
+                  <span className="text-[8.5px] font-mono font-bold text-cyan-400 uppercase tracking-wider">
+                    {project.shortDesc}
+                  </span>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]" />
-                    <span className="text-[8px] font-mono text-emerald-400 font-bold uppercase">DEPLOYED</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-[8px] font-mono text-emerald-400 font-bold uppercase">LIVE</span>
                   </div>
                 </div>
 
-                {/* Hero Product Visual with Vignette */}
-                <div className="relative w-full aspect-[16/10] overflow-hidden bg-black/60">
-                  <Image 
-                    src={project.image} 
-                    alt={project.title} 
-                    fill 
-                    className="object-cover transition-transform duration-700 hover:scale-105 filter contrast-105" 
+                {/* Card Visual */}
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-black/80">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover filter contrast-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-black/30" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c0e14] via-transparent to-transparent" />
                 </div>
 
-                {/* Content & Actions */}
-                <div className="p-5 flex flex-col">
-                  
-                  <h3 className="text-xl font-bold font-[var(--font-orbitron)] tracking-wider text-white mb-2">
+                {/* Card Body */}
+                <div className="p-4 flex flex-col">
+                  <h3 className="text-base font-bold font-[var(--font-orbitron)] text-white tracking-wide mb-1.5">
                     {project.title}
                   </h3>
 
-                  <p className="text-[11px] text-white/65 font-light leading-relaxed mb-4">
+                  <p className="text-[11px] text-white/65 leading-relaxed font-light mb-3">
                     {project.longDesc}
                   </p>
 
-                  {/* Tech Badges */}
-                  <div className="flex flex-wrap gap-1.5 mb-5">
+                  {/* Tech Stack Pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {project.techStack.map((tech) => (
-                      <span 
-                        key={tech} 
-                        className="px-2 py-0.5 text-[8.5px] font-mono bg-white/[0.05] border border-white/10 text-white/80 rounded"
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 text-[8px] font-mono bg-white/5 border border-white/10 text-white/70 rounded"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
 
-                  {/* Expandable Technical Dossier (Armor PDP Spec Accordion) */}
-                  <div className="w-full border-t border-white/10 pt-3 mb-4">
+                  {/* Collapsible Tech Specs Accordion (Armor PDP Style) */}
+                  <div className="w-full border-t border-white/10 pt-2.5 mb-3">
                     <button
-                      onClick={() => toggleProjectSpecs(project.id)}
-                      className="w-full flex items-center justify-between text-[9.5px] font-mono tracking-widest text-cyan-300 font-bold uppercase py-1"
+                      onClick={() => setExpandedSpecId(isExpanded ? null : project.id)}
+                      className="w-full flex items-center justify-between text-[9px] font-mono tracking-wider text-cyan-300 font-bold uppercase"
                     >
-                      <span>{isExpanded ? "[-] HIDE SPECIFICATIONS" : "[+] TECHNICAL DOSSIER"}</span>
+                      <span>{isExpanded ? "[-] HIDE TELEMETRY" : "[+] VIEW SPEC SHEET"}</span>
                       <span className="text-white/40">{isExpanded ? "▲" : "▼"}</span>
                     </button>
 
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="pt-3 pb-1 overflow-hidden"
-                        >
-                          <div className="p-3 bg-black/70 border border-white/10 rounded-lg text-left grid grid-cols-2 gap-2 text-[9px] font-mono">
-                            <div>
-                              <span className="text-white/40 block">SYSTEM STATUS:</span>
-                              <span className="text-emerald-400 font-bold">100% OPERATIONAL</span>
-                            </div>
-                            <div>
-                              <span className="text-white/40 block">ARCHITECTURE:</span>
-                              <span className="text-white font-bold">{project.techStack[0] || "PROPRIETARY"}</span>
-                            </div>
-                            <div>
-                              <span className="text-white/40 block">SECURITY CLEARANCE:</span>
-                              <span className="text-cyan-300 font-bold">SOVEREIGN TIER</span>
-                            </div>
-                            <div>
-                              <span className="text-white/40 block">TELEMETRY:</span>
-                              <span className="text-white font-bold">LIVE TELEMETRY</span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    {isExpanded && (
+                      <div className="mt-2.5 p-3 bg-black/60 border border-white/10 rounded-xl grid grid-cols-2 gap-2 text-[8.5px] font-mono text-left">
+                        <div>
+                          <span className="text-white/40 block">STATUS:</span>
+                          <span className="text-emerald-400 font-bold">100% OPERATIONAL</span>
+                        </div>
+                        <div>
+                          <span className="text-white/40 block">PLATFORM:</span>
+                          <span className="text-white font-bold">{project.techStack[0] || "PROPRIETARY"}</span>
+                        </div>
+                        <div>
+                          <span className="text-white/40 block">SECURITY:</span>
+                          <span className="text-cyan-300 font-bold">SOVEREIGN GRADE</span>
+                        </div>
+                        <div>
+                          <span className="text-white/40 block">UPTIME:</span>
+                          <span className="text-white font-bold">99.98%</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="flex items-center gap-2">
                     <a
                       href={targetUrl}
                       target={targetUrl.startsWith("http") ? "_blank" : "_self"}
                       rel={targetUrl.startsWith("http") ? "noopener noreferrer" : undefined}
-                      className="flex-1 py-3 px-4 bg-cyan-400 text-black font-bold text-[10px] font-mono tracking-widest uppercase rounded-xl flex items-center justify-center gap-1.5 hover:bg-cyan-300 transition-all active:scale-[0.98] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                      className="flex-1 py-2.5 bg-white text-black font-bold text-[9.5px] font-mono tracking-wider uppercase rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-md"
                     >
-                      <span>LAUNCH SYSTEM</span>
+                      <span>VISIT SYSTEM</span>
                       <span>↗</span>
                     </a>
 
                     <Link
                       href={`/project/${project.id}`}
-                      className="py-3 px-4 bg-white/5 border border-white/15 text-white font-bold text-[10px] font-mono tracking-widest uppercase rounded-xl hover:bg-white/15 transition-all flex items-center justify-center"
+                      className="py-2.5 px-3.5 bg-white/5 border border-white/15 text-white/90 font-bold text-[9.5px] font-mono tracking-wider uppercase rounded-xl hover:bg-white/15 transition-all"
                     >
                       CASE STUDY
                     </Link>
@@ -499,166 +441,71 @@ export default function Mobile2DView() {
 
                 </div>
 
-              </motion.div>
+              </div>
             );
           })}
         </div>
 
       </section>
 
-      {/* ═══ 6. SQUADRON / AI OPERATIVES (Horizontal Snap Scroll) ═══ */}
-      <section className="w-full py-14 relative overflow-hidden z-10">
-        
-        <div className="px-5 mb-6 flex items-center justify-between">
-          <div>
-            <span className="text-[9px] font-mono text-cyan-400 tracking-widest uppercase font-bold block mb-1">
-              [AUTONOMOUS DIRECTORY]
-            </span>
-            <h2 className="text-2xl font-black font-[var(--font-orbitron)] tracking-tight text-white uppercase">
-              AI OPERATIVES
-            </h2>
-          </div>
-          <span className="text-[9px] font-mono text-white/40 tracking-wider">
-            SWIPE &rarr;
-          </span>
-        </div>
-
-        <div 
-          ref={teamScrollRef}
-          className="flex overflow-x-auto gap-4 px-5 pb-6 snap-x snap-mandatory hide-scrollbar relative" 
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {TEAM.map((member, idx) => {
-            const isActive = idx === activeTeamIndex;
-            return (
-              <motion.div 
-                key={member.id} 
-                className={`flex-shrink-0 w-[270px] snap-center flex flex-col p-4 border rounded-2xl transition-all duration-500 backdrop-blur-md
-                  ${isActive ? 'bg-[#090c14] border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.15)]' : 'bg-black/60 border-white/10'}
-                `}
-              >
-                <div className="w-full aspect-[4/3] overflow-hidden relative rounded-xl border border-white/10 bg-[#050505] mb-3.5">
-                  <Image 
-                    src={member.image} 
-                    alt={member.name} 
-                    fill 
-                    className={`object-cover transition-all duration-700 ${isActive ? 'scale-105' : 'grayscale opacity-60 scale-100'}`} 
-                  />
-                  <div className="absolute top-2 left-2 px-2 py-0.5 text-[7.5px] font-mono bg-black/80 border border-white/20 rounded font-bold uppercase text-white">
-                    {member.id}
-                  </div>
-                  <div className="absolute top-2 right-2 px-2 py-0.5 text-[7.5px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded font-bold uppercase">
-                    {member.clearance}
-                  </div>
-                </div>
-
-                <div className="flex flex-col">
-                  <div className="text-[8.5px] uppercase tracking-widest font-mono font-bold text-cyan-400 mb-1">
-                    {member.role}
-                  </div>
-                  <h4 className="text-base font-bold font-[var(--font-orbitron)] text-white mb-2">
-                    {member.name}
-                  </h4>
-                  <p className="text-[10px] text-white/60 leading-relaxed font-light line-clamp-2 mb-3">
-                    {member.bio}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    {member.skills.map((s) => (
-                      <span key={s} className="px-1.5 py-0.5 text-[7.5px] font-mono bg-white/5 border border-white/10 text-white/60 rounded">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Scroll dots indicator */}
-        <div className="flex justify-center gap-1.5 mt-1">
-          {TEAM.map((_, idx) => (
-            <div 
-              key={idx} 
-              className={`h-[2.5px] rounded-full transition-all duration-300 ${idx === activeTeamIndex ? 'w-6 bg-cyan-400 shadow-[0_0_6px_#22d3ee]' : 'w-1.5 bg-white/20'}`} 
-            />
-          ))}
-        </div>
-
-      </section>
-
-      {/* ═══ 7. FOUNDER & EXECUTIVE DOSSIER ═══ */}
-      <section className="w-full px-5 py-12 relative z-10">
-        
-        <div className="p-6 bg-gradient-to-b from-[#0a0f1a] to-black border border-white/20 rounded-2xl relative overflow-hidden shadow-2xl">
+      {/* ═══ 6. FOUNDER & EXECUTIVE DOSSIER ═══ */}
+      <section id="founder" className="w-full px-4 py-8 max-w-md mx-auto">
+        <div className="p-5 bg-gradient-to-b from-[#10141f] to-[#090b10] border border-white/15 rounded-3xl relative overflow-hidden shadow-xl">
           
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <span className="text-[8.5px] font-mono text-cyan-400 font-bold tracking-widest uppercase">
-              LEADERSHIP // CHIEF ARCHITECT
+              EXECUTIVE DOSSIER
             </span>
-            <span className="px-2 py-0.5 text-[8px] font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 rounded-full font-bold">
-              VERIFIED
+            <span className="px-2 py-0.5 text-[7.5px] font-mono bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 rounded-full font-bold">
+              FOUNDER
             </span>
           </div>
 
-          <h3 className="text-2xl font-black font-[var(--font-orbitron)] text-white tracking-wide mb-1">
+          <h3 className="text-xl font-black font-[var(--font-orbitron)] text-white tracking-wide uppercase mb-1">
             RISHABH SHYAM JOSHI
           </h3>
-          <p className="text-[10px] font-mono text-cyan-300/90 font-bold tracking-wider uppercase mb-3">
+          <p className="text-[9.5px] font-mono text-cyan-300 font-bold uppercase tracking-wider mb-3">
             MECHANICAL ENGINEER · FOUNDER & CEO
           </p>
 
-          <p className="text-[11px] text-white/70 leading-relaxed font-light mb-6">
-            Leading the multi-disciplinary engineering of sovereign defense systems, orbital spacecraft telemetry, proprietary neural silicon (RJ-A1), and large-scale software platforms at RJ Industries.
+          <p className="text-[11px] text-white/70 leading-relaxed font-light mb-5">
+            Directing sovereign defense platforms, orbital spacecraft telemetry, electro-mechanical robotics, and large-scale software engineering at RJ Industries Dev.
           </p>
 
-          {/* Institutional Stats */}
-          <div className="grid grid-cols-2 gap-2 mb-6">
-            <div className="p-2.5 bg-black/60 border border-white/10 rounded-lg">
-              <span className="block text-[7.5px] font-mono text-white/40 uppercase">HEADQUARTERS</span>
-              <span className="text-[10px] font-mono font-bold text-white">AMRAVATI, MH, IN</span>
-            </div>
-            <div className="p-2.5 bg-black/60 border border-white/10 rounded-lg">
-              <span className="block text-[7.5px] font-mono text-white/40 uppercase">DISCIPLINE</span>
-              <span className="text-[10px] font-mono font-bold text-cyan-300">MECHANICAL ENG.</span>
-            </div>
-          </div>
-
-          {/* Direct Verification Links */}
+          {/* Social Profiles Grid */}
           <div className="grid grid-cols-2 gap-2 text-[9px] font-mono font-bold">
-            <a 
-              href="https://www.linkedin.com/in/rishabhshyamjoshi/" 
-              target="_blank" 
+            <a
+              href="https://www.linkedin.com/in/rishabhshyamjoshi/"
+              target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-3 bg-white/5 border border-white/15 rounded-lg text-white hover:bg-white/15 transition-all text-center flex items-center justify-center gap-1.5"
+              className="py-2.5 px-3 bg-white/5 border border-white/10 rounded-xl text-white text-center flex items-center justify-center gap-1 active:bg-white/15"
             >
               <span>LINKEDIN</span>
               <span>↗</span>
             </a>
-            <a 
-              href="https://www.crunchbase.com/organization/rj-industries-dev" 
-              target="_blank" 
+            <a
+              href="https://www.crunchbase.com/organization/rj-industries-dev"
+              target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-3 bg-white/5 border border-white/15 rounded-lg text-cyan-300 hover:bg-white/15 transition-all text-center flex items-center justify-center gap-1.5"
+              className="py-2.5 px-3 bg-white/5 border border-white/10 rounded-xl text-cyan-300 text-center flex items-center justify-center gap-1 active:bg-white/15"
             >
               <span>CRUNCHBASE</span>
               <span>↗</span>
             </a>
-            <a 
-              href="https://x.com/rishabhshyamjoshi" 
-              target="_blank" 
+            <a
+              href="https://x.com/rishabhshyamjoshi"
+              target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-3 bg-white/5 border border-white/15 rounded-lg text-white hover:bg-white/15 transition-all text-center flex items-center justify-center gap-1.5"
+              className="py-2.5 px-3 bg-white/5 border border-white/10 rounded-xl text-white text-center flex items-center justify-center gap-1 active:bg-white/15"
             >
               <span>X (TWITTER)</span>
               <span>↗</span>
             </a>
-            <a 
-              href="https://github.com/rishabhshyamjoshi" 
-              target="_blank" 
+            <a
+              href="https://github.com/rishabhshyamjoshi"
+              target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-3 bg-white/5 border border-white/15 rounded-lg text-white hover:bg-white/15 transition-all text-center flex items-center justify-center gap-1.5"
+              className="py-2.5 px-3 bg-white/5 border border-white/10 rounded-xl text-white text-center flex items-center justify-center gap-1 active:bg-white/15"
             >
               <span>GITHUB</span>
               <span>↗</span>
@@ -666,69 +513,75 @@ export default function Mobile2DView() {
           </div>
 
         </div>
-
       </section>
 
-      {/* ═══ 8. TRANSMIT BRIEF / CONTACT SECTION ═══ */}
-      <section className="w-full px-5 py-12 text-center relative z-10">
-        
-        <span className="text-[9px] font-mono text-cyan-400 tracking-[0.25em] uppercase font-bold block mb-2">
-          // INITIATE TRANSMISSION
-        </span>
-        <h2 className="text-3xl font-black font-[var(--font-orbitron)] text-white tracking-tight uppercase mb-3">
+      {/* ═══ 7. CONTACT & BRIEF INITIATION ═══ */}
+      <section className="w-full px-4 py-8 max-w-md mx-auto text-center">
+        <h2 className="text-2xl font-black font-[var(--font-orbitron)] text-white uppercase tracking-tight mb-2">
           ESTABLISH UPLINK
         </h2>
-        <p className="text-xs text-white/60 font-light max-w-xs mx-auto mb-6">
-          Reach our engineering team for sovereign defense contracts, aerospace mechanical development, or large-scale web systems.
+        <p className="text-xs text-white/60 font-light mb-5">
+          For sovereign defense contracts, aerospace mechanical development, or large-scale web systems:
         </p>
 
-        <div className="flex flex-col gap-2.5 max-w-xs mx-auto">
+        <div className="flex flex-col gap-2">
           <a
             href="mailto:contact@rjindustries.dev"
-            className="w-full py-3.5 bg-white text-black font-bold text-[10px] font-mono tracking-widest uppercase rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all hover:bg-cyan-300"
+            className="w-full py-3.5 bg-cyan-400 text-black font-black text-xs font-mono tracking-widest uppercase rounded-xl flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.3)] active:scale-95 transition-all"
           >
-            <span>TRANSMIT ENCRYPTED BRIEF</span>
+            <span>TRANSMIT BRIEF (EMAIL)</span>
             <span>&rarr;</span>
           </a>
 
           <button
             onClick={handleCopyEmail}
-            className="w-full py-3 bg-white/5 border border-white/15 text-white/80 font-mono text-[9.5px] tracking-wider rounded-xl hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 bg-white/5 border border-white/15 text-white/80 font-mono text-[9px] tracking-wider rounded-xl active:bg-white/15 transition-all"
           >
-            <span>{copiedEmail ? "✓ COPIED: contact@rjindustries.dev" : "COPY: contact@rjindustries.dev"}</span>
+            {copiedEmail ? "✓ COPIED: contact@rjindustries.dev" : "COPY EMAIL: contact@rjindustries.dev"}
           </button>
         </div>
-
       </section>
 
-      {/* ═══ 9. ARMOR-STYLE STICKY BOTTOM ACTION DOCK ═══ */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-[420px]">
-        <div className="flex items-center justify-between p-1.5 bg-black/85 backdrop-blur-2xl border border-white/20 rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.9)]">
+      {/* ═══ 8. PROPER MOBILE FOOTER ═══ */}
+      <footer className="w-full px-4 pt-6 pb-8 border-t border-white/10 max-w-md mx-auto text-center flex flex-col items-center gap-3 text-[9px] font-mono text-white/40">
+        <div className="flex items-center gap-4 text-white/60">
+          <Link href="/academy" className="hover:text-white">SINGULARITY ACADEMY</Link>
+          <span>●</span>
+          <a href="https://rjindustries.dev" className="hover:text-white">RJINDUSTRIES.DEV</a>
+        </div>
+        <p>© 2026 RJ Industries Dev. All Rights Reserved.</p>
+        <p className="text-white/25">Amravati, Maharashtra, India · Sovereign Deep-Tech & Mechanical Systems</p>
+      </footer>
+
+      {/* ═══ 9. PROPER STICKY BOTTOM ACTION BAR (Armor Style) ═══ */}
+      <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-md">
+        <div className="flex items-center justify-between p-1.5 bg-[#0a0c12]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
           
-          <a 
-            href="mailto:contact@rjindustries.dev" 
-            className="flex-1 py-2.5 px-3 text-center text-[9.5px] font-mono tracking-wider font-bold text-white/90 bg-white/5 rounded-full hover:bg-white/15 transition-all active:bg-white/20 flex items-center justify-center gap-1.5"
+          <a
+            href="mailto:contact@rjindustries.dev"
+            className="flex-1 py-2.5 text-center text-[10px] font-mono font-bold tracking-wider text-black bg-cyan-400 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
             <span>CONTACT</span>
+            <span>&rarr;</span>
           </a>
 
-          <div className="w-[1px] h-4 bg-white/15 mx-1" />
+          <div className="w-[1px] h-4 bg-white/15 mx-1.5" />
 
-          <Link 
-            href="/academy" 
-            className="flex-1 py-2.5 px-3 text-center text-[9.5px] font-mono tracking-wider font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-500/30 rounded-full hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-1"
+          <Link
+            href="/academy"
+            className="flex-1 py-2.5 text-center text-[9.5px] font-mono font-bold tracking-wider text-white bg-white/5 border border-white/10 rounded-xl flex items-center justify-center gap-1 hover:bg-white/10 transition-all"
           >
-            <span>◎ ACADEMY</span>
+            <span>◎ 360° TOUR</span>
           </Link>
 
-          <div className="w-[1px] h-4 bg-white/15 mx-1" />
+          <div className="w-[1px] h-4 bg-white/15 mx-1.5" />
 
-          <button 
+          <button
             onClick={handleAudioToggle}
-            className="flex-1 py-2.5 px-3 text-center text-[9px] font-mono tracking-wider font-bold text-white/70 rounded-full hover:text-white transition-all flex items-center justify-center gap-1"
+            className="px-3 py-2.5 text-center text-[9px] font-mono font-bold text-white/70 hover:text-white bg-white/5 border border-white/10 rounded-xl flex items-center justify-center gap-1"
+            aria-label="Toggle Audio"
           >
-            <span className={`w-1.5 h-1.5 rounded-full ${audioMuted ? 'bg-white/20' : 'bg-emerald-400 animate-pulse'}`} />
+            <span className={`w-1.5 h-1.5 rounded-full ${audioMuted ? 'bg-white/30' : 'bg-emerald-400 animate-pulse'}`} />
             <span>{audioMuted ? "SOUND" : "MUTE"}</span>
           </button>
 
