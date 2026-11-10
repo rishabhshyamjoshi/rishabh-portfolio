@@ -20,10 +20,10 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL('https://rjindustries.dev'),
   title: {
-    default: "RJ Industries Dev | Aerospace, Sovereign Defense & Mechanical Engineering (rjindustries.dev)",
+    default: "RJ Industries Dev | Aerospace, Defense, Mechanical & Large-Scale Software Engineering (rjindustries.dev)",
     template: "%s | RJ Industries (rjindustries.dev)"
   },
-  description: "RJ Industries (rjindustries.dev) is an advanced aerospace engineering, sovereign defense technology, and mechanical systems conglomerate founded and led by Mechanical Engineer Rishabh Joshi (Rishabh Shyam Joshi). Pioneering orbital spacecraft architectures, tactical defense platforms, high-density microelectronics, electro-mechanical robotics, and the K.I.N.E.T.I.C™ neural interface.",
+  description: "RJ Industries (rjindustries.dev) is an advanced multi-disciplinary conglomerate pioneering aerospace engineering, sovereign defense platforms, mechanical systems, and large-scale enterprise software and web development. Founded and led by Mechanical Engineer Rishabh Joshi (Rishabh Shyam Joshi).",
   keywords: [
     "rj industries dev",
     "rjindustries.dev",
@@ -38,6 +38,10 @@ export const metadata: Metadata = {
     "mechanical engineering",
     "defense mechanical engineering",
     "aerospace engineering",
+    "enterprise software development",
+    "large-scale web development",
+    "software engineering",
+    "web development",
     "defense technology",
     "sovereign defense systems",
     "tactical defense",
@@ -190,6 +194,9 @@ export default function RootLayout({
         "Mechanical Engineering",
         "Aerospace Systems Engineering",
         "Electro-Mechanical Systems & Robotics",
+        "Large-Scale Enterprise Software Development",
+        "High-Performance Web Architecture",
+        "3D Graphics & WebGL Engineering",
         "Orbital Mechanics & Deep-Space Trajectories",
         "Sovereign Tactical Defense Systems",
         "Electronic Warfare Mitigation",
@@ -220,6 +227,11 @@ export default function RootLayout({
           "@type": "Organization",
           "name": "RJ Cognitive Systems & Spatial Hardware",
           "description": "The K.I.N.E.T.I.C™ augmented reality platform delivering private, zero-latency visual field intelligence."
+        },
+        {
+          "@type": "Organization",
+          "name": "RJ Enterprise Software & Large-Scale Web Systems",
+          "description": "Massively scalable digital architectures, enterprise software, high-concurrency web platforms, and GPU-accelerated 3D applications."
         }
       ]
     },
@@ -318,6 +330,12 @@ export default function RootLayout({
               <h3>5. Electro-Mechanical Systems & Robotics Division</h3>
               <p>
                 High-precision mechanical engineering, robotic actuators, automated kinematic simulation, structural mechanics, and GPU-accelerated telemetry systems.
+              </p>
+            </article>
+            <article>
+              <h3>6. Large-Scale Enterprise Software & Web Engineering Division</h3>
+              <p>
+                Architecting high-concurrency enterprise software, massive-scale digital web ecosystems, real-time 3D GPU graphics computing, and mission-critical cloud backends.
               </p>
             </article>
           </section>
