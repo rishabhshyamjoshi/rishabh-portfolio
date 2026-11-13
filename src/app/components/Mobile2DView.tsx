@@ -100,19 +100,19 @@ export default function Mobile2DView() {
           >
             <div className="flex flex-col gap-3 font-[var(--font-orbitron)] text-sm tracking-wider">
               <a href="#flagship" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
-                // 01. FLAGSHIP HARDWARE
+                {"//"} 01. FLAGSHIP HARDWARE
               </a>
               <a href="#divisions" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
-                // 02. STRATEGIC DIVISIONS
+                {"//"} 02. STRATEGIC DIVISIONS
               </a>
               <a href="#deployments" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
-                // 03. ACTIVE SYSTEMS ({PROJECTS.length})
+                {"//"} 03. ACTIVE SYSTEMS ({PROJECTS.length})
               </a>
               <a href="#founder" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white py-1">
-                // 04. LEADERSHIP & FOUNDER
+                {"//"} 04. LEADERSHIP &amp; FOUNDER
               </a>
               <Link href="/academy" className="text-cyan-400 py-1">
-                // 05. 360° SINGULARITY ACADEMY &rarr;
+                {"//"} 05. 360° SINGULARITY ACADEMY &rarr;
               </Link>
             </div>
 
@@ -141,7 +141,7 @@ export default function Mobile2DView() {
           {/* Top Product Tag */}
           <div className="flex items-center justify-between mb-4">
             <span className="px-2.5 py-0.5 text-[8.5px] font-mono font-bold tracking-widest text-cyan-300 bg-cyan-400/10 border border-cyan-400/30 rounded-full uppercase">
-              FLAGSHIP DROP // 2026
+              FLAGSHIP DROP · 2026
             </span>
             <span className="text-[9px] font-mono font-bold text-white/40">
               VERSION H1
