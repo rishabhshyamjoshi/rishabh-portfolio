@@ -47,7 +47,7 @@ export default function Mobile2DView() {
   });
 
   return (
-    <div className="bg-[#f5f5f7] text-[#111111] min-h-screen w-full font-sans antialiased overflow-x-hidden selection:bg-[#FC832C]/20 selection:text-black pb-36 pt-4">
+    <div className="bg-[#f5f5f7] text-[#111111] min-h-screen w-full font-[var(--font-manrope)] antialiased overflow-x-hidden selection:bg-[#FC832C]/20 selection:text-black pb-36 pt-4">
       
       {/* ═══════════════════════════════════════════════════
           1. FLOATING TOP HEADER BAR (Armor V32 Style)
@@ -61,7 +61,7 @@ export default function Mobile2DView() {
               <Image src="/logo.png" alt="RJ Industries" fill className="object-contain" priority />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-black tracking-[0.16em] uppercase font-[var(--font-orbitron)] text-black">
+              <span className="text-xs font-black tracking-[0.16em] uppercase font-[var(--font-poppins)] text-black">
                 RJ INDUSTRIES
               </span>
               <span className="text-[7.5px] font-mono tracking-widest text-[#FC832C] font-bold -mt-0.5">
@@ -99,7 +99,7 @@ export default function Mobile2DView() {
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               className="mt-2 w-full bg-white border border-[#e5e5e7] rounded-2xl p-5 shadow-2xl flex flex-col gap-3 text-black"
             >
-              <div className="flex flex-col gap-2 font-[var(--font-orbitron)] text-xs tracking-wider">
+              <div className="flex flex-col gap-2 font-[var(--font-poppins)] text-xs tracking-wider">
                 <a href="#hero" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
                   [ 01 · OVERVIEW ]
                 </a>
@@ -154,10 +154,10 @@ export default function Mobile2DView() {
         </p>
 
         {/* Big Bold Headline in Pure Armor Style */}
-        <h1 className="text-[44px] leading-[1.03] font-black tracking-tight uppercase font-[var(--font-orbitron)] text-black mb-6">
+        <h1 className="text-[52px] leading-[0.96] font-extrabold tracking-[-0.04em] lowercase font-[var(--font-poppins)] text-black mb-6">
           refuse<br />
           the<br />
-          <span className="line-through decoration-[#FC832C] decoration-[5px] text-black/25">default</span>
+          <span className="line-through decoration-[#FC832C] decoration-[5px] text-black/30">default</span>
         </h1>
 
         {/* Credentials Ticker Bar */}
@@ -194,7 +194,7 @@ export default function Mobile2DView() {
           </div>
 
           {/* Title with Underlined Highlight */}
-          <h2 className="text-2xl font-bold tracking-tight text-black mb-2 leading-snug font-[var(--font-orbitron)]">
+          <h2 className="text-2xl font-bold tracking-tight text-black mb-2 leading-snug font-[var(--font-poppins)]">
             we <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">broke the boundary</span>
           </h2>
 
@@ -253,7 +253,7 @@ export default function Mobile2DView() {
           <span className="text-[10px] font-mono font-semibold tracking-wider text-black/50 block mb-1">
             [ strategic divisions ]
           </span>
-          <h2 className="text-xl font-bold tracking-tight text-black font-[var(--font-orbitron)]">
+          <h2 className="text-xl font-bold tracking-tight text-black font-[var(--font-poppins)]">
             deep engineering <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">across four frontiers</span>
           </h2>
         </div>
@@ -263,7 +263,7 @@ export default function Mobile2DView() {
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">🚀</span>
-              <h3 className="text-xs font-bold font-[var(--font-orbitron)] text-black mb-1 uppercase">AEROSPACE</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">AEROSPACE</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Orbital mechanics, spacecraft launch architecture &amp; telemetry.</p>
             </div>
             <span className="text-[8px] font-mono text-[#FC832C] font-bold mt-3 block">[ ACTIVE ]</span>
@@ -272,7 +272,7 @@ export default function Mobile2DView() {
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">🛡️</span>
-              <h3 className="text-xs font-bold font-[var(--font-orbitron)] text-black mb-1 uppercase">DEFENSE</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">DEFENSE</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Sovereign defense hardware, quantum cryptography &amp; data arrays.</p>
             </div>
             <span className="text-[8px] font-mono text-black/60 font-bold mt-3 block">[ PROTOCOL ]</span>
@@ -281,7 +281,7 @@ export default function Mobile2DView() {
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">⚙️</span>
-              <h3 className="text-xs font-bold font-[var(--font-orbitron)] text-black mb-1 uppercase">MECHANICAL</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">MECHANICAL</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Structural FEA analysis, precision manufacturing &amp; robotics.</p>
             </div>
             <span className="text-[8px] font-mono text-[#FC832C] font-bold mt-3 block">[ CORE DISCIPLINE ]</span>
@@ -290,7 +290,7 @@ export default function Mobile2DView() {
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">💻</span>
-              <h3 className="text-xs font-bold font-[var(--font-orbitron)] text-black mb-1 uppercase">SOFTWARE</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">SOFTWARE</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Large-scale enterprise platforms, 3D WebGL graphics &amp; real-time web.</p>
             </div>
             <span className="text-[8px] font-mono text-black/60 font-bold mt-3 block">[ PRODUCTION ]</span>
@@ -308,7 +308,7 @@ export default function Mobile2DView() {
           <span className="text-[10px] font-mono font-semibold tracking-wider text-[#FC832C] block mb-1">
             [ the arsenal ]
           </span>
-          <h2 className="text-xl font-bold tracking-tight text-black font-[var(--font-orbitron)]">
+          <h2 className="text-xl font-bold tracking-tight text-black font-[var(--font-poppins)]">
             active <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">deployments</span>
           </h2>
         </div>
@@ -365,7 +365,7 @@ export default function Mobile2DView() {
                 {/* Card Body */}
                 <div className="p-5 flex flex-col flex-1 justify-between">
                   <div>
-                    <h3 className="text-base font-bold font-[var(--font-orbitron)] text-black tracking-wide uppercase mb-1">
+                    <h3 className="text-base font-bold font-[var(--font-poppins)] text-black tracking-wide uppercase mb-1">
                       {project.title}
                     </h3>
                     <p className="text-[11px] text-[#FC832C] font-mono font-medium mb-2">
@@ -449,7 +449,7 @@ export default function Mobile2DView() {
             [ the manifesto ]
           </span>
 
-          <h2 className="text-xl font-bold tracking-tight text-black mb-4 leading-snug font-[var(--font-orbitron)]">
+          <h2 className="text-xl font-bold tracking-tight text-black mb-4 leading-snug font-[var(--font-poppins)]">
             rj industries is where <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">engineering obsession meets sovereign tech.</span>
           </h2>
 
@@ -483,12 +483,12 @@ export default function Mobile2DView() {
             [ want to know more? ]
           </span>
 
-          <h2 className="text-xl font-bold tracking-tight text-black mb-2 leading-snug font-[var(--font-orbitron)]">
+          <h2 className="text-xl font-bold tracking-tight text-black mb-2 leading-snug font-[var(--font-poppins)]">
             meet the <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">founder</span>
           </h2>
 
           <div className="mb-4">
-            <h3 className="text-base font-black uppercase text-black font-[var(--font-orbitron)]">
+            <h3 className="text-base font-black uppercase text-black font-[var(--font-poppins)]">
               RISHABH SHYAM JOSHI
             </h3>
             <p className="text-[10.5px] font-mono text-[#FC832C] font-semibold">
@@ -563,7 +563,7 @@ export default function Mobile2DView() {
           <div className="relative w-5 h-5">
             <Image src="/logo.png" alt="RJ Industries" fill className="object-contain" />
           </div>
-          <span className="text-xs font-black tracking-widest uppercase font-[var(--font-orbitron)] text-black">
+          <span className="text-xs font-black tracking-widest uppercase font-[var(--font-poppins)] text-black">
             RJ INDUSTRIES DEV
           </span>
         </div>
