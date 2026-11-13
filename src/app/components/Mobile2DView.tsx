@@ -62,10 +62,10 @@ export default function Mobile2DView() {
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-black tracking-[0.16em] uppercase font-[var(--font-poppins)] text-black">
-                RJ INDUSTRIES
+                RJ Industries
               </span>
               <span className="text-[7.5px] font-mono tracking-widest text-[#FC832C] font-bold -mt-0.5">
-                ● VERIFIED ENTITY
+                ● Verified Entity
               </span>
             </div>
           </Link>
@@ -76,7 +76,7 @@ export default function Mobile2DView() {
               href="#arsenal"
               className="px-2.5 py-1 text-[9px] font-mono font-medium tracking-wider text-black/70 hover:text-black bg-[#f0f0f2] border border-[#e0e0e3] rounded-full"
             >
-              [ arsenal ]
+              [ Arsenal ]
             </a>
 
             <button
@@ -101,25 +101,25 @@ export default function Mobile2DView() {
             >
               <div className="flex flex-col gap-2 font-[var(--font-poppins)] text-xs tracking-wider">
                 <a href="#hero" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
-                  [ 01 · OVERVIEW ]
+                  [ 01 · Overview ]
                 </a>
                 <a href="#flagship" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
-                  [ 02 · FLAGSHIP HARDWARE ]
+                  [ 02 · Flagship Hardware ]
                 </a>
                 <a href="#divisions" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
-                  [ 03 · STRATEGIC DIVISIONS ]
+                  [ 03 · Strategic Divisions ]
                 </a>
                 <a href="#arsenal" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
-                  [ 04 · ACTIVE ARSENAL ({PROJECTS.length}) ]
+                  [ 04 · Active Arsenal ({PROJECTS.length}) ]
                 </a>
                 <a href="#manifesto" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
-                  [ 05 · MANIFESTO ]
+                  [ 05 · Manifesto ]
                 </a>
                 <a href="#founder" onClick={() => setMenuOpen(false)} className="text-black/80 hover:text-[#FC832C] py-1">
-                  [ 06 · FOUNDER DOSSIER ]
+                  [ 06 · Founder Dossier ]
                 </a>
                 <Link href="/academy" className="text-[#FC832C] py-1 font-bold">
-                  [ 07 · 360° ACADEMY &rarr; ]
+                  [ 07 · 360° Academy &rarr; ]
                 </Link>
               </div>
 
@@ -127,10 +127,10 @@ export default function Mobile2DView() {
 
               <div className="grid grid-cols-2 gap-2 text-[9px] font-mono text-black/70">
                 <a href="https://www.crunchbase.com/organization/rj-industries-dev" target="_blank" rel="noopener noreferrer" className="p-2 bg-[#f8f8fa] rounded-lg border border-[#e0e0e3] text-center hover:text-black">
-                  CRUNCHBASE ↗
+                  Crunchbase ↗
                 </a>
                 <a href="https://www.linkedin.com/company/rj-industries01/" target="_blank" rel="noopener noreferrer" className="p-2 bg-[#f8f8fa] rounded-lg border border-[#e0e0e3] text-center hover:text-black">
-                  LINKEDIN ↗
+                  LinkedIn ↗
                 </a>
               </div>
             </motion.div>
@@ -139,40 +139,40 @@ export default function Mobile2DView() {
       </div>
 
       {/* ═══════════════════════════════════════════════════
-          2. HERO SECTION (Armor "refuse the default" Style)
+          2. HERO SECTION (Capitalized Armor Style)
          ═══════════════════════════════════════════════════ */}
       <section id="hero" className="w-[92%] max-w-[440px] mx-auto pt-8 pb-6">
         
         {/* Subtitle / Tagline with Armor Orange Tape */}
         <p className="text-[11px] font-mono tracking-wider text-black/60 uppercase mb-1">
-          A new-age deep-tech engineering conglomerate
+          A New-Age Deep-Tech Engineering Conglomerate
         </p>
         <p className="text-xs text-black font-medium mb-6">
           <span className="bg-[#FC832C] text-white px-2 py-0.5 rounded-sm font-medium">
-            built for builders, engineers, and the curious.
+            Built For Builders, Engineers, And The Curious.
           </span>
         </p>
 
-        {/* Big Bold Headline in Pure Armor Style */}
-        <h1 className="text-[52px] leading-[0.96] font-extrabold tracking-[-0.04em] lowercase font-[var(--font-poppins)] text-black mb-6">
-          refuse<br />
-          the<br />
-          <span className="line-through decoration-[#FC832C] decoration-[5px] text-black/30">default</span>
+        {/* Big Bold Headline with Capital Starting Letters */}
+        <h1 className="text-[48px] leading-[1.0] font-extrabold tracking-tight font-[var(--font-poppins)] text-black mb-6">
+          Refuse<br />
+          The<br />
+          <span className="line-through decoration-[#FC832C] decoration-[5px] text-black/25">Default</span>
         </h1>
 
         {/* Credentials Ticker Bar */}
         <div className="grid grid-cols-3 gap-2 p-3 bg-white border border-[#e5e5e7] rounded-2xl text-center shadow-sm">
           <div>
-            <div className="text-[8px] font-mono text-black/40 uppercase">ROUND</div>
-            <div className="text-[10px] font-mono font-bold text-[#FC832C]">$100K PRE-SEED</div>
+            <div className="text-[8px] font-mono text-black/40 uppercase">Round</div>
+            <div className="text-[10px] font-mono font-bold text-[#FC832C]">$100K Pre-Seed</div>
           </div>
           <div className="border-x border-[#e5e5e7] px-1">
-            <div className="text-[8px] font-mono text-black/40 uppercase">DEPLOYMENTS</div>
-            <div className="text-[10px] font-mono font-bold text-black">07 ARSENAL</div>
+            <div className="text-[8px] font-mono text-black/40 uppercase">Deployments</div>
+            <div className="text-[10px] font-mono font-bold text-black">07 Arsenal</div>
           </div>
           <div>
-            <div className="text-[8px] font-mono text-black/40 uppercase">ENGINEERING</div>
-            <div className="text-[10px] font-mono font-bold text-[#108474]">MECH LEAD</div>
+            <div className="text-[8px] font-mono text-black/40 uppercase">Engineering</div>
+            <div className="text-[10px] font-mono font-bold text-[#108474]">Mech Lead</div>
           </div>
         </div>
       </section>
@@ -186,20 +186,20 @@ export default function Mobile2DView() {
           {/* Card Label */}
           <div className="flex items-center justify-between mb-3">
             <span className="text-[10px] font-mono font-semibold tracking-wider text-[#FC832C]">
-              [ current arsenal ]
+              [ Current Arsenal ]
             </span>
             <span className="text-[9px] font-mono text-black/40 uppercase">
-              VERSION H1 · 2026
+              Version H1 · 2026
             </span>
           </div>
 
           {/* Title with Underlined Highlight */}
           <h2 className="text-2xl font-bold tracking-tight text-black mb-2 leading-snug font-[var(--font-poppins)]">
-            we <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">broke the boundary</span>
+            We <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">Broke The Boundary</span>
           </h2>
 
           <p className="text-xs text-[#555555] leading-relaxed mb-6 font-normal">
-            spatial computing neural hardware we obsessed over more than we should have. private, 100% air-gapped, sovereign. now deployed.
+            Spatial computing neural hardware we obsessed over more than we should have. Private, 100% air-gapped, sovereign. Now deployed.
           </p>
 
           {/* Hardware Render Container */}
@@ -216,20 +216,20 @@ export default function Mobile2DView() {
           {/* 4-Spec Chips */}
           <div className="grid grid-cols-2 gap-2 mb-6">
             <div className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl">
-              <span className="block text-[7.5px] font-mono text-black/40 uppercase">SILICON</span>
-              <span className="text-[10px] font-mono font-bold text-[#FC832C]">RJ-A1 NEURAL CORE</span>
+              <span className="block text-[7.5px] font-mono text-black/40 uppercase">Silicon</span>
+              <span className="text-[10px] font-mono font-bold text-[#FC832C]">RJ-A1 Neural Core</span>
             </div>
             <div className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl">
-              <span className="block text-[7.5px] font-mono text-black/40 uppercase">SECURITY</span>
-              <span className="text-[10px] font-mono font-bold text-black">100% AIR-GAPPED</span>
+              <span className="block text-[7.5px] font-mono text-black/40 uppercase">Security</span>
+              <span className="text-[10px] font-mono font-bold text-black">100% Air-Gapped</span>
             </div>
             <div className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl">
-              <span className="block text-[7.5px] font-mono text-black/40 uppercase">OPTICS</span>
-              <span className="text-[10px] font-mono font-bold text-black">DUAL MICRO-OLED</span>
+              <span className="block text-[7.5px] font-mono text-black/40 uppercase">Optics</span>
+              <span className="text-[10px] font-mono font-bold text-black">Dual Micro-OLED</span>
             </div>
             <div className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl">
-              <span className="block text-[7.5px] font-mono text-black/40 uppercase">CHASSIS</span>
-              <span className="text-[10px] font-mono font-bold text-black">GRADE 5 TITANIUM</span>
+              <span className="block text-[7.5px] font-mono text-black/40 uppercase">Chassis</span>
+              <span className="text-[10px] font-mono font-bold text-black">Grade 5 Titanium</span>
             </div>
           </div>
 
@@ -238,7 +238,7 @@ export default function Mobile2DView() {
             href="/project/1"
             className="w-full block py-3.5 px-4 bg-black hover:bg-neutral-800 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl text-center active:scale-[0.98] transition-transform shadow-md"
           >
-            Check out K.I.N.E.T.I.C™ Vision &rarr;
+            Check Out K.I.N.E.T.I.C™ Vision &rarr;
           </Link>
         </div>
       </section>
@@ -251,10 +251,10 @@ export default function Mobile2DView() {
         {/* Section Header */}
         <div className="mb-4">
           <span className="text-[10px] font-mono font-semibold tracking-wider text-black/50 block mb-1">
-            [ strategic divisions ]
+            [ Strategic Divisions ]
           </span>
           <h2 className="text-xl font-bold tracking-tight text-black font-[var(--font-poppins)]">
-            deep engineering <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">across four frontiers</span>
+            Deep Engineering <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">Across Four Frontiers</span>
           </h2>
         </div>
 
@@ -263,37 +263,37 @@ export default function Mobile2DView() {
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">🚀</span>
-              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">AEROSPACE</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">Aerospace</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Orbital mechanics, spacecraft launch architecture &amp; telemetry.</p>
             </div>
-            <span className="text-[8px] font-mono text-[#FC832C] font-bold mt-3 block">[ ACTIVE ]</span>
+            <span className="text-[8px] font-mono text-[#FC832C] font-bold mt-3 block">[ Active ]</span>
           </div>
 
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">🛡️</span>
-              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">DEFENSE</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">Defense</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Sovereign defense hardware, quantum cryptography &amp; data arrays.</p>
             </div>
-            <span className="text-[8px] font-mono text-black/60 font-bold mt-3 block">[ PROTOCOL ]</span>
+            <span className="text-[8px] font-mono text-black/60 font-bold mt-3 block">[ Protocol ]</span>
           </div>
 
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">⚙️</span>
-              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">MECHANICAL</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">Mechanical</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Structural FEA analysis, precision manufacturing &amp; robotics.</p>
             </div>
-            <span className="text-[8px] font-mono text-[#FC832C] font-bold mt-3 block">[ CORE DISCIPLINE ]</span>
+            <span className="text-[8px] font-mono text-[#FC832C] font-bold mt-3 block">[ Core Discipline ]</span>
           </div>
 
           <div className="p-4 bg-white border border-[#e5e5e7] rounded-2xl flex flex-col justify-between shadow-sm">
             <div>
               <span className="text-base mb-1 block">💻</span>
-              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">SOFTWARE</h3>
+              <h3 className="text-xs font-bold font-[var(--font-poppins)] text-black mb-1 uppercase">Software</h3>
               <p className="text-[10px] text-[#666666] leading-relaxed">Large-scale enterprise platforms, 3D WebGL graphics &amp; real-time web.</p>
             </div>
-            <span className="text-[8px] font-mono text-black/60 font-bold mt-3 block">[ PRODUCTION ]</span>
+            <span className="text-[8px] font-mono text-black/60 font-bold mt-3 block">[ Production ]</span>
           </div>
         </div>
       </section>
@@ -306,28 +306,31 @@ export default function Mobile2DView() {
         {/* Section Header */}
         <div className="mb-4">
           <span className="text-[10px] font-mono font-semibold tracking-wider text-[#FC832C] block mb-1">
-            [ the arsenal ]
+            [ The Arsenal ]
           </span>
           <h2 className="text-xl font-bold tracking-tight text-black font-[var(--font-poppins)]">
-            active <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">deployments</span>
+            Active <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">Deployments</span>
           </h2>
         </div>
 
         {/* Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 scrollbar-none">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-[9px] font-mono uppercase tracking-wider transition-all whitespace-nowrap ${
-                activeCategory === cat
-                  ? "bg-black text-white font-bold shadow-md"
-                  : "bg-white text-black/70 border border-[#e0e0e3] hover:border-black"
-              }`}
-            >
-              [ {cat.toLowerCase()} ]
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const formattedCat = cat === "ALL" ? "All" : cat === "DEFENSE & 3D" ? "Defense & 3D" : cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 py-1.5 rounded-full text-[9px] font-mono uppercase tracking-wider transition-all whitespace-nowrap ${
+                  activeCategory === cat
+                    ? "bg-black text-white font-bold shadow-md"
+                    : "bg-white text-black/70 border border-[#e0e0e3] hover:border-black"
+                }`}
+              >
+                [ {formattedCat} ]
+              </button>
+            );
+          })}
         </div>
 
         {/* Product Cards List */}
@@ -353,12 +356,12 @@ export default function Mobile2DView() {
                   
                   {/* Category Pill Tag */}
                   <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-[#e0e0e3] text-[8.5px] font-mono font-bold text-[#FC832C]">
-                    [ 0{project.id} · ARSENAL ]
+                    [ 0{project.id} · Arsenal ]
                   </div>
 
                   {/* Status Indicator */}
                   <div className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-[#e0e0e3] text-[8px] font-mono text-black font-bold">
-                    ● ACTIVE
+                    ● Active
                   </div>
                 </div>
 
@@ -394,7 +397,7 @@ export default function Mobile2DView() {
                       onClick={() => setExpandedSpecId(isExpanded ? null : project.id)}
                       className="w-full flex items-center justify-between text-[9px] font-mono text-black/60 hover:text-black py-1.5"
                     >
-                      <span>{isExpanded ? "[-] HIDE SPEC SHEET" : "[+] VIEW SPEC SHEET"}</span>
+                      <span>{isExpanded ? "[-] Hide Spec Sheet" : "[+] View Spec Sheet"}</span>
                       <span className="text-xs">{isExpanded ? "▲" : "▼"}</span>
                     </button>
 
@@ -407,16 +410,16 @@ export default function Mobile2DView() {
                           className="bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl p-3 my-2 text-[9px] font-mono space-y-1.5"
                         >
                           <div className="flex justify-between">
-                            <span className="text-black/50">SYSTEM ID:</span>
+                            <span className="text-black/50">System ID:</span>
                             <span className="text-[#FC832C] font-bold">RJ-SYS-00{project.id}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-black/50">ARCHITECTURE:</span>
+                            <span className="text-black/50">Architecture:</span>
                             <span className="text-black font-medium">{project.techStack.slice(0, 2).join(" + ")}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-black/50">STATUS:</span>
-                            <span className="text-[#108474] font-bold">PRODUCTION DEPLOYED</span>
+                            <span className="text-black/50">Status:</span>
+                            <span className="text-[#108474] font-bold">Production Deployed</span>
                           </div>
                         </motion.div>
                       )}
@@ -440,17 +443,17 @@ export default function Mobile2DView() {
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          6. MANIFESTO (Armor "armor is where..." Style)
+          6. MANIFESTO (Armor "Armor is where..." Style)
          ═══════════════════════════════════════════════════ */}
       <section id="manifesto" className="w-[92%] max-w-[440px] mx-auto mb-8">
         <div className="w-full bg-white border border-[#e5e5e7] rounded-3xl p-6 relative overflow-hidden shadow-sm">
           
           <span className="text-[10px] font-mono font-semibold tracking-wider text-[#FC832C] block mb-2">
-            [ the manifesto ]
+            [ The Manifesto ]
           </span>
 
           <h2 className="text-xl font-bold tracking-tight text-black mb-4 leading-snug font-[var(--font-poppins)]">
-            rj industries is where <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">engineering obsession meets sovereign tech.</span>
+            RJ Industries Is Where <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">Engineering Obsession Meets Sovereign Tech.</span>
           </h2>
 
           <p className="text-xs text-[#555555] leading-relaxed font-normal mb-3">
@@ -467,29 +470,29 @@ export default function Mobile2DView() {
             rel="noopener noreferrer"
             className="inline-block py-2.5 px-5 bg-black hover:bg-neutral-800 text-white font-mono text-[10px] font-bold uppercase tracking-wider rounded-xl active:scale-[0.98] transition-transform shadow-md"
           >
-            Know more &rarr;
+            Know More &rarr;
           </a>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          7. FOUNDER DOSSIER (Armor "want to know more?" Style)
+          7. FOUNDER DOSSIER (Armor "Want to know more?" Style)
          ═══════════════════════════════════════════════════ */}
       <section id="founder" className="w-[92%] max-w-[440px] mx-auto mb-8">
         <div className="w-full bg-white border border-[#e5e5e7] rounded-3xl p-6 relative overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
           
           {/* Label */}
           <span className="text-[10px] font-mono font-semibold tracking-wider text-[#FC832C] block mb-2">
-            [ want to know more? ]
+            [ Want To Know More? ]
           </span>
 
           <h2 className="text-xl font-bold tracking-tight text-black mb-2 leading-snug font-[var(--font-poppins)]">
-            meet the <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">founder</span>
+            Meet The <span className="underline decoration-[#FC832C] decoration-3 underline-offset-4">Founder</span>
           </h2>
 
           <div className="mb-4">
             <h3 className="text-base font-black uppercase text-black font-[var(--font-poppins)]">
-              RISHABH SHYAM JOSHI
+              Rishabh Shyam Joshi
             </h3>
             <p className="text-[10.5px] font-mono text-[#FC832C] font-semibold">
               Mechanical Engineer · Founder &amp; CEO
@@ -508,7 +511,7 @@ export default function Mobile2DView() {
               rel="noopener noreferrer"
               className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl flex items-center justify-between text-[9px] font-mono text-black/80 hover:text-black hover:border-[#FC832C] transition-colors"
             >
-              <span>CRUNCHBASE</span>
+              <span>Crunchbase</span>
               <span className="text-[#FC832C] font-bold">↗</span>
             </a>
 
@@ -518,7 +521,7 @@ export default function Mobile2DView() {
               rel="noopener noreferrer"
               className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl flex items-center justify-between text-[9px] font-mono text-black/80 hover:text-black hover:border-[#FC832C] transition-colors"
             >
-              <span>LINKEDIN</span>
+              <span>LinkedIn</span>
               <span className="text-[#FC832C] font-bold">↗</span>
             </a>
 
@@ -528,7 +531,7 @@ export default function Mobile2DView() {
               rel="noopener noreferrer"
               className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl flex items-center justify-between text-[9px] font-mono text-black/80 hover:text-black hover:border-[#FC832C] transition-colors"
             >
-              <span>TWITTER / X</span>
+              <span>Twitter / X</span>
               <span className="text-[#FC832C] font-bold">↗</span>
             </a>
 
@@ -538,7 +541,7 @@ export default function Mobile2DView() {
               rel="noopener noreferrer"
               className="p-3 bg-[#f8f8fa] border border-[#e5e5e7] rounded-xl flex items-center justify-between text-[9px] font-mono text-black/80 hover:text-black hover:border-[#FC832C] transition-colors"
             >
-              <span>GITHUB</span>
+              <span>GitHub</span>
               <span className="text-[#FC832C] font-bold">↗</span>
             </a>
           </div>
@@ -549,7 +552,7 @@ export default function Mobile2DView() {
             className="w-full py-3 px-4 bg-black hover:bg-neutral-800 text-white rounded-xl font-mono text-[10px] font-bold flex items-center justify-center gap-2 transition-colors shadow-md"
           >
             <span>✉ contact@rjindustries.dev</span>
-            <span className="text-[#FC832C] font-bold">{copiedEmail ? "✓ COPIED" : "[ COPY ]"}</span>
+            <span className="text-[#FC832C] font-bold">{copiedEmail ? "✓ Copied" : "[ Copy ]"}</span>
           </button>
         </div>
       </section>
@@ -564,7 +567,7 @@ export default function Mobile2DView() {
             <Image src="/logo.png" alt="RJ Industries" fill className="object-contain" />
           </div>
           <span className="text-xs font-black tracking-widest uppercase font-[var(--font-poppins)] text-black">
-            RJ INDUSTRIES DEV
+            RJ Industries Dev
           </span>
         </div>
 
@@ -573,16 +576,16 @@ export default function Mobile2DView() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[9px] font-mono text-black/70">
-          <a href="#hero" className="hover:text-[#FC832C]">[ OVERVIEW ]</a>
-          <a href="#flagship" className="hover:text-[#FC832C]">[ HARDWARE ]</a>
-          <a href="#divisions" className="hover:text-[#FC832C]">[ DIVISIONS ]</a>
-          <a href="#arsenal" className="hover:text-[#FC832C]">[ ARSENAL ]</a>
-          <a href="#founder" className="hover:text-[#FC832C]">[ FOUNDER ]</a>
-          <Link href="/academy" className="text-[#FC832C] hover:underline">[ 360° TOUR ]</Link>
+          <a href="#hero" className="hover:text-[#FC832C]">[ Overview ]</a>
+          <a href="#flagship" className="hover:text-[#FC832C]">[ Hardware ]</a>
+          <a href="#divisions" className="hover:text-[#FC832C]">[ Divisions ]</a>
+          <a href="#arsenal" className="hover:text-[#FC832C]">[ Arsenal ]</a>
+          <a href="#founder" className="hover:text-[#FC832C]">[ Founder ]</a>
+          <Link href="/academy" className="text-[#FC832C] hover:underline">[ 360° Tour ]</Link>
         </div>
 
-        <div className="text-[8px] font-mono text-black/35 tracking-widest mt-2">
-          © 2026 RJ INDUSTRIES DEV · ALL RIGHTS RESERVED
+        <div className="text-[8px] font-mono text-black/35 tracking-widest mt-2 uppercase">
+          © 2026 RJ Industries Dev · All Rights Reserved
         </div>
       </footer>
 
@@ -597,7 +600,7 @@ export default function Mobile2DView() {
             className="flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-wider text-black hover:text-[#FC832C]"
           >
             <span>✉</span>
-            <span>{copiedEmail ? "COPIED" : "CONTACT"}</span>
+            <span>{copiedEmail ? "Copied" : "Contact"}</span>
           </button>
 
           <div className="h-4 w-[1px] bg-[#e5e5e7]" />
@@ -607,7 +610,7 @@ export default function Mobile2DView() {
             className="flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-wider text-[#FC832C] hover:text-black"
           >
             <span>◎</span>
-            <span>360° TOUR</span>
+            <span>360° Tour</span>
           </Link>
 
           <div className="h-4 w-[1px] bg-[#e5e5e7]" />
@@ -617,7 +620,7 @@ export default function Mobile2DView() {
             className="flex items-center gap-1.5 text-[9.5px] font-mono font-bold tracking-wider text-black/70 hover:text-black"
           >
             <span>{audioMuted ? "🔇" : "🔊"}</span>
-            <span>{audioMuted ? "SOUND OFF" : "SOUND ON"}</span>
+            <span>{audioMuted ? "Sound Off" : "Sound On"}</span>
           </button>
 
         </div>
