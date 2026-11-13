@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Orbitron, Space_Grotesk, Poppins, Manrope } from "next/font/google";
+import { Orbitron, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "./components/CustomCursor";
 
@@ -14,20 +14,6 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space",
   weight: ["300","400","500","600","700"],
-  display: "swap",
-});
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  weight: ["400","500","600","700","800","900"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["400","500","600","700","800"],
   display: "swap",
 });
 
@@ -286,7 +272,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${orbitron.variable} ${spaceGrotesk.variable} ${poppins.variable} ${manrope.variable} bg-black text-white overflow-hidden`}>
+      <body className={`${orbitron.variable} ${spaceGrotesk.variable} bg-black text-white overflow-hidden`}>
         <div className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: 0 }}>
           <header>
             <h1>RJ Industries Dev (rjindustries.dev) - Aerospace, Sovereign Defense & Mechanical Engineering</h1>
